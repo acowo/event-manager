@@ -2,6 +2,6 @@
     <!-- Testability -->
     <Match>
         <Bug pattern="EI_EXPOSE_REP" />
-        <Class name="app.AppController" />
+        <Class name="ui.AppController" />
     </Match>
 </FindBugsFilter>
