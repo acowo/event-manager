@@ -1,8 +1,8 @@
 schemaVersion: 2.1.0
 metadata:
-  name: template #keep it 14 characters or less for the devcontainer name
+  name: gr2607 #keep it 14 characters or less for the devcontainer name
 components:
-  - name: javafx-template
+  - name: gr2607
     container:
       image: adrianstoica/it1901:latest
       memoryLimit: 3Gi
@@ -34,3 +34,45 @@ components:
           name: 5500-tcp
           protocol: http
           targetPort: 5500 #typical live server port
+commands:
+  - id: changedir
+    exec:
+      label: change directory
+      component: checksum
+      commandLine: "cd /projects/gr2607/events-manager"
+  - id: java17update
+    exec:
+      label: update java 17 to 17.0.20 (latest)
+      component: checksum
+      commandLine: >-
+        bash -c '
+          source "$HOME/.sdkman/bin/sdkman-init.sh" &&
+          sdk install java 17.0.20-tem 
+        '      
+  - id: java21update
+    exec:
+      label: update java 21 to 21.0.12 (latest)
+      component: checksum
+      commandLine: >-
+        bash -c '
+          source "$HOME/.sdkman/bin/sdkman-init.sh" &&
+          sdk install java 21.0.12-tem
+        ' 
+  - id: setdefaultjava
+    exec:
+      label: set default java to 17.0.20
+      component: checksum
+      commandLine: >-
+        bash -c '
+          source "$HOME/.sdkman/bin/sdkman-init.sh" &&
+          sdk default java 17.0.20-tem
+        ' 
+events:
+  preStart:
+  postStart:
+    - "changedir" 
+    - "java17update"
+    - "java21update"
+    - "setdefaultjava"
+  preStop:
+  postStop:
