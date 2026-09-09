@@ -38,12 +38,12 @@ commands:
   - id: changedir
     exec:
       label: change directory
-      component: checksum
-      commandLine: "cd /projects/gr2607/events-manager"
+      component: gr2607
+      commandLine: "cd /projects/gr2607/event-manager"
   - id: java17update
     exec:
       label: update java 17 to 17.0.20 (latest)
-      component: checksum
+      component: gr2607
       commandLine: >-
         bash -c '
           source "$HOME/.sdkman/bin/sdkman-init.sh" &&
@@ -52,7 +52,7 @@ commands:
   - id: java21update
     exec:
       label: update java 21 to 21.0.12 (latest)
-      component: checksum
+      component: gr2607
       commandLine: >-
         bash -c '
           source "$HOME/.sdkman/bin/sdkman-init.sh" &&
@@ -61,7 +61,7 @@ commands:
   - id: setdefaultjava
     exec:
       label: set default java to 17.0.20
-      component: checksum
+      component: gr2607
       commandLine: >-
         bash -c '
           source "$HOME/.sdkman/bin/sdkman-init.sh" &&
