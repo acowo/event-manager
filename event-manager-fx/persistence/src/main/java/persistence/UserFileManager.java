@@ -1,24 +1,20 @@
 package persistence;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
-import user.User;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import user.User;
 
 public class UserFileManager {
-
-    private class Data { // For GSON 
-        private Map<String, User> users;
-
-        private Map<String, User> convert() {
-            return users;
-        }
-    }
 
     private static final Gson gson = new Gson();
 
@@ -83,6 +79,7 @@ public class UserFileManager {
         }
 
         users.put(username, user);
+        saveUsers(users);
     }
 
     public static Map<String, User> getUsers() {
@@ -115,7 +112,8 @@ public class UserFileManager {
         if (jsonString.isBlank()) {
             users = new HashMap<>(); 
         } else {
-            users = gson.fromJson(jsonString, Data.class).convert();
+            Type type = new TypeToken<Map<String, User>>() {}.getType();
+            users = gson.fromJson(jsonString, type);
         }
 
         
