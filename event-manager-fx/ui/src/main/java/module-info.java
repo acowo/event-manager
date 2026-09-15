@@ -1,7 +1,7 @@
-module calc.ui {
-  requires calc.core;
+module ui {
   requires javafx.controls;
   requires javafx.fxml;
 
-  opens ui to javafx.graphics, javafx.fxml;
+  opens ui.controller to javafx.graphics, javafx.fxml;
+  exports ui;
 }

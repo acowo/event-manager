@@ -6,6 +6,13 @@
   "configurations": [
     {
       "type": "java",
+      "name": "EventManagerApp",
+      "request": "launch",
+      "mainClass": "ui/ui.EventManagerApp",
+      "projectName": "modules-ui"
+    },
+    {
+      "type": "java",
       "name": "Current File",
       "request": "launch",
       "mainClass": "${file}"

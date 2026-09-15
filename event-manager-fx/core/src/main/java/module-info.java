@@ -1,4 +1,4 @@
-module calc.core {
-  exports core;
+module core {
+  exports user;
   exports event;
 }
