@@ -9,6 +9,7 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,7 +35,7 @@ public class EventFileManager {
             return new HashMap<>();
         }
 
-        try (Scanner scanner = new Scanner(file)) {
+        try (Scanner scanner = new Scanner(file, StandardCharsets.UTF_8)) {
             StringBuilder json = new StringBuilder();
 
             while (scanner.hasNextLine()) {
@@ -52,6 +53,8 @@ public class EventFileManager {
 
         } catch (FileNotFoundException e) {
             throw new RuntimeException("Could not find event data file.", e);
+        } catch (IOException e) {
+            throw new RuntimeException("Could not read event data.", e);
         }
     }
 
@@ -108,7 +111,7 @@ public class EventFileManager {
     }
 
     private static void saveEvents() {
-        try (FileWriter writer = new FileWriter(filePath)) {
+        try (FileWriter writer = new FileWriter(filePath, StandardCharsets.UTF_8)) {
             gson.toJson(events, writer);
         } catch (IOException e) {
             throw new RuntimeException(
