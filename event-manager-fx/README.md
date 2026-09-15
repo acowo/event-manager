@@ -25,3 +25,10 @@ The user should be able to view available events and see (for example) its name,
 [Issue #11](https://git.ntnu.no/IT1901-2026-groups/gr2607/issues/11)
 
 The user should be able to register for available events, and this should be persistent.
+
+### Access the application with an account
+
+> As a user, I want to be able to access the application through registering an account, or logging into an account I have already created.
+[Issue #21](https://git.ntnu.no/IT1901-2026-groups/gr2607/issues/21)
+
+The user should be able to create an account or log into one they have already created. 
