@@ -7,7 +7,6 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-
 <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="425.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.CalendarController">
    <children>
       <Label fx:id="monthLabel" contentDisplay="CENTER" text="Label">
@@ -42,6 +41,9 @@
             <Label text="Saturday" GridPane.columnIndex="5" GridPane.halignment="CENTER" />
             <Label text="Sunday" GridPane.columnIndex="6" GridPane.halignment="CENTER" />
          </children>
+         <VBox.margin>
+            <Insets />
+         </VBox.margin>
       </GridPane>
    </children>
 </VBox>
