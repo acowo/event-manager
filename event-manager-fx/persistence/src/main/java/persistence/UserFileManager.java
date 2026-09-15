@@ -22,7 +22,6 @@ public class UserFileManager {
 
     private static final Gson gson = new Gson();
 
-
     private static final String filePath = "../data/userdata.json";
 
     public static User getUser(String username) {
@@ -38,6 +37,17 @@ public class UserFileManager {
     public static boolean userExists(String username) {
         Map<String, User> users = getUsers();
         return users.containsKey(username);
+    }
+
+    public static boolean check_password(String username, String password) {
+        if (password == null) {
+            throw new IllegalArgumentException("Password cannot be null");
+        }
+
+        if (!userExists(username)) {
+            return false;
+        }
+        return getUser(username).getPassword().equals(password);
     }
 
     private static boolean userExists(Map<String, User> users, String username) {
