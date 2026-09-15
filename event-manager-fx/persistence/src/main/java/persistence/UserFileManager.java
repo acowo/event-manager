@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -21,12 +22,12 @@ public class UserFileManager {
     private static final String filePath = "../data/userdata.json";
 
     public static User getUser(String username) {
-         Map<String, User> users = getUsers();
+        Map<String, User> users = getUsers();
 
-         if (!users.containsKey(username)) {
+        if (!users.containsKey(username)) {
             throw new IllegalArgumentException("");
-         }
-         
+        }
+
         return users.get(username);
     }
 
@@ -52,7 +53,7 @@ public class UserFileManager {
 
     public static void addUser(User user) {
         Map<String, User> users = getUsers();
-        
+
         if (userExists(users, user.getUsername())) {
             throw new IllegalArgumentException("User already exists");
         }
@@ -63,7 +64,7 @@ public class UserFileManager {
 
     public static void removeUser(String username) {
         Map<String, User> users = getUsers();
-        
+
         if (!userExists(users, username)) {
             throw new IllegalArgumentException("User doesn't exists");
         }
@@ -72,7 +73,7 @@ public class UserFileManager {
     }
 
     public static void editUser(String username, User user) {
-        Map<String, User> users = getUsers(); 
+        Map<String, User> users = getUsers();
 
         if (!userExists(users, username)) {
             throw new IllegalArgumentException("User doesn't exists");
@@ -85,38 +86,41 @@ public class UserFileManager {
     public static Map<String, User> getUsers() {
         File file = new File(filePath);
 
-        String jsonString = "";
+        StringBuffer jsonString = new StringBuffer();
 
 
         if (!file.exists()) {
             try {
                 file.createNewFile();
             } catch (IOException e) {
-            System.out.print("Error while creating file");
-            e.printStackTrace();
-            } 
+                System.out.print("Error while creating file");
+                e.printStackTrace();
+            }
         }
 
-        try (Scanner reader = new Scanner(file)) {
+        try (Scanner reader = new Scanner(file, StandardCharsets.UTF_8)) {
             while (reader.hasNextLine()) {
-                jsonString += reader.nextLine();
+                jsonString.append(reader.nextLine());
             }
 
         } catch (FileNotFoundException e) {
             System.out.print("File not found");
             e.printStackTrace();
+        } catch (IOException e) {
+            System.out.print("Error while reading file");
+            e.printStackTrace();
         }
 
         Map<String, User> users;
 
-        if (jsonString.isBlank()) {
-            users = new HashMap<>(); 
+        if (jsonString.isEmpty()) {
+            users = new HashMap<>();
         } else {
             Type type = new TypeToken<Map<String, User>>() {}.getType();
-            users = gson.fromJson(jsonString, type);
+            users = gson.fromJson(jsonString.toString(), type);
         }
 
-        
+
 
         return users;
     }
@@ -126,30 +130,22 @@ public class UserFileManager {
             throw new NullPointerException("Users Map cant be null");
         }
 
-        String jsonString = gson.toJson(users);
-
         File file = new File(filePath);
 
         if (!file.exists()) {
             try {
                 file.createNewFile();
             } catch (IOException e) {
-            System.out.print("Error while creating file");
-            e.printStackTrace();
-            } 
+                System.out.print("Error while creating file");
+                e.printStackTrace();
+            }
         }
 
-        try {
-
-            FileWriter myWriter = new FileWriter(filePath);
-
-            myWriter.write(jsonString);
-            myWriter.close();
-     
+        try (FileWriter myWriter = new FileWriter(filePath, StandardCharsets.UTF_8)) {
+            gson.toJson(users, myWriter);
         } catch (IOException e) {
             System.out.println("Something went wrong");
             e.printStackTrace();
         }
     }
 }
-
