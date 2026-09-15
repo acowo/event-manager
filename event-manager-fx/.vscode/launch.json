@@ -6,6 +6,20 @@
   "configurations": [
     {
       "type": "java",
+      "name": "CalendarApp",
+      "request": "launch",
+      "mainClass": "ui/ui.CalendarApp",
+      "projectName": "modules-ui"
+    },
+    {
+      "type": "java",
+      "name": "App",
+      "request": "launch",
+      "mainClass": "ui/ui.App",
+      "projectName": "modules-ui"
+    },
+    {
+      "type": "java",
       "name": "Current File",
       "request": "launch",
       "mainClass": "${file}"
