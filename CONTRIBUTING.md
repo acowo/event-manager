@@ -34,18 +34,17 @@ bugfix/event-loading
 
 Keep branches focused on one issue where possible.
 
-Use clear commit messages:
+Use clear commit messages in the imperative mode, prefixed with the type of commit:
 
 ```text
-Add Event domain model
-Implement file-based event persistence
-Add event creation controller
-Fix event loading
+feat: add Event domain model
+feat: implement file-based event persistence
+feat: Add event creation controller
+fix: Fix event loading
 ```
 
 Create a pull request when the work is ready for review. Reference the relevant GitHub issue and keep pull requests reasonably small. 
 Request review from other group members. Do not merge your own PRs to main.
-
 Do not merge unfinished work into `main`.
 
 ## Testing
