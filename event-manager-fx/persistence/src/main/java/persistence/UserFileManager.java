@@ -6,17 +6,11 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
+import user.User;
 
 import com.google.gson.Gson;
 
 public class UserFileManager {
-
-    public static class User { // placeholder until import
-      String username = "";
-      private String getUsername() {
-        return username;
-      }
-    } 
 
     private class Data { // For GSON 
         private Map<String, User> users;
@@ -142,7 +136,7 @@ public class UserFileManager {
             FileWriter myWriter = new FileWriter(filePath);
 
             myWriter.write(jsonString);
-            myWriter.flush();
+            myWriter.close();
      
         } catch (IOException e) {
             System.out.println("Something went wrong");
