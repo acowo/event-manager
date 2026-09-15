@@ -1,4 +1,4 @@
-module core {
+module eventmanager.core {
   exports user;
   exports event;
 }
