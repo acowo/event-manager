@@ -3,6 +3,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -28,7 +29,7 @@ public class UserFileManager {
     private static final Gson gson = new Gson();
 
 
-    private static final String filePath = "./hei.json";
+    private static final String filePath = "../data/userdata.json";
 
     public static User getUser(String userId) {
         return null;
@@ -85,12 +86,30 @@ public class UserFileManager {
         saveUsers(users);
     }
 
+    public static void editUser(String userId, User user) {
+        Map<String, User> users = getUsers(); 
 
+        if (!userExists(users, userId)) {
+            throw new IllegalArgumentException("User doesn't exists");
+        }
+
+        users.put(userId, user);
+    }
 
     public static Map<String, User> getUsers() {
         File file = new File(filePath);
 
         String jsonString = "";
+
+
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+            System.out.print("Error while creating file");
+            e.printStackTrace();
+            } 
+        }
 
         try (Scanner reader = new Scanner(file)) {
             while (reader.hasNextLine()) {
@@ -102,7 +121,15 @@ public class UserFileManager {
             e.printStackTrace();
         }
 
-        Map<String, User> users = gson.fromJson(jsonString, Data.class).convert();
+        Map<String, User> users;
+
+        if (jsonString.isBlank()) {
+            users = new HashMap<>(); 
+        } else {
+            users = gson.fromJson(jsonString, Data.class).convert();
+        }
+
+        
 
         return users;
     }
@@ -116,8 +143,16 @@ public class UserFileManager {
 
         File file = new File(filePath);
 
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+            System.out.print("Error while creating file");
+            e.printStackTrace();
+            } 
+        }
+
         try {
-            file.createNewFile(); // Make file if it doesnt exist
 
             FileWriter myWriter = new FileWriter(filePath);
 
