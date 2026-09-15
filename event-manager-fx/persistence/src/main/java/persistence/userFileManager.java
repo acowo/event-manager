@@ -12,9 +12,9 @@ import com.google.gson.Gson;
 public class UserFileManager {
 
     public static class User { // placeholder until import
-      String userId = "";
-      private String getUserId() {
-        return userId;
+      String username = "";
+      private String getUsername() {
+        return username;
       }
     } 
 
@@ -31,69 +31,54 @@ public class UserFileManager {
 
     private static final String filePath = "../data/userdata.json";
 
-    public static User getUser(String userId) {
-        return null;
+    public static User getUser(String username) {
+         Map<String, User> users = getUsers();
+
+         if (!users.containsKey(username)) {
+            throw new IllegalArgumentException("");
+         }
+         
+        return users.get(username);
     }
 
-    private static boolean  userExists(Map<String, User> users, User user) {
-        if (users == null) {
-            throw new NullPointerException("users cant be null");
-        }
-        if (user == null) {
-            throw new NullPointerException("user cant be null");
-        }
-
-        return userExists(users, user.getUserId());
+    public static boolean userExists(String username) {
+        Map<String, User> users = getUsers();
+        return users.containsKey(username);
     }
 
-    private static boolean userExists(Map<String, User> users, String userId) {
-        if (users == null) {
-            throw new NullPointerException("users cant be null");
-        }
-        if (userId == null) {
-            throw new NullPointerException("user cant be null");
-        }
-        return users.containsKey(userId);
+    private static boolean userExists(Map<String, User> users, String username) {
+        return users.containsKey(username);
     }
 
     public static void addUser(User user) {
         Map<String, User> users = getUsers();
         
-        if (userExists(users, user)) {
+        if (userExists(users, user.getUsername())) {
             throw new IllegalArgumentException("User already exists");
         }
 
-        users.put(user.getUserId(), user);
+        users.put(user.getUsername(), user);
         saveUsers(users);
     }
 
-    public static void removeUser(User user) {
-        Map<String, User> users = getUsers(); 
-        if (!userExists(users, user)) {
-            throw new IllegalArgumentException("User doesn't exists");
-        }
-        users.remove(user.getUserId());
-        saveUsers(users);
-    }
-
-    public static void removeUser(String userId) {
+    public static void removeUser(String username) {
         Map<String, User> users = getUsers();
         
-        if (!userExists(users, userId)) {
+        if (!userExists(users, username)) {
             throw new IllegalArgumentException("User doesn't exists");
         }
-        users.remove(userId);
+        users.remove(username);
         saveUsers(users);
     }
 
-    public static void editUser(String userId, User user) {
+    public static void editUser(String username, User user) {
         Map<String, User> users = getUsers(); 
 
-        if (!userExists(users, userId)) {
+        if (!userExists(users, username)) {
             throw new IllegalArgumentException("User doesn't exists");
         }
 
-        users.put(userId, user);
+        users.put(username, user);
     }
 
     public static Map<String, User> getUsers() {
