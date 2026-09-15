@@ -43,6 +43,8 @@ public class loginPageController {
 
     }
 
+
+    //Used to change scene when a user login or registration is successful
     @FXML
     private void changeScene() throws IOException {
         try {
