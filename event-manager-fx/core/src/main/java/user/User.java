@@ -1,7 +1,7 @@
 package user;
-
 import java.util.ArrayList;
 import java.util.List;
+//import persistence.UserFileManager;
 
 public class User {
     private List<String> eventIdList = new ArrayList<>();
@@ -12,30 +12,6 @@ public class User {
     public User(String username, String password){
         setUsername(username);
         setPassword(password);
-    }
-
-    /**
-     * userExists() currently has no real logic
-     * @param username
-     * @return returns true by default, and false if username is set to false
-     */
-    public boolean userExists(String username){
-        //TODO: Add real logic once UserFileManager is completed
-        //The following code is made for testing User-system and is unfinished
-        if (username == null){
-        throw new NullPointerException("userId cannot be null");
-        }
-        if (username.equals("false")){
-            return false;
-        }
-        if (username.equals("true")){
-            return true;
-        }
-        return true;
-    }
-
-    public static User createUser(String username, String password){
-        return new User(username, password);
     }
 
     public String getUsername(){
@@ -76,6 +52,35 @@ public class User {
         throw new IllegalArgumentException("eventId cannot be blank");
       }
       this.eventIdList.add(eventId);
+    }
+
+    public void removeEventId(String eventId){
+      if (eventId == null){
+        throw new NullPointerException("eventId cannot be null");
+      }
+      if (eventId.isBlank()){
+        throw new IllegalArgumentException("eventId cannot be blank");
+      }
+
+      if (!this.eventIdList.contains(eventId)){
+        throw new IllegalStateException("eventId was not in eventIdList");
+      }
+      this.eventIdList.remove(eventId);
+    }
+
+    public boolean isAttendingEvent(String eventId){
+      if (eventId == null){
+        throw new NullPointerException("eventId cannot be null");
+      }
+      if (eventId.isBlank()){
+        throw new IllegalArgumentException("eventId cannot be blank");
+      }
+
+      return this.eventIdList.contains(eventId);
+    }
+
+    public List<String> getEventIdList(){
+      return List.copyOf(this.eventIdList);
     }
 }
 
