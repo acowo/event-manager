@@ -6,6 +6,7 @@ module eventmanager.ui {
   requires eventmanager.persistence;
 
 
+
   opens ui.controller to javafx.graphics, javafx.fxml;
   exports ui;
 }

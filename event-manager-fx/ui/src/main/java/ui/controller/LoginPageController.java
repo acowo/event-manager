@@ -14,7 +14,9 @@ import java.io.IOException;
 import java.util.Objects;
 
 //User imports
+import persistence.UserFileManager;
 import user.User;
+import user.UserManager;
 import user.UserSession;
 
 public class LoginPageController {
@@ -33,6 +35,8 @@ public class LoginPageController {
     @FXML
     private Text loginPage_infotextField;
 
+    private UserManager manager = new UserManager(new UserFileManager());
+
     /**
      * Handles the controller logic needed when a user presses the login button.
      * Uses imports from the Core and persistence modules. This function does not return a value.
@@ -42,7 +46,12 @@ public class LoginPageController {
         String username = loginPage_usernameField.getText();
         String password = loginPage_passwordField.getText();
 
-
+        if (manager.login(username, password)) {
+            changeScene();
+        } else {
+            loginPage_infotextField.setText("An error has occured");
+            loginPage_infotextField.setFill(Color.RED);
+        }
 
 
     }
@@ -56,15 +65,14 @@ public class LoginPageController {
         String username = loginPage_usernameField.getText();
         String password = loginPage_passwordField.getText();
 
-
-        if (User.userExists(username)) {
-            loginPage_infotextField.setText("A user by this name already exists.");
-            loginPage_infotextField.setFill(Color.RED);
-        } else {
-            User.createUser(username, password);
-            UserSession.setUser(username,password);
+        if (manager.register(username, password)) {
             changeScene();
+        } else {
+            loginPage_infotextField.setText("An error has occured");
+            loginPage_infotextField.setFill(Color.RED);
         }
+
+
     }
 
 
