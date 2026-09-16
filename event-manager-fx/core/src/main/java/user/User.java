@@ -1,7 +1,7 @@
 package user;
 import java.util.ArrayList;
 import java.util.List;
-//import persistence.UserFileManager;
+
 
 public class User {
     private List<String> eventIdList = new ArrayList<>();
