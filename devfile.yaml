@@ -39,7 +39,7 @@ commands:
     exec:
       label: change directory
       component: gr2607
-      commandLine: "cd /projects/gr2607/event-manager"
+      commandLine: "cd /projects/gr2607/event-manager-fx"
   - id: java17update
     exec:
       label: update java 17 to 17.0.20 (latest)

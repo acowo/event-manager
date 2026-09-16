@@ -19,6 +19,7 @@ import javafx.scene.layout.VBox;
 import persistence.EventFileManager;
 import user.User;
 import user.UserSession;
+import event.Event;
 
 
 /**

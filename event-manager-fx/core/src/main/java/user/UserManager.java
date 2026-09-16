@@ -23,10 +23,13 @@ public class UserManager {
     }
 
     public boolean register(String username, String password){
-        if (!users.userExists(username)){
+        if (users.userExists(username)){
             return false;
         }
-        UserSession.setUser(new User(username, password));
+
+        User user = new User(username, password);
+        UserSession.setUser(user);
+        users.addUser(user);
         return true;
     }
 
