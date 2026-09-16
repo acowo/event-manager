@@ -14,13 +14,17 @@ import com.google.gson.reflect.TypeToken;
 
 import user.User;
 
-public class UserFileManager {
+public class UserFileManager implements user.UserRepository {
 
-    private static final Gson gson = new Gson();
+    private final Gson gson = new Gson();
 
-    private static final String filePath = "../data/userdata.json";
+    private final String filePath = "../data/userdata.json";
 
-    public static User getUser(String username) {
+    public UserFileManager() {
+
+    }
+
+    public User getUser(String username) {
          Map<String, User> users = getUsers();
 
          if (!users.containsKey(username)) {
@@ -30,12 +34,12 @@ public class UserFileManager {
         return users.get(username);
     }
 
-    public static boolean userExists(String username) {
+    public boolean userExists(String username) {
         Map<String, User> users = getUsers();
         return users.containsKey(username);
     }
 
-    public static boolean check_password(String username, String password) {
+    public boolean check_password(String username, String password) {
         if (password == null) {
             throw new IllegalArgumentException("Password cannot be null");
         }
@@ -46,11 +50,11 @@ public class UserFileManager {
         return getUser(username).getPassword().equals(password);
     }
 
-    private static boolean userExists(Map<String, User> users, String username) {
+    private boolean userExists(Map<String, User> users, String username) {
         return users.containsKey(username);
     }
 
-    public static void addUser(User user) {
+    public void addUser(User user) {
         Map<String, User> users = getUsers();
         
         if (userExists(users, user.getUsername())) {
@@ -61,7 +65,7 @@ public class UserFileManager {
         saveUsers(users);
     }
 
-    public static void removeUser(String username) {
+    public void removeUser(String username) {
         Map<String, User> users = getUsers();
         
         if (!userExists(users, username)) {
@@ -71,7 +75,7 @@ public class UserFileManager {
         saveUsers(users);
     }
 
-    public static void editUser(String username, User user) {
+    public void editUser(String username, User user) {
         Map<String, User> users = getUsers(); 
 
         if (!userExists(users, username)) {
@@ -82,7 +86,7 @@ public class UserFileManager {
         saveUsers(users);
     }
 
-    public static Map<String, User> getUsers() {
+    public Map<String, User> getUsers() {
         File file = new File(filePath);
 
         String jsonString = "";
@@ -121,7 +125,7 @@ public class UserFileManager {
         return users;
     }
 
-    private static void saveUsers(Map<String, User> users) {
+    private void saveUsers(Map<String, User> users) {
         if (users == null) {
             throw new NullPointerException("Users Map cant be null");
         }

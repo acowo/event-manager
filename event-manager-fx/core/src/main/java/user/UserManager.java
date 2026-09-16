@@ -1,25 +1,33 @@
 package user;
-import persistence.persistence;
+
 
 
 public class UserManager {
 
+    private final UserRepository users;
+
+    public UserManager(UserRepository users){
+        this.users = users; 
+    }
+
 
     public boolean login(String username, String password){
         //Persistence 
-        if (!UserFileManager.check_password(username, password)){
-            return false
+        if (!this.users.check_password(username, password)){
+            return false;
         }
 
-        UserSession.setUser(UserFileManager.getUser(username));
+        UserSession.setUser(users.getUser(username));
+        return true;
         
     }
 
     public boolean register(String username, String password){
-        if (!UserFileManager.userExists(username)){
+        if (!users.userExists(username)){
             return false;
         }
         UserSession.setUser(new User(username, password));
+        return true;
     }
 
 }

@@ -22,12 +22,6 @@
             <scope>test</scope>
         </dependency>
 
-               <dependency>
-            <groupId>it1901</groupId>
-            <artifactId>persistence</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
     </dependencies>
 
 </project>

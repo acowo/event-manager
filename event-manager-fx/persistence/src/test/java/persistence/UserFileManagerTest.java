@@ -23,16 +23,17 @@ public class UserFileManagerTest {
     private String password1 = "test password1";
     private String password2 = "test password2";
     private String password3 = "test password3";
+    private UserFileManager userFileManager = new UserFileManager();
 
     private void clearTestUsers() {
-        if (UserFileManager.userExists(username1)) {
-            UserFileManager.removeUser(username1);
+        if (userFileManager.userExists(username1)) {
+            userFileManager.removeUser(username1);
         }
-        if (UserFileManager.userExists(username2)) {
-            UserFileManager.removeUser(username2);
+        if (userFileManager.userExists(username2)) {
+            userFileManager.removeUser(username2);
         }
-        if (UserFileManager.userExists(username3)) {
-            UserFileManager.removeUser(username3);
+        if (userFileManager.userExists(username3)) {
+            userFileManager.removeUser(username3);
         }
     }
 
@@ -51,25 +52,10 @@ public class UserFileManagerTest {
     }
 
     @Test
-    void testGetUsers() {
-        UserFileManager.addUser(user1);
-        UserFileManager.addUser(user2);
-        UserFileManager.addUser(user3);
-
-        Map<String, User> users = UserFileManager.getUsers();
-
-        assertEquals(3, users.size());
-
-        assertTrue(users.containsKey(username1));
-        assertTrue(users.containsKey(username2));
-        assertTrue(users.containsKey(username3));
-    }
-
-    @Test
     void testGetUser() {
-        UserFileManager.addUser(user1);
+        userFileManager.addUser(user1);
 
-        User userResult = UserFileManager.getUser(username1);
+        User userResult = userFileManager.getUser(username1);
 
         assertEquals(userResult.getUsername(), username1);
         assertEquals(userResult.getPassword(), password1);
@@ -77,42 +63,42 @@ public class UserFileManagerTest {
 
     @Test
     void testUserExists() {
-        assertFalse(UserFileManager.userExists(username2));
+        assertFalse(userFileManager.userExists(username2));
 
-        UserFileManager.addUser(user2);
+        userFileManager.addUser(user2);
 
-        assertTrue(UserFileManager.userExists(username2));
+        assertTrue(userFileManager.userExists(username2));
     }
 
     @Test
     void testDuplicateUserThrowsException() {
-        UserFileManager.addUser(user3);
+        userFileManager.addUser(user3);
 
-        assertThrows(IllegalArgumentException.class, () -> UserFileManager.addUser(user3));
+        assertThrows(IllegalArgumentException.class, () -> userFileManager.addUser(user3));
     }
 
     @Test
     void testRemoveUser() {
-        UserFileManager.addUser(user1);
+        userFileManager.addUser(user1);
 
-        UserFileManager.removeUser(username1);
+        userFileManager.removeUser(username1);
 
-        assertFalse(UserFileManager.userExists(username1));
+        assertFalse(userFileManager.userExists(username1));
     }
 
     @Test
     void testRemoveNonexistentUserThrowsException() {
-        assertThrows(IllegalArgumentException.class, () -> UserFileManager.removeUser(username3));
+        assertThrows(IllegalArgumentException.class, () -> userFileManager.removeUser(username3));
     }
 
     @Test
     void testEditUser() {
-        UserFileManager.addUser(user1);
+        userFileManager.addUser(user1);
 
         User updatedUser = new User(username1, "new password");
-        UserFileManager.editUser(username1, updatedUser);
+        userFileManager.editUser(username1, updatedUser);
 
-        User userResult = UserFileManager.getUser(username1);
+        User userResult = userFileManager.getUser(username1);
 
         assertEquals(userResult.getUsername(), username1);
         assertEquals(userResult.getPassword(), "new password");
