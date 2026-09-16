@@ -34,7 +34,14 @@ The user should be able to register for available events, and this should be per
 
 The user should be able to create an account or log into one they have already created.
 
-## Dependancies
+### Requirements
 
-Requires Java 17 or newer
-Requires Maven
+- Java 17 or newer
+- Maven 3.9.16 or newer
+
+### Dependencies
+
+- JavaFX 17.0.13
+- Google Gson 2.10.1
+- JUnit Jupiter 5.12.2 (testing only)
+
