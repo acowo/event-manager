@@ -1,7 +1,10 @@
-module ui {
+module eventmanager.ui {
   requires javafx.controls;
   requires javafx.fxml;
-  requires core;
+
+  requires eventmanager.core;
+  requires eventmanager.persistence;
+
 
   opens ui.controller to javafx.graphics, javafx.fxml;
   exports ui;

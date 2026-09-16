@@ -1,15 +1,23 @@
 package user;
 
 public class UserSession {
-    public static User user;
+    private static User user;
 
-
-    public static void setUser(String username, String password) {
-        user = new User(username, password);
+    public static void setUser(User user) {
+        if (user == null) {
+            throw new NullPointerException("user cannot be null");
+        }
+        UserSession.user = user;
     }
 
     public static User getUser() {
+        if (user == null){
+            throw new NullPointerException("User was not set");
+        }
         return UserSession.user;
     }
 
+    public static void logout(){
+        UserSession.user = null;
+    }
 }
