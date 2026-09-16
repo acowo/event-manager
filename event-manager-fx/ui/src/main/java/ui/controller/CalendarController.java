@@ -1,4 +1,4 @@
-/*
+
 package ui.controller;
 
 import java.time.LocalDate;
@@ -22,7 +22,7 @@ import javafx.scene.layout.VBox;
  * Controller for {@code /ui/CalendarApp.fxml}. 
  */
 
-/*
+
 public class CalendarController {
     private Month month;
     private int year;
@@ -97,4 +97,4 @@ public class CalendarController {
 
 }
 
-*/
+
