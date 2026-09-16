@@ -2,9 +2,11 @@
 package ui.controller;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.temporal.ChronoField;
 import java.util.List;
+import java.util.Map;
 
 import event.Event;
 import javafx.fxml.FXML;
@@ -14,6 +16,9 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import persistence.EventFileManager;
+import user.User;
+import user.UserSession;
 
 
 /**
@@ -33,12 +38,20 @@ public class CalendarController {
 
     @FXML
     public void initialize() {
-      System.out.println("day");
       LocalDate date = LocalDate.now();
       setMonth(date);
+
+      //EventFileManager.getEvents();
+      //Map<String, Event> events = EventFileManager.getEvents();
+      //addEvents(events.values().stream().toList());
+      Event event = new Event("Jobb", "Gløshaugen", LocalDateTime.now());
+      addEvents(List.of(event));
+
     }
 
     private void setMonth(LocalDate date) {
+
+
       this.month = date.getMonth();
       this.year = date.getYear();
       int dateNumber = date.getDayOfMonth();
@@ -74,15 +87,26 @@ public class CalendarController {
           eventPane.getChildren().add(new Label(event.getTitle()));
 
           ToggleButton joinButton = new ToggleButton("+");
+          //User user = UserSession.getUser();
           joinButton.setOnAction(e -> {
             if (joinButton.getText().equals("-")) {
               joinButton.setText("+");
               //TODO: Remove user from event
+              //User user = UserSession.getUser();
+              //user.removeEventId(event.getTitle());
+              
             } else {
               joinButton.setText("-");
               //TODO: Add user to event
+              //User user = UserSession.getUser();
+              //user.addEventId(event.getTitle());
             }
           });
+          
+          /*if (user.isAttendingEvent(event.getTitle())) {
+            joinButton.setText("-");
+            user.addEventId(event.getTitle());
+          }*/
 
           eventPane.getChildren().add(joinButton);
           HBox.setMargin(joinButton, new Insets(0, 0, 0, 10));

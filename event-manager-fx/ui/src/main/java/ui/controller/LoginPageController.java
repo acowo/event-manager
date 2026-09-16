@@ -43,7 +43,7 @@ public class LoginPageController {
         String password = loginPage_passwordField.getText();
 
 
-
+        changeScene();
 
     }
 
@@ -57,14 +57,7 @@ public class LoginPageController {
         String password = loginPage_passwordField.getText();
 
 
-        if (User.userExists(username)) {
-            loginPage_infotextField.setText("A user by this name already exists.");
-            loginPage_infotextField.setFill(Color.RED);
-        } else {
-            User.createUser(username, password);
-            UserSession.setUser(username,password);
-            changeScene();
-        }
+        changeScene();
     }
 
 
