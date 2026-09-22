@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -18,10 +19,10 @@ public class UserFileManager implements user.UserRepository {
 
     private final Gson gson = new Gson();
 
-    private final String filePath = "../data/userdata.json";
+    private final String filePath;
 
     public UserFileManager() {
-
+        filePath = "../data/userdata.json";
     }
 
     public User getUser(String username) {
@@ -89,7 +90,7 @@ public class UserFileManager implements user.UserRepository {
     public Map<String, User> getUsers() {
         File file = new File(filePath);
 
-        String jsonString = "";
+        StringBuilder jsonString = new StringBuilder();
 
 
         if (!file.exists()) {
@@ -101,23 +102,26 @@ public class UserFileManager implements user.UserRepository {
             } 
         }
 
-        try (Scanner reader = new Scanner(file)) {
+        try (Scanner reader = new Scanner(file, StandardCharsets.UTF_8)) {
             while (reader.hasNextLine()) {
-                jsonString += reader.nextLine();
+                jsonString.append(reader.nextLine());
             }
 
         } catch (FileNotFoundException e) {
             System.out.print("File not found");
             e.printStackTrace();
+        } catch (IOException e) {
+            System.out.print("An error has occured");
+            e.printStackTrace();
         }
 
         Map<String, User> users;
 
-        if (jsonString.isBlank()) {
+        if (jsonString.isEmpty()) {
             users = new HashMap<>(); 
         } else {
             Type type = new TypeToken<Map<String, User>>() {}.getType();
-            users = gson.fromJson(jsonString, type);
+            users = gson.fromJson(jsonString.toString(), type);
         }
 
         
@@ -143,12 +147,9 @@ public class UserFileManager implements user.UserRepository {
             } 
         }
 
-        try {
-
-            FileWriter myWriter = new FileWriter(filePath);
-
+        try (FileWriter myWriter = new FileWriter(filePath, StandardCharsets.UTF_8)) {
             myWriter.write(jsonString);
-            myWriter.close();
+            myWriter.flush();
      
         } catch (IOException e) {
             System.out.println("Something went wrong");
