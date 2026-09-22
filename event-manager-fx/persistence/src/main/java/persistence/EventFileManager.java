@@ -10,6 +10,7 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -58,7 +59,14 @@ public class EventFileManager implements EventRepository {
      */
     public EventFileManager(String filePath) {
         this.filePath = filePath;
-        this.events = loadEvents();
+
+
+        try {
+            this.events = loadEvents();
+        } catch (Exception e) {
+           this.events = new HashMap<>();
+        }
+
     }
     
 
@@ -77,7 +85,7 @@ public class EventFileManager implements EventRepository {
             return new HashMap<>();
         }
 
-        try (Scanner scanner = new Scanner(file)) {
+        try (Scanner scanner = new Scanner(file, StandardCharsets.UTF_8)) {
             StringBuilder json = new StringBuilder();
 
             while (scanner.hasNextLine()) {
@@ -95,6 +103,8 @@ public class EventFileManager implements EventRepository {
 
         } catch (FileNotFoundException e) {
             throw new RuntimeException("Could not find event data file.", e);
+        } catch (IOException e) {
+            throw new RuntimeException("An error has occured while trying to read file.", e);
         }
     }
 
@@ -184,7 +194,7 @@ public class EventFileManager implements EventRepository {
      * @throws RuntimeException if the event data cannot be written to the file
      */
     private void saveEvents() {
-        try (FileWriter writer = new FileWriter(filePath)) {
+        try (FileWriter writer = new FileWriter(filePath, StandardCharsets.UTF_8)) {
             gson.toJson(events, writer);
         } catch (IOException e) {
             throw new RuntimeException(
