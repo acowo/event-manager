@@ -43,15 +43,11 @@ public class CalendarController {
       LocalDate date = LocalDate.now();
       setMonth(date);
 
-      EventFileManager.getEvents();
       Map<String, Event> events = EventFileManager.getEvents();
       addEvents(events.values().stream().toList());
-
     }
 
     private void setMonth(LocalDate date) {
-
-
       this.month = date.getMonth();
       this.year = date.getYear();
       int dateNumber = date.getDayOfMonth();
