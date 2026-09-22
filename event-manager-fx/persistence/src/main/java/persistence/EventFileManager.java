@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import event.Event;
+import event.EventRepository;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -21,7 +22,7 @@ import java.util.Scanner;
  * {@code eventdata.json} file whenever an event is added, edited, or removed.
  * Gson is used to serialize and deserialize the event data.
  */
-public class EventFileManager {
+public class EventFileManager implements EventRepository {
 
     /**
      * Gson instance configured with an adapter for {@link LocalDateTime}.
@@ -36,12 +37,30 @@ public class EventFileManager {
     /**
      * Path to the JSON file containing the event data.
      */
-    private static final String filePath = "../data/eventdata.json";
+    private final String filePath;
 
     /**
      * Map containing all currently stored events, indexed by their title.
      */
-    private static Map<String, Event> events = loadEvents();
+    private Map<String, Event> events;
+
+    /**
+     *  creates an EventFilemanager using the default event data file.
+     */
+    public EventFileManager() {
+        this("../data/eventdata.json");
+    }
+
+    /**
+     * Creates an EventFileManager using the specified file.
+     *
+     * @param filePath the path to the event data file
+     */
+    public EventFileManager(String filePath) {
+        this.filePath = filePath;
+        this.events = loadEvents();
+    }
+    
 
     /**
      * Loads events from the JSON data file.
@@ -51,7 +70,7 @@ public class EventFileManager {
      * @return a map containing the events loaded from the file
      * @throws RuntimeException if the event data file cannot be found
      */
-    private static Map<String, Event> loadEvents() {
+    private Map<String, Event> loadEvents() {
         File file = new File(filePath);
 
         if (!file.exists()) {
@@ -79,14 +98,10 @@ public class EventFileManager {
         }
     }
 
-    /**
-     * Retrieves an event by its title.
-     *
-     * @param title the title of the event to retrieve
-     * @return the event with the specified title
-     * @throws IllegalArgumentException if no event with the specified title exists
-     */
-    public static Event getEvent(String title) {
+    
+    //Retrieves an event by its title.
+    @Override 
+    public Event getEvent(String title) {
         if (!eventExists(title)) {
             throw new IllegalArgumentException(
                     "Event does not exist: " + title
@@ -96,26 +111,17 @@ public class EventFileManager {
         return events.get(title);
     }
 
-    /**
-     * Checks whether an event with the specified title exists.
-     *
-     * @param title the title of the event to check
-     * @return {@code true} if an event with the title exists,
-     *         otherwise {@code false}
-     */
-    public static boolean eventExists(String title) {
+
+    //Checks whether an event with the specified title exists.
+    @Override
+    public boolean eventExists(String title) {
         return events.containsKey(title);
     }
 
-    /**
-     * Adds an event to the stored events.
-     *
-     * <p>The event is saved to the JSON file after being added.
-     *
-     * @param event the event to add
-     * @throws IllegalArgumentException if an event with the same title already exists
-     */
-    public static void addEvent(Event event) {
+    
+    //Adds an event to the stored events.
+    @Override
+    public void addEvent(Event event) {
         if (eventExists(event.getTitle())) {
             throw new IllegalArgumentException(
                     "An event with this title already exists: "
@@ -131,11 +137,9 @@ public class EventFileManager {
      * Removes an event with the specified title.
      *
      * <p>The updated event collection is saved to the JSON file after removal.
-     *
-     * @param title the title of the event to remove
-     * @throws IllegalArgumentException if no event with the specified title exists
      */
-    public static void removeEvent(String title) {
+    @Override
+    public void removeEvent(String title) {
         if (!eventExists(title)) {
             throw new IllegalArgumentException(
                     "Event does not exist: " + title
@@ -150,12 +154,9 @@ public class EventFileManager {
      * Replaces an existing event with a new event.
      *
      * <p>The updated event collection is saved to the JSON file after editing.
-     *
-     * @param title the title of the event to edit
-     * @param event the updated event
-     * @throws IllegalArgumentException if no event with the specified title exists
      */
-    public static void editEvent(String title, Event event) {
+    @Override
+    public void editEvent(String title, Event event) {
         if (!eventExists(title)) {
             throw new IllegalArgumentException(
                     "Event does not exist: " + title
@@ -171,10 +172,9 @@ public class EventFileManager {
      *
      * <p>A copy of the internal map is returned so that callers cannot
      * directly modify the stored collection.
-     *
-     * @return a map containing all stored events
      */
-    public static Map<String, Event> getEvents() {
+    @Override
+    public Map<String, Event> getEvents() {
         return new HashMap<>(events);
     }
 
@@ -183,7 +183,7 @@ public class EventFileManager {
      *
      * @throws RuntimeException if the event data cannot be written to the file
      */
-    private static void saveEvents() {
+    private void saveEvents() {
         try (FileWriter writer = new FileWriter(filePath)) {
             gson.toJson(events, writer);
         } catch (IOException e) {
