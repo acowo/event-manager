@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import event.Event;
 import java.nio.file.Path;
+import java.nio.file.Files;
 import org.junit.jupiter.api.io.TempDir;
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -171,5 +172,63 @@ public class EventFileManagerTest {
             reloadedEvent.getTime()
         );
 
+    }
+
+    @Test
+    void testLoadEmptyFile() throws Exception {
+        Path file = tempDir.resolve("empty.json");
+        Files.createFile(file);
+
+        EventFileManager manager = new EventFileManager(file.toString());
+
+        assertTrue(manager.getEvents().isEmpty());
+    }
+
+    @Test
+    void testLoadNullJson() throws Exception {
+        Path file = tempDir.resolve("null.json");
+        Files.writeString(file, "null");
+
+        EventFileManager manager = new EventFileManager(file.toString());
+
+        assertTrue(manager.getEvents().isEmpty());
+    }
+
+    @Test
+    void testSaveToInvalidPathThrowsException() {
+        Path invalidPath = tempDir
+                .resolve("does-not-exist")
+                .resolve("eventdata.json");
+
+        EventFileManager manager =
+                new EventFileManager(invalidPath.toString());
+
+        assertThrows(
+                RuntimeException.class,
+                () -> manager.addEvent(event)
+        );
+    }
+
+    @Test
+    void testLoadEventsThrowsExceptionWhenFileCannotBeOpened() throws Exception {
+        Path directory = tempDir.resolve("eventdata");
+        Files.createDirectory(directory);
+
+        RuntimeException exception = assertThrows(
+                RuntimeException.class,
+                () -> new EventFileManager(directory.toString())
+        );
+
+        assertEquals(
+                "Could not find event data file.",
+                exception.getMessage()
+        );
+    }
+
+    @Test
+    void testDefaultConstructor() {
+        EventFileManager manager = new EventFileManager();
+
+        assertTrue(manager.getEvents() != null);
     }
 }
