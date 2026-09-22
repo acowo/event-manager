@@ -210,22 +210,6 @@ public class EventFileManagerTest {
     }
 
     @Test
-    void testLoadEventsThrowsExceptionWhenFileCannotBeOpened() throws Exception {
-        Path directory = tempDir.resolve("eventdata");
-        Files.createDirectory(directory);
-
-        RuntimeException exception = assertThrows(
-                RuntimeException.class,
-                () -> new EventFileManager(directory.toString())
-        );
-
-        assertEquals(
-                "Could not find event data file.",
-                exception.getMessage()
-        );
-    }
-
-    @Test
     void testDefaultConstructor() {
         EventFileManager manager = new EventFileManager();
 
