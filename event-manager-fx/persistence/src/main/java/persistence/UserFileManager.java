@@ -22,8 +22,14 @@ public class UserFileManager implements user.UserRepository {
     private final String filePath;
 
     public UserFileManager() {
-        filePath = "../data/userdata.json";
+        this("../data/userdata.json");
     }
+
+    public UserFileManager(String filePath) {
+        this.filePath = filePath;
+    }
+
+
 
     public User getUser(String username) {
          Map<String, User> users = getUsers();
