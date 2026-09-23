@@ -52,6 +52,7 @@ public class User {
         throw new IllegalArgumentException("eventId cannot be blank");
       }
       this.eventIdList.add(eventId);
+      
     }
 
     public void removeEventId(String eventId){

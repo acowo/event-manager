@@ -36,7 +36,13 @@ public class CalendarController {
     private GridPane calendar;
 
     @FXML
-    private Label monthLabel;
+    private Label monthLabel, yearLabel;
+
+    /**
+     * Default method automatically called when opening the {@link Calendar.FXML} file
+     * 
+     * <p>Sets the view to show the current month and shows all events for the month</p>
+     */
 
     @FXML
     public void initialize() {
@@ -48,6 +54,7 @@ public class CalendarController {
     }
 
     private void setMonth(LocalDate date) {
+      if (date == null) {throw new NullPointerException();}
       this.month = date.getMonth();
       this.year = date.getYear();
       int dateNumber = date.getDayOfMonth();
@@ -71,7 +78,15 @@ public class CalendarController {
       }
     }
 
+    /**
+     * Displays all events of the current month showing
+     * 
+     * @param events list of all events
+     * @throws IllegalStateException if this.month is null
+     */
+
     private void addEvents(List<Event> events) {
+      if (this.month == null) {throw new IllegalStateException();}
       if (events != null) {
         List<Event> eventsInMonth = events.stream().filter(e -> e.getTime().getMonth()==this.month && e.getTime().getYear()==this.year).toList();
         for (Event event : eventsInMonth) {
