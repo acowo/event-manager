@@ -17,6 +17,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import persistence.EventFileManager;
+import persistence.UserFileManager;
 import user.User;
 import user.UserSession;
 import event.Event;
@@ -42,17 +43,11 @@ public class CalendarController {
       LocalDate date = LocalDate.now();
       setMonth(date);
 
-      //EventFileManager.getEvents();
-      //Map<String, Event> events = EventFileManager.getEvents();
-      //addEvents(events.values().stream().toList());
-      Event event = new Event("Jobb", "Gløshaugen", LocalDateTime.now());
-      addEvents(List.of(event));
-
+      Map<String, Event> events = EventFileManager.getEvents();
+      addEvents(events.values().stream().toList());
     }
 
     private void setMonth(LocalDate date) {
-
-
       this.month = date.getMonth();
       this.year = date.getYear();
       int dateNumber = date.getDayOfMonth();
@@ -88,26 +83,26 @@ public class CalendarController {
           eventPane.getChildren().add(new Label(event.getTitle()));
 
           ToggleButton joinButton = new ToggleButton("+");
-          //User user = UserSession.getUser();
+          User user = UserSession.getUser();
+          UserFileManager manager = new UserFileManager();
           joinButton.setOnAction(e -> {
             if (joinButton.getText().equals("-")) {
               joinButton.setText("+");
               //TODO: Remove user from event
-              //User user = UserSession.getUser();
-              //user.removeEventId(event.getTitle());
-              
+              System.out.println(user.isAttendingEvent(event.getTitle()));
+              user.removeEventId(event.getTitle());
             } else {
               joinButton.setText("-");
               //TODO: Add user to event
-              //User user = UserSession.getUser();
-              //user.addEventId(event.getTitle());
+              user.addEventId(event.getTitle());
             }
+            manager.editUser(user.getUsername(), user);
           });
           
-          /*if (user.isAttendingEvent(event.getTitle())) {
+          if (user.isAttendingEvent(event.getTitle())) {
             joinButton.setText("-");
-            user.addEventId(event.getTitle());
-          }*/
+            joinButton.setSelected(true);
+          }
 
           eventPane.getChildren().add(joinButton);
           HBox.setMargin(joinButton, new Insets(0, 0, 0, 10));
