@@ -56,12 +56,24 @@ public class CalendarController {
       addEvents(events.values().stream().toList());
     }
 
+    /**
+     * <p>Changes {@link #month month} to one month before <br>
+     * Updates the display to fit the new month with {@link #setMonth setMonth()} </p>
+     * @see #nextMonth nextMonth
+     */
+    
     @FXML 
     public void prevMonth() {
       if (this.month.equals(Month.JANUARY)) {this.year -= 1;}
       this.month = this.month.minus(1);
       setMonth(this.month, this.year);
+      
     }
+    /**
+     * <p>Changes {@link #month month} to one month after <br>
+     * Updates the display to fit the new month with {@link #setMonth setMonth()} </p>
+     * @see #prevMonth prevMonth
+     */
     
     @FXML 
     public void nextMonth() {
@@ -70,8 +82,14 @@ public class CalendarController {
       setMonth(this.month, this.year);
     }
 
+    /**
+     * Displays a month in the UI based on a specific date
+     * @param date the date of the month to be shown
+     * @throws IllegalArgumentException if date is null
+     */
+
     private void setMonth(LocalDate date) {
-      if (date == null) {throw new NullPointerException();}
+      if (date == null) {throw new IllegalArgumentException();}
       calendar.getChildren().subList(8, calendar.getChildren().size()).clear();
 
 
@@ -100,7 +118,15 @@ public class CalendarController {
       }
     }
 
+    /**
+     * Displays a month in the UI based on a specific month in a year
+     * @param month the month to be shown
+     * @param year the year of the month to be shown
+     * @throws IllegalArgumentException if month or year before 1970
+     */
+
     private void setMonth(Month month, int year) {
+      if (month == null || year < 1970) {throw new IllegalArgumentException();}
       setMonth(LocalDate.of(year, month, 1));
     }
 
@@ -120,6 +146,7 @@ public class CalendarController {
           VBox pane = (VBox) calendar.getChildren().get(dayOfMonth+7);
           HBox eventPane = new HBox();
 
+          //TODO: Fix the styling of new events
           eventPane.setStyle("-fx-background-color: #ffd078");
           eventPane.getChildren().add(new Label(event.getTitle()));
 
