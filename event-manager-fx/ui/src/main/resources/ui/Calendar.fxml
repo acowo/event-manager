@@ -14,7 +14,12 @@
       <HBox prefHeight="100.0" prefWidth="200.0">
          <children>
             <Button mnemonicParsing="false" onAction="#prevMonth" text="&lt;" />
-            <Label fx:id="monthLabel" contentDisplay="CENTER" text="Label">
+            <Label fx:id="monthLabel" contentDisplay="CENTER" minWidth="70.0" text="Label">
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
+            </Label>
+            <Label fx:id="yearLabel" contentDisplay="CENTER" layoutX="35.0" layoutY="10.0" text="Label">
                <padding>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </padding>

@@ -10,7 +10,7 @@ public class EventManagerApp extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         FXMLLoader loader = new FXMLLoader(
-                EventManagerApp.class.getResource("/ui/loginPage.fxml")
+                EventManagerApp.class.getResource("/ui/Calendar.fxml")
         );
 
         Scene scene = new Scene(loader.load());
