@@ -21,6 +21,7 @@
         <module>core</module>
         <module>persistence</module>
         <module>ui</module>
+        <module>jacoco-aggregator</module>
     </modules>
 
     <dependencyManagement>

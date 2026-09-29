@@ -7,9 +7,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
-import java.time.Year;
 import java.time.temporal.ChronoField;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -19,6 +17,7 @@ import event.EventManager;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
+
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -38,6 +37,7 @@ import persistence.UserFileManager;
 import user.User;
 import user.UserManager;
 import user.UserSession;
+import event.Event;
 
 
 /**
@@ -48,6 +48,7 @@ import user.UserSession;
 public class CalendarController {
     private Month month;
     private int year;
+
     private LocalDate today;
     private Map<String,Event> events;
     private EventFileManager manager;
@@ -83,6 +84,7 @@ public class CalendarController {
 
     @FXML
     public void initialize() {
+
       this.today = LocalDate.now();
       this.manager = new EventFileManager();
       events = manager.getEvents();
@@ -216,7 +218,6 @@ public class CalendarController {
       int week = 0;
 
       monthLabel.setText(this.month.name());
-      yearLabel.setText(Integer.toString(this.year));
       
       for (int i = 0; i<month.length(date.isLeapYear());i++){
         VBox pane = new VBox();
@@ -231,6 +232,7 @@ public class CalendarController {
         }
       }
     }
+
 
     /**
      * Displays a month in the UI based on a specific month in a year

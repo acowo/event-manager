@@ -46,14 +46,14 @@ public class LoginPageController {
         String username = loginPage_usernameField.getText();
         String password = loginPage_passwordField.getText();
 
-        if (manager.login(username, password)) {
-            changeScene();
-        } else {
-            loginPage_infotextField.setText("An error has occured");
-            loginPage_infotextField.setFill(Color.RED);
+        if (isNotEmpty(username, password)) {
+            if (manager.login(username, password)) {
+                changeScene();
+            } else {
+                loginPage_infotextField.setText("An error has occured");
+                loginPage_infotextField.setFill(Color.RED);
+            }
         }
-
-
     }
 
     /**
@@ -65,14 +65,14 @@ public class LoginPageController {
         String username = loginPage_usernameField.getText();
         String password = loginPage_passwordField.getText();
 
-        if (manager.register(username, password)) {
-            changeScene();
-        } else {
-            loginPage_infotextField.setText("An error has occured");
-            loginPage_infotextField.setFill(Color.RED);
+        if (isNotEmpty(username, password)) {
+            if (manager.register(username, password)) {
+                changeScene();
+            } else {
+                loginPage_infotextField.setText("An error has occured");
+                loginPage_infotextField.setFill(Color.RED);
+            }
         }
-
-
     }
 
 
@@ -95,5 +95,28 @@ public class LoginPageController {
 
     }
 
+    /**
+     * Handles the controller logic needed to check whether a user has populated the required fields.
+     * Mainly used to save resources by preventing unnecessary calls to heavier functions when not needed.
+     * @param username The string in the username field.
+     * @param password The string in the password field.
+     * @return True if fields are populated, false otherwise.
+     */
+    @FXML
+    private boolean isNotEmpty(String username, String password) {
+        if (username.length() < 1) {
+            loginPage_infotextField.setText("Please enter a username");
+            loginPage_infotextField.setFill(Color.RED);
+            return false;
+        }
+
+        if (password.length() < 1) {
+            loginPage_infotextField.setText("Please enter a password");
+            loginPage_infotextField.setFill(Color.RED);
+            return false;
+        }
+
+        return true;
+    }
 
 }
