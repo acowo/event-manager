@@ -69,5 +69,6 @@
             <Label text="Sunday" GridPane.columnIndex="6" GridPane.halignment="CENTER" />
          </children>
       </GridPane>
+      <Button layoutX="674.0" layoutY="11.0" mnemonicParsing="false" onAction="#handleLogout" text="Log out" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
    </children>
 </AnchorPane>

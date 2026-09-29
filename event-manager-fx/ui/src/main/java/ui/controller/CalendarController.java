@@ -1,6 +1,7 @@
 
 package ui.controller;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.Year;
@@ -8,19 +9,25 @@ import java.time.temporal.ChronoField;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import event.Event;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import persistence.EventFileManager;
 import persistence.UserFileManager;
 import user.User;
+import user.UserManager;
 import user.UserSession;
 
 
@@ -83,6 +90,19 @@ public class CalendarController {
       if (this.month.equals(Month.JANUARY)) {this.year += 1;}
       setMonth(this.month, this.year);
       addEvents();
+    }
+
+
+    /**
+     * Ends the current user session and changes back to the login page
+     * @param event the FXML event
+     * @throws IOException
+     */
+    @FXML 
+    public void handleLogout(javafx.event.Event event) throws IOException{
+      UserSession.logout();
+      changeScene(event, "/ui/loginPage.fxml");
+
     }
 
     /**
@@ -151,7 +171,7 @@ public class CalendarController {
           HBox eventPane = new HBox();
 
           //TODO: Fix the styling of new events
-          eventPane.setStyle("-fx-background-color: #ffd078");
+          eventPane.setStyle("-fx-background-color: #cc76fb; -fx-background-radius:5px;");
           eventPane.getChildren().add(new Label(event.getTitle()));
 
           ToggleButton joinButton = new ToggleButton("+");
@@ -179,6 +199,22 @@ public class CalendarController {
           pane.getChildren().add(eventPane);
         }
       }
+    }
+
+
+
+    /**
+     * Changes the FXML to a different view
+     * @param event the FXML event that caused the function to run
+     * @param filepath the filepath of the new view
+     * @throws IOException
+     */
+    private void changeScene(javafx.event.Event event, String filepath) throws IOException {
+        Parent root = FXMLLoader.load(getClass().getResource(filepath));
+        Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
     }
 
 
