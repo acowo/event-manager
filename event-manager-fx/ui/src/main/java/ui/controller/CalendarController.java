@@ -33,6 +33,7 @@ public class CalendarController {
     private Month month;
     private int year;
     private LocalDate today;
+    private List<Event> events;
 
     @FXML
     private GridPane calendar;
@@ -49,11 +50,12 @@ public class CalendarController {
     @FXML
     public void initialize() {
       this.today = LocalDate.now();
+      EventFileManager manager = new EventFileManager();
+      events = manager.getEvents().values().stream().toList();
+
       setMonth(this.today);
 
-      EventFileManager manager = new EventFileManager();
-      Map<String, Event> events = manager.getEvents();
-      addEvents(events.values().stream().toList());
+      addEvents();
     }
 
     /**
@@ -67,7 +69,7 @@ public class CalendarController {
       if (this.month.equals(Month.JANUARY)) {this.year -= 1;}
       this.month = this.month.minus(1);
       setMonth(this.month, this.year);
-      
+      addEvents();
     }
     /**
      * <p>Changes {@link #month month} to one month after <br>
@@ -80,6 +82,7 @@ public class CalendarController {
       this.month = this.month.plus(1);
       if (this.month.equals(Month.JANUARY)) {this.year += 1;}
       setMonth(this.month, this.year);
+      addEvents();
     }
 
     /**
@@ -90,7 +93,7 @@ public class CalendarController {
 
     private void setMonth(LocalDate date) {
       if (date == null) {throw new IllegalArgumentException();}
-      calendar.getChildren().subList(8, calendar.getChildren().size()).clear();
+      calendar.getChildren().subList(1, calendar.getChildren().size()).clear();
 
 
 
@@ -99,7 +102,7 @@ public class CalendarController {
       int dateNumber = date.getDayOfMonth();
       date = date.minusDays(dateNumber-1);
       int day = date.getDayOfWeek().get(ChronoField.DAY_OF_WEEK)-1;
-      int week = 1;
+      int week = 0;
 
       monthLabel.setText(this.month.name());
       yearLabel.setText(Integer.toString(this.year));
@@ -107,7 +110,7 @@ public class CalendarController {
       for (int i = 0; i<month.length(date.isLeapYear());i++){
         VBox pane = new VBox();
         Label dateLabel = new Label(Integer.toString(i+1));
-        dateLabel.paddingProperty();
+        dateLabel.setPadding(new Insets(3));
         pane.getChildren().add(dateLabel);
         calendar.add(pane,day,week);
         day = day+1;
@@ -137,13 +140,14 @@ public class CalendarController {
      * @throws IllegalStateException if this.month is null
      */
 
-    private void addEvents(List<Event> events) {
+    private void addEvents() {
       if (this.month == null) {throw new IllegalStateException();}
-      if (events != null) {
-        List<Event> eventsInMonth = events.stream().filter(e -> e.getTime().getMonth()==this.month && e.getTime().getYear()==this.year).toList();
+      if (this.events != null) {
+        List<Event> eventsInMonth = this.events.stream().filter(e -> e.getTime().getMonth()==this.month && e.getTime().getYear()==this.year).toList();
         for (Event event : eventsInMonth) {
           int dayOfMonth = event.getTime().getDayOfMonth();
-          VBox pane = (VBox) calendar.getChildren().get(dayOfMonth+7);
+          System.out.println(calendar.getChildren());
+          VBox pane = (VBox) calendar.getChildren().get(dayOfMonth);
           HBox eventPane = new HBox();
 
           //TODO: Fix the styling of new events
@@ -156,7 +160,6 @@ public class CalendarController {
           joinButton.setOnAction(e -> {
             if (joinButton.getText().equals("-")) {
               joinButton.setText("+");
-              System.out.println(user.isAttendingEvent(event.getTitle()));
               user.removeEventId(event.getTitle());
             } else {
               joinButton.setText("-");
@@ -171,7 +174,7 @@ public class CalendarController {
           }
 
           eventPane.getChildren().add(joinButton);
-          HBox.setMargin(joinButton, new Insets(0, 0, 0, 10));
+          HBox.setMargin(joinButton, new Insets(0, 0, 0, 2));
 
           pane.getChildren().add(eventPane);
         }
