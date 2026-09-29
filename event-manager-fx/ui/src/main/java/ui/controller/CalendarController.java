@@ -3,10 +3,9 @@ package ui.controller;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Month;
-import java.time.Year;
 import java.time.temporal.ChronoField;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -15,9 +14,11 @@ import event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
+
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.GridPane;
@@ -29,6 +30,7 @@ import persistence.UserFileManager;
 import user.User;
 import user.UserManager;
 import user.UserSession;
+import event.Event;
 
 
 /**
@@ -39,23 +41,20 @@ import user.UserSession;
 public class CalendarController {
     private Month month;
     private int year;
+
     private LocalDate today;
     private List<Event> events;
+
 
     @FXML
     private GridPane calendar;
 
     @FXML
-    private Label monthLabel, yearLabel;
-
-    /**
-     * Default method automatically called when opening the {@link Calendar.FXML} file
-     * 
-     * <p>Sets the view to show the current month and shows all events for the month</p>
-     */
+    private Label monthLabel;
 
     @FXML
     public void initialize() {
+
       this.today = LocalDate.now();
       EventFileManager manager = new EventFileManager();
       events = manager.getEvents().values().stream().toList();
@@ -125,7 +124,6 @@ public class CalendarController {
       int week = 0;
 
       monthLabel.setText(this.month.name());
-      yearLabel.setText(Integer.toString(this.year));
       
       for (int i = 0; i<month.length(date.isLeapYear());i++){
         VBox pane = new VBox();
@@ -140,6 +138,7 @@ public class CalendarController {
         }
       }
     }
+
 
     /**
      * Displays a month in the UI based on a specific month in a year
@@ -164,6 +163,7 @@ public class CalendarController {
       if (this.month == null) {throw new IllegalStateException();}
       if (this.events != null) {
         List<Event> eventsInMonth = this.events.stream().filter(e -> e.getTime().getMonth()==this.month && e.getTime().getYear()==this.year).toList();
+
         for (Event event : eventsInMonth) {
           int dayOfMonth = event.getTime().getDayOfMonth();
           System.out.println(calendar.getChildren());
@@ -180,9 +180,11 @@ public class CalendarController {
           joinButton.setOnAction(e -> {
             if (joinButton.getText().equals("-")) {
               joinButton.setText("+");
+
               user.removeEventId(event.getTitle());
             } else {
               joinButton.setText("-");
+              //TODO: Add user to event
               user.addEventId(event.getTitle());
             }
             manager.editUser(user.getUsername(), user);

@@ -5,6 +5,3 @@ target/
 .project
 .classpath
 org.eclipse.*.prefs
-
-
-.DS_Store

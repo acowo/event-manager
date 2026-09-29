@@ -6,13 +6,6 @@
       "name": "EventManagerApp",
       "request": "launch",
       "mainClass": "eventmanager.ui/ui.EventManagerApp",
-      "projectName": "modules-ui"
-    },
-    {
-      "type": "java",
-      "name": "EventManagerApp",
-      "request": "launch",
-      "mainClass": "eventmanager.ui/ui.EventManagerApp",
       "projectName": "ui"
     }
   ]
