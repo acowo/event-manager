@@ -59,7 +59,7 @@ public class CalendarController {
     private GridPane calendar;
 
     @FXML
-    private Label monthLabel, yearLabel, time, eventTitle, eventDate, eventTime, eventLocation;
+    private Label monthLabel, yearLabel, time, eventTitle, eventDate, eventTime, eventLocation, eventError;
 
     @FXML 
     private Slider hourSlider;
@@ -93,7 +93,6 @@ public class CalendarController {
 
       setMonth(this.today);
 
-      addEvents();
       closeEventCreator();
       hideEvent();
     }
@@ -109,7 +108,6 @@ public class CalendarController {
       if (this.month.equals(Month.JANUARY)) {this.year -= 1;}
       this.month = this.month.minus(1);
       setMonth(this.month, this.year);
-      addEvents();
     }
     /**
      * <p>Changes {@link #month month} to one month after <br>
@@ -122,7 +120,6 @@ public class CalendarController {
       this.month = this.month.plus(1);
       if (this.month.equals(Month.JANUARY)) {this.year += 1;}
       setMonth(this.month, this.year);
-      addEvents();
     }
 
     @FXML
@@ -139,11 +136,27 @@ public class CalendarController {
 
     @FXML 
     public void createEvent() {
-      LocalDate date = setEventDate.getValue();
-      LocalTime time = LocalTime.of(Integer.parseInt(setEventTime.getText(0,2)), Integer.parseInt(setEventTime.getText(3,5)));
-      Event event = new Event(setEventTitle.getText(), setEventLocation.getText(), LocalDateTime.of(date, time));
-      this.manager.addEvent(event);
-      this.events.put(event.getTitle(), event);
+      
+      try {
+        LocalDate date = setEventDate.getValue();
+        LocalTime time = LocalTime.of(Integer.parseInt(setEventTime.getText(0,2)), Integer.parseInt(setEventTime.getText(3,5)));
+        Event event = new Event(setEventTitle.getText(), setEventLocation.getText(), LocalDateTime.of(date, time));
+        this.manager.addEvent(event);
+        this.events.put(event.getTitle(), event);
+        setMonth(LocalDate.of(this.year,this.month,1));
+        closeEventCreator();
+        
+      } catch (Exception e) {
+        eventError.setText("Something went wrong. \nCheck that you have filled all fields properly");
+      }
+    }
+
+    @FXML 
+    public void deleteEvent() {
+      events.remove(eventTitle.getText());
+      manager.removeEvent(eventTitle.getText());
+      setMonth(LocalDate.of(this.year,this.month,1));
+      hideEvent();
     }
 
 
@@ -218,9 +231,11 @@ public class CalendarController {
       int week = 0;
 
       monthLabel.setText(this.month.name());
+      yearLabel.setText(Integer.toString(this.year));
       
       for (int i = 0; i<month.length(date.isLeapYear());i++){
         VBox pane = new VBox();
+        pane.spacingProperty().set(5);
         Label dateLabel = new Label(Integer.toString(i+1));
         dateLabel.setPadding(new Insets(3));
         pane.getChildren().add(dateLabel);
@@ -231,6 +246,7 @@ public class CalendarController {
           week += 1;
         }
       }
+      addEvents();
     }
 
 
