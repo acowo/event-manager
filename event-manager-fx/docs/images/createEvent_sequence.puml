@@ -1,0 +1,38 @@
+@startuml
+skinparam Style strictuml
+skinparam BoxPadding 10
+
+actor User as "User"
+
+box "UI" #LightBlue
+participant View as "Calendar\n(JavaFX View)"
+participant Ctrl as "CalendarController"
+end box
+
+
+box "Persistence" #LightGreen
+participant mng as "EventFileManager"
+end box
+
+User -> View ++ : Clicks "Create event" button
+View -> Ctrl  ++: openEventCreator
+View --
+
+Ctrl -> View  : Enable eventCreator window
+Ctrl --
+
+
+User -> View : Fills event form and clicks "Create event" button
+View -> Ctrl ++: createEvent
+
+Ctrl -> View ++: Get user input from eventCreator form
+View -> Ctrl: Event name, place, date and time
+View --
+
+Ctrl -> mng: Create new Event and addEvent(Event)
+mng -> mng : saveEvents()
+
+'Keep the line below or not? 
+'Ctrl -> Ctrl: closeEventCreator()
+Ctrl -> View: Disable eventCreator window
+Ctrl --
