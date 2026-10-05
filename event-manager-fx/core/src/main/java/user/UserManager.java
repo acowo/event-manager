@@ -7,13 +7,13 @@ public class UserManager {
     private final UserRepository users;
 
     public UserManager(UserRepository users){
-        this.users = users; 
+        this.users = users.copy(); 
     }
 
 
     public boolean login(String username, String password){
         //Persistence 
-        if (!this.users.check_password(username, password)){
+        if (!users.check_password(username, password)){
             return false;
         }
 
@@ -28,8 +28,8 @@ public class UserManager {
         }
 
         User user = new User(username, password);
-        UserSession.setUser(user);
         users.addUser(user);
+        UserSession.setUser(user);
         return true;
     }
 

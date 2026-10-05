@@ -31,6 +31,7 @@ public class UserFileManager implements user.UserRepository {
 
 
 
+    @Override
     public User getUser(String username) {
          Map<String, User> users = getUsers();
 
@@ -41,11 +42,13 @@ public class UserFileManager implements user.UserRepository {
         return users.get(username);
     }
 
+    @Override
     public boolean userExists(String username) {
         Map<String, User> users = getUsers();
         return users.containsKey(username);
     }
 
+    @Override
     public boolean check_password(String username, String password) {
         if (password == null) {
             throw new IllegalArgumentException("Password cannot be null");
@@ -61,6 +64,7 @@ public class UserFileManager implements user.UserRepository {
         return users.containsKey(username);
     }
 
+    @Override
     public void addUser(User user) {
         Map<String, User> users = getUsers();
         
@@ -161,6 +165,12 @@ public class UserFileManager implements user.UserRepository {
             System.out.println("Something went wrong");
             e.printStackTrace();
         }
+    }
+
+
+    @Override 
+    public UserFileManager copy() {
+        return new UserFileManager(filePath);
     }
 }
 
