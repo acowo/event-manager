@@ -12,7 +12,7 @@ Thus, having "save/load" functionality would make the application behave less li
 The event data, saved in [eventdata.json](../../data/eventdata.json), is formatted as a dictionary with the event title as the key, and the event object as the value:
 
 ```json
-{key<event title>:{"title":"<event title>","place":"<event place>","time":"<ISO 8601 standard date and time string>"}
+{"<event title>":{"title":"<event title>","place":"<event place>","time":"<ISO 8601 standard date and time string>"}
 ```
 
 This can, and probably will be improved upon in further releases, changing (perhaps using hashing) the key so multiple events can have the same name.
