@@ -7,7 +7,7 @@ public class EventManager {
     private final EventRepository events;
 
     public EventManager(EventRepository events) {
-        this.events = events;
+        this.events = events.copy();
     }
 
     public boolean addEvent(Event event) {
