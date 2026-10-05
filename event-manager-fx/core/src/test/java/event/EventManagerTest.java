@@ -54,6 +54,11 @@ public class EventManagerTest {
         public Map<String, Event> getEvents() {
             return new HashMap<>(events);
         }
+
+        @Override
+        public FakeEventRepository copy() {
+            return this;
+        }
     }
 
     @BeforeEach
