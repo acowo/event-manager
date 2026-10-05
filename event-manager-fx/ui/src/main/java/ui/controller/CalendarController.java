@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
 import java.time.temporal.ChronoField;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -125,6 +126,7 @@ public class CalendarController {
     @FXML
     public void openEventCreator() {
       eventCreator.disableProperty().set(false);
+      eventCreator.setVisible(true);
       eventCreator.opacityProperty().set(1);
     }
     
@@ -132,6 +134,7 @@ public class CalendarController {
     public void closeEventCreator() {
       eventCreator.disableProperty().set(true);
       eventCreator.opacityProperty().set(0);
+      eventCreator.setVisible(false);
     }
 
     @FXML 
