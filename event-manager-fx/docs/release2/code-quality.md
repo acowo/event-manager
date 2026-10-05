@@ -10,4 +10,4 @@ The code should have clear and consise variable/method naming, and follow standa
 
 ## JavaDoc
 
-JavaDoc should be written for methods/objects that other team members will use, so the integration is as pain-free as possible with regards to throws, returns and inputs.
+JavaDoc should be written at the minimum for methods/objects that other team members will use (which essentially covers the entire codebase), so the integration is as pain-free as possible with regards to throws, returns and inputs. A good JavaDoc should also make frequent use of hyperlinks.
