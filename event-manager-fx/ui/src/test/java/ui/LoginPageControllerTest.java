@@ -55,14 +55,14 @@ public class LoginPageControllerTest extends ApplicationTest {
     }
 
     @Test
-    public void testValidLogin() {
+    public void testValidLogin() throws InterruptedException {
         clickOn("#loginPage_usernameField").write("ola");
         clickOn("#loginPage_passwordField").write("banan");
 
-        clickOn("#loginPage_registerButton");
+        clickOn("#loginPage_loginButton");
 
         //Verifying that the scene changed by checking that a node from the calendar view is present
-        verifyThat("#eventCreator", isVisible());
+        verifyThat("#yearLabel", isVisible());
     }
 
 }
