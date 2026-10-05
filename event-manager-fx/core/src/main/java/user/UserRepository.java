@@ -23,4 +23,6 @@ public interface UserRepository {
 
     User getUser(String username);
 
+    UserRepository copy();
+
 }
