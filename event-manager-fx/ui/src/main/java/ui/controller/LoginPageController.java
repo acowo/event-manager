@@ -69,7 +69,7 @@ public class LoginPageController {
             if (manager.register(username, password)) {
                 changeScene();
             } else {
-                loginPage_infotextField.setText("An error has occured");
+                loginPage_infotextField.setText("A user by that name already exists");
                 loginPage_infotextField.setFill(Color.RED);
             }
         }
