@@ -204,6 +204,12 @@ public class EventFileManager implements EventRepository {
         }
     }
 
+    
+    /**
+     * Copies this class
+     *
+     * @return a EventRepository that is a copy
+     */
     @Override
     public EventFileManager copy() {
         return new EventFileManager(filePath);
