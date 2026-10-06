@@ -1,7 +1,6 @@
 package user;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashMap;
@@ -16,8 +15,7 @@ public class UserManagerTest {
 
         @Override
         public boolean check_password(String username, String password) {
-            return users.containsKey(username)
-                    && users.get(username).getPassword().equals(password);
+            return users.containsKey(username) && users.get(username).getPassword().equals(password);
         }
 
         @Override
@@ -35,6 +33,7 @@ public class UserManagerTest {
             return users.get(username);
         }
 
+
         @Override
         public void removeEvent(String title) {
             users.values().forEach(u -> {
@@ -43,23 +42,36 @@ public class UserManagerTest {
             }
         });
         }
+
+        
+        @Override
+        public FakeUserRepository copy() {
+            return this;
+        }
+    }
+
+    void isSameUser(User user1, User user2) {
+        assertTrue(user1.getUsername().equals(user2.getUsername()));
+        assertTrue(user1.getPassword().equals(user2.getPassword()));
+        assertTrue(user1.getEventIdList().equals(user2.getEventIdList()));
+
     }
 
     @Test
     void testLoginSuccessful() {
-        FakeUserRepository repository = new FakeUserRepository();
+        UserRepository repository = new FakeUserRepository();
         User user = new User("testUser", "password");
         repository.addUser(user);
 
         UserManager manager = new UserManager(repository);
 
         assertTrue(manager.login("testUser", "password"));
-        assertSame(user, UserSession.getUser());
+        isSameUser(user, UserSession.getUser());
     }
 
     @Test
     void testLoginFailsWithIncorrectPassword() {
-        FakeUserRepository repository = new FakeUserRepository();
+        UserRepository repository = new FakeUserRepository();
         repository.addUser(new User("testUser", "password"));
 
         UserManager manager = new UserManager(repository);
@@ -69,18 +81,18 @@ public class UserManagerTest {
 
     @Test
     void testRegisterSuccessful() {
-        FakeUserRepository repository = new FakeUserRepository();
+        UserRepository repository = new FakeUserRepository();
         UserManager manager = new UserManager(repository);
 
         assertTrue(manager.register("newUser", "password"));
 
         assertTrue(repository.userExists("newUser"));
-        assertSame(repository.getUser("newUser"), UserSession.getUser());
+        isSameUser(repository.getUser("newUser"), UserSession.getUser());
     }
 
     @Test
     void testRegisterFailsWhenUserAlreadyExists() {
-        FakeUserRepository repository = new FakeUserRepository();
+        UserRepository repository = new FakeUserRepository();
         repository.addUser(new User("existingUser", "password"));
 
         UserManager manager = new UserManager(repository);

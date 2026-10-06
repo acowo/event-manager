@@ -3,7 +3,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class User {
+public final  class User {
     private List<String> eventIdList = new ArrayList<>();
     private String username;
     private String password;
@@ -12,6 +12,12 @@ public class User {
     public User(String username, String password){
         setUsername(username);
         setPassword(password);
+    }
+
+    public User(User user) {
+      setUsername(user.getUsername());
+      setPassword(user.getPassword());
+      this.eventIdList = user.getEventIdList();
     }
 
     public String getUsername(){

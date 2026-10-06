@@ -23,10 +23,14 @@ public interface UserRepository {
 
     User getUser(String username);
 
+
     /**
      * Removes an event from all users
      * @param title
      */
     void removeEvent(String title);
+
+    UserRepository copy();
+
 
 }

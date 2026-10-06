@@ -1,10 +1,5 @@
 package persistence;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
-import event.Event;
-import event.EventRepository;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -15,6 +10,13 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+
+import event.Event;
+import event.EventRepository;
 
 /**
  * Manages the persistence of {@link Event} objects using a JSON file.
@@ -59,8 +61,6 @@ public class EventFileManager implements EventRepository {
      */
     public EventFileManager(String filePath) {
         this.filePath = filePath;
-
-
         try {
             this.events = loadEvents();
         } catch (Exception e) {
@@ -202,5 +202,16 @@ public class EventFileManager implements EventRepository {
                     e
             );
         }
+    }
+
+    
+    /**
+     * Copies this class
+     *
+     * @return a EventRepository that is a copy
+     */
+    @Override
+    public EventFileManager copy() {
+        return new EventFileManager(filePath);
     }
 }
