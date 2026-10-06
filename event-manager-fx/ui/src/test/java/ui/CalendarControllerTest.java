@@ -19,9 +19,12 @@ import org.testfx.matcher.base.NodeMatchers;
 
 import event.EventManager;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import persistence.EventFileManager;
 import persistence.UserFileManager;
@@ -31,8 +34,8 @@ public class CalendarControllerTest extends ApplicationTest {
     @Override
     public void start(Stage stage) throws IOException {
         EventFileManager files = new EventFileManager();
-        if (files.eventExists("Testing event")) {
-            files.removeEvent("Testing event");
+        if (files.eventExists("Testing")) {
+            files.removeEvent("Testing");
         }
 
         UserManager manager = new UserManager(new UserFileManager());
@@ -45,8 +48,8 @@ public class CalendarControllerTest extends ApplicationTest {
     @AfterEach
     void cleanUp() {
         EventFileManager files = new EventFileManager();
-        if (files.eventExists("Testing event")) {
-            files.removeEvent("Testing event");
+        if (files.eventExists("Testing")) {
+            files.removeEvent("Testing");
         }
     }
 
@@ -86,41 +89,58 @@ public class CalendarControllerTest extends ApplicationTest {
     }
  
     @Test 
-    void createEvent() {
+    void testEventCreator() {
 
-        clickOn("#openEventCreator");
-
-        clickOn("#setEventTitle").write("Testing event");
-        clickOn("#setEventLocation").write("Testing location");
-        clickOn("#setEventDate").write("10/23/2026");
-        // Source - https://stackoverflow.com/a/59481991
-        // Posted by user12150819
-        // Retrieved 2026-10-05, License - CC BY-SA 4.0
-        press(KeyCode.ENTER).release(KeyCode.ENTER);
-
-        clickOn("#setEventTime").write("10:00");
-        
-        clickOn("#createEvent");
-        waitForFxEvents();
+        createEvent();
         verifyThat("#eventError", hasText(""));
         
         
-        clickOn("#openEventCreator"); //Checks that duplucate events fail
-        clickOn("#setEventTitle").write("Testing event");
+        createEvent();
+        verifyThat("#eventError", hasText("Something went wrong. \nCheck that you have filled all fields properly"));
+    }
+
+    @Test
+    public void testValidLogin() throws InterruptedException {
+        clickOn("#logout");
+
+        //Verifying that the scene changed by checking that a node from the login view is present
+        verifyThat("#loginPage_usernameField", isVisible());
+    }
+
+    @Test
+    public void testEventPane() {
+        verifyThat("#eventPane", isVisible().negate());
+
+        createEvent();
+        Node label = lookup(hasText("Testing")).query();
+        HBox eventPane = (HBox) label.getParent();
+        Button button = (Button) eventPane.getChildren().get(1);
+        clickOn(button);
+
+        verifyThat("#eventPane", isVisible());
+
+        verifyThat("#toggleEventButton", hasText("Join event"));
+        clickOn("#toggleEventButton");
+        waitForFxEvents();
+        verifyThat("#toggleEventButton", hasText("Leave event"));
+    }
+
+    private void createEvent() {
+        clickOn("#openEventCreator");
+
+        clickOn("#setEventTitle").write("Testing");
         clickOn("#setEventLocation").write("Testing location");
-        clickOn("#setEventDate").write("10/23/2026");
+        clickOn("#setEventDate").write("10/22/2026");
         // Source - https://stackoverflow.com/a/59481991
         // Posted by user12150819
         // Retrieved 2026-10-05, License - CC BY-SA 4.0
         press(KeyCode.ENTER).release(KeyCode.ENTER);
 
         clickOn("#setEventTime").write("10:00");
+        
         clickOn("#createEvent");
         waitForFxEvents();
-        verifyThat("#eventError", hasText("Something went wrong. \nCheck that you have filled all fields properly"));
     }
-
-
     
 
 }

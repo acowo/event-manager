@@ -172,6 +172,7 @@ public class CalendarController {
     public void showEvent(Event event) {
       eventPane.setOpacity(1);
       eventPane.setDisable(false);
+      eventPane.setVisible(true);
 
       eventTitle.setText(event.getTitle());
       eventLocation.setText(event.getPlace());
@@ -205,6 +206,7 @@ public class CalendarController {
     public void hideEvent() {
       eventPane.setOpacity(0);
       eventPane.setDisable(true);
+      eventPane.setVisible(false);
     }
 
 
