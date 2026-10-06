@@ -51,7 +51,7 @@ public class CalendarController {
 
     private LocalDate today;
     private Map<String,Event> events;
-    private EventFileManager manager;
+    private EventManager manager;
     private User user;
     private UserFileManager userManager;
 
@@ -86,7 +86,7 @@ public class CalendarController {
     public void initialize() {
 
       this.today = LocalDate.now();
-      this.manager = new EventFileManager();
+      this.manager = new EventManager(new EventFileManager());
       events = manager.getEvents();
       user = UserSession.getUser();
       userManager = new UserFileManager();
