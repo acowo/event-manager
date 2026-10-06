@@ -32,6 +32,17 @@ public class UserManagerTest {
         public User getUser(String username) {
             return users.get(username);
         }
+
+
+        @Override
+        public void removeEvent(String title) {
+            users.values().forEach(u -> {
+            if (u.isAttendingEvent(title)) {
+                u.removeEventId(title);
+            }
+        });
+        }
+
         
         @Override
         public FakeUserRepository copy() {
@@ -43,6 +54,7 @@ public class UserManagerTest {
         assertTrue(user1.getUsername().equals(user2.getUsername()));
         assertTrue(user1.getPassword().equals(user2.getPassword()));
         assertTrue(user1.getEventIdList().equals(user2.getEventIdList()));
+
     }
 
     @Test

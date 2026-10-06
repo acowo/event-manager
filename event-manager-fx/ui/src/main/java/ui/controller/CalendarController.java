@@ -135,6 +135,10 @@ public class CalendarController {
       eventCreator.disableProperty().set(true);
       eventCreator.opacityProperty().set(0);
       eventCreator.setVisible(false);
+      eventError.setText("");
+      setEventTime.setText("");
+      setEventTitle.setText("");
+      setEventLocation.setText("");
     }
 
     @FXML 
@@ -158,6 +162,8 @@ public class CalendarController {
     public void deleteEvent() {
       events.remove(eventTitle.getText());
       manager.removeEvent(eventTitle.getText());
+      userManager.removeEvent(eventTitle.getText());
+      if (user.isAttendingEvent(eventTitle.getText())) {user.removeEventId(eventTitle.getText());}
       setMonth(LocalDate.of(this.year,this.month,1));
       hideEvent();
     }
