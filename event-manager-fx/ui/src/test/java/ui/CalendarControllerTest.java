@@ -37,6 +37,8 @@ public class CalendarControllerTest extends ApplicationTest {
         if (files.eventExists("Testing")) {
             files.removeEvent("Testing");
         }
+        UserFileManager users = new UserFileManager();
+        users.removeEvent("Testing");
 
         UserManager manager = new UserManager(new UserFileManager());
         manager.login("ola", "banan"); //Sets user to testuser so the application properly opens
@@ -90,10 +92,8 @@ public class CalendarControllerTest extends ApplicationTest {
  
     @Test 
     void testEventCreator() {
-
         createEvent();
         verifyThat("#eventError", hasText(""));
-        
         
         createEvent();
         verifyThat("#eventError", hasText("Something went wrong. \nCheck that you have filled all fields properly"));
@@ -110,19 +110,26 @@ public class CalendarControllerTest extends ApplicationTest {
     @Test
     public void testEventPane() {
         verifyThat("#eventPane", isVisible().negate());
-
+        
         createEvent();
         Node label = lookup(hasText("Testing")).query();
         HBox eventPane = (HBox) label.getParent();
         Button button = (Button) eventPane.getChildren().get(1);
         clickOn(button);
-
+        
         verifyThat("#eventPane", isVisible());
-
-        verifyThat("#toggleEventButton", hasText("Join event"));
+        
+        verifyThat("#toggleEventButton", hasText("Join event")); //tests that user joins and leaves event
         clickOn("#toggleEventButton");
         waitForFxEvents();
         verifyThat("#toggleEventButton", hasText("Leave event"));
+        
+        clickOn("#closeEvent");
+        verifyThat("#eventPane", isVisible().negate());
+        
+        clickOn(button);
+        clickOn("#deleteEvent");
+
     }
 
     private void createEvent() {

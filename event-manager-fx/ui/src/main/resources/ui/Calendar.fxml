@@ -151,10 +151,10 @@
                   <HBox alignment="CENTER" prefHeight="30.0" prefWidth="200.0" spacing="15.0">
                      <children>
                         <ToggleButton fx:id="toggleEventButton" mnemonicParsing="false" onAction="#toggleEvent" text="Join event" />
-                        <Button alignment="TOP_RIGHT" contentDisplay="RIGHT" mnemonicParsing="false" onAction="#hideEvent" text="Close" />
+                        <Button fx:id="closeEvent" alignment="TOP_RIGHT" contentDisplay="RIGHT" mnemonicParsing="false" onAction="#hideEvent" text="Close" />
                      </children>
                   </HBox>
-                  <Button mnemonicParsing="false" onAction="#deleteEvent" style="-fx-background-color: #F56145;" text="Delete event">
+                  <Button fx:id="deleteEvent" mnemonicParsing="false" onAction="#deleteEvent" style="-fx-background-color: #F56145;" text="Delete event">
                      <VBox.margin>
                         <Insets bottom="10.0" />
                      </VBox.margin>
