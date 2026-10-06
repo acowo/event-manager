@@ -97,6 +97,10 @@ public class CalendarControllerTest extends ApplicationTest {
         
         createEvent();
         verifyThat("#eventError", hasText("Something went wrong. \nCheck that you have filled all fields properly"));
+        
+        clickOn("#openEventCreator");
+        clickOn("#createEvent");
+        verifyThat("#eventError", hasText("Something went wrong. \nCheck that you have filled all fields properly"));
     }
 
     @Test
@@ -121,13 +125,13 @@ public class CalendarControllerTest extends ApplicationTest {
         
         verifyThat("#toggleEventButton", hasText("Join event")); //tests that user joins and leaves event
         clickOn("#toggleEventButton");
-        waitForFxEvents();
         verifyThat("#toggleEventButton", hasText("Leave event"));
         
         clickOn("#closeEvent");
         verifyThat("#eventPane", isVisible().negate());
         
         clickOn(button);
+        verifyThat("#toggleEventButton", hasText("Leave event"));
         clickOn("#deleteEvent");
 
     }
