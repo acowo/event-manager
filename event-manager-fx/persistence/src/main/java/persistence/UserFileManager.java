@@ -176,7 +176,7 @@ public class UserFileManager implements user.UserRepository {
             }
         });
         saveUsers(users);
-
+    }
 
     @Override 
     public UserFileManager copy() {
