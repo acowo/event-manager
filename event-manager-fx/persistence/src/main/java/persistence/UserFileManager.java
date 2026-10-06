@@ -162,5 +162,16 @@ public class UserFileManager implements user.UserRepository {
             e.printStackTrace();
         }
     }
+
+    @Override
+    public void removeEvent(String title) {
+        Map<String, User> users = getUsers();
+        users.values().forEach(u -> {
+            if (u.isAttendingEvent(title)) {
+                u.removeEventId(title);
+            }
+        });
+        saveUsers(users);
+    }
 }
 

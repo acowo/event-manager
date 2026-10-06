@@ -34,6 +34,15 @@ public class UserManagerTest {
         public User getUser(String username) {
             return users.get(username);
         }
+
+        @Override
+        public void removeEvent(String title) {
+            users.values().forEach(u -> {
+            if (u.isAttendingEvent(title)) {
+                u.removeEventId(title);
+            }
+        });
+        }
     }
 
     @Test
