@@ -132,6 +132,10 @@ public class CalendarController {
     public void closeEventCreator() {
       eventCreator.disableProperty().set(true);
       eventCreator.opacityProperty().set(0);
+      eventError.setText("");
+      setEventTime.setText("");
+      setEventTitle.setText("");
+      setEventLocation.setText("");
     }
 
     @FXML 
