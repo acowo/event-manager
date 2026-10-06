@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 /**
  * Represents an event with a title, place, and time.
  */
-public class Event {
+public final class Event {
     private String title;
     private String place;
     private LocalDateTime time;

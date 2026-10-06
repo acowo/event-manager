@@ -7,17 +7,18 @@ public class UserSession {
         if (user == null) {
             throw new NullPointerException("user cannot be null");
         }
-        UserSession.user = user;
+
+        UserSession.user = new User(user);
     }
 
     public static User getUser() {
-        if (user == null){
+        if (user == null) {
             throw new NullPointerException("User was not set");
         }
-        return UserSession.user;
+        return new User(user);
     }
 
-    public static void logout(){
+    public static void logout() {
         UserSession.user = null;
     }
 }

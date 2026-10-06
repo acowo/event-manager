@@ -55,4 +55,11 @@ public interface EventRepository {
      * @return a map containing all events, indexed by title
      */
     Map<String, Event> getEvents();
+
+    /**
+     * Copies this class
+     *
+     * @return a EventRepository that is a copy
+     */
+    EventRepository copy();
 }
