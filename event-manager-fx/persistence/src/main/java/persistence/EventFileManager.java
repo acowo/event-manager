@@ -112,7 +112,7 @@ public class EventFileManager implements EventRepository {
 
     /**
      * Finds and returns an event with a specific title.
-     * @param title The name of the event in string form.
+     * @param title The name of the event
      * @return The event with the name of title if found.
      * @throws IllegalArgumentException if the event does not exist.
      */
