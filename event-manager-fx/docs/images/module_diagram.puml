@@ -1,0 +1,38 @@
+@startuml
+skinparam Style strictuml
+skinparam componentStyle uml2
+
+
+component "External Libraries" {
+package "JavaFX" #LightGray {
+  [javafx.controls] as JFXControls
+  [javafx.fxml] as JFXFxml
+  [javafx.graphics] as JFXGraphics
+}
+
+package "gson" as Gson
+}
+
+package "core" #LightGreen {
+  package "event" as Event
+  package "user" as User
+}
+
+package "persistence" #LightPink {
+  package "persistence" as Persistence
+}
+
+
+package "ui" #LightBlue {
+  package "ui" as UI
+}
+
+
+
+persistence  ...> core 
+persistence ..> Gson
+ui ..> core
+ui ...> persistence
+ui ..> JavaFX
+
+@enduml
