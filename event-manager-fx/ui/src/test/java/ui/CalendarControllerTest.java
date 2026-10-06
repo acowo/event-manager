@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Objects;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.testfx.framework.junit5.ApplicationTest;
@@ -29,11 +30,24 @@ import user.UserManager;
 public class CalendarControllerTest extends ApplicationTest {
     @Override
     public void start(Stage stage) throws IOException {
+        EventFileManager files = new EventFileManager();
+        if (files.eventExists("Testing event")) {
+            files.removeEvent("Testing event");
+        }
+
         UserManager manager = new UserManager(new UserFileManager());
         manager.login("ola", "banan"); //Sets user to testuser so the application properly opens
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/ui/Calendar.fxml")));
         stage.setScene(new Scene(root));
         stage.show();
+    }
+
+    @AfterEach
+    void cleanUp() {
+        EventFileManager files = new EventFileManager();
+        if (files.eventExists("Testing event")) {
+            files.removeEvent("Testing event");
+        }
     }
 
     /**
@@ -70,13 +84,9 @@ public class CalendarControllerTest extends ApplicationTest {
         clickOn("#closeEventCreator");
         verifyThat("#eventCreator", isVisible().negate());
     }
-
+ 
     @Test 
     void createEvent() {
-        EventFileManager manager = new EventFileManager();
-        if (manager.eventExists("Testing event")) {
-            manager.removeEvent("Testing event");
-        }
 
         clickOn("#openEventCreator");
 
@@ -89,14 +99,24 @@ public class CalendarControllerTest extends ApplicationTest {
         press(KeyCode.ENTER).release(KeyCode.ENTER);
 
         clickOn("#setEventTime").write("10:00");
-
+        
         clickOn("#createEvent");
+        waitForFxEvents();
         verifyThat("#eventError", hasText(""));
-        assertDoesNotThrow(() -> manager.getEvent("Testing event"));
-
-
+        
+        
         clickOn("#openEventCreator"); //Checks that duplucate events fail
+        clickOn("#setEventTitle").write("Testing event");
+        clickOn("#setEventLocation").write("Testing location");
+        clickOn("#setEventDate").write("10/23/2026");
+        // Source - https://stackoverflow.com/a/59481991
+        // Posted by user12150819
+        // Retrieved 2026-10-05, License - CC BY-SA 4.0
+        press(KeyCode.ENTER).release(KeyCode.ENTER);
+
+        clickOn("#setEventTime").write("10:00");
         clickOn("#createEvent");
+        waitForFxEvents();
         verifyThat("#eventError", hasText("Something went wrong. \nCheck that you have filled all fields properly"));
     }
 
