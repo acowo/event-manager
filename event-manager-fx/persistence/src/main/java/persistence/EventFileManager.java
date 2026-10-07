@@ -101,8 +101,6 @@ public class EventFileManager implements EventRepository {
 
             return loadedEvents != null ? loadedEvents : new HashMap<>();
 
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException("Could not find event data file.", e);
         } catch (IOException e) {
             throw new RuntimeException("An error has occured while trying to read file.", e);
         }
