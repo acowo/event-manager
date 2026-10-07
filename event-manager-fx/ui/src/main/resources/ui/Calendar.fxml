@@ -19,7 +19,7 @@
 
       <HBox layoutX="10.0" layoutY="10.0" prefHeight="1.0" prefWidth="200.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
          <children>
-            <Button fx:id="prevMonth" mnemonicParsing="false" onAction="#prevMonth" text="&lt;" />
+            <Button mnemonicParsing="false" onAction="#prevMonth" text="&lt;" />
             <Label fx:id="monthLabel" contentDisplay="CENTER" minWidth="70.0" text="Label">
                <padding>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -30,7 +30,7 @@
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </padding>
             </Label>
-            <Button fx:id="nextMonth" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#nextMonth" text="&gt;" />
+            <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#nextMonth" text="&gt;" />
          </children>
       </HBox>
       <GridPane fx:id="calendar" gridLinesVisible="true" layoutX="10.0" layoutY="10.0" prefHeight="500.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="75.0">
@@ -76,7 +76,7 @@
             <Label text="Sunday" GridPane.columnIndex="6" GridPane.halignment="CENTER" />
          </children>
       </GridPane>
-      <Button fx:id="logout" layoutX="674.0" layoutY="11.0" mnemonicParsing="false" onAction="#handleLogout" text="Log out" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
+      <Button layoutX="674.0" layoutY="11.0" mnemonicParsing="false" onAction="#handleLogout" text="Log out" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
       <ScrollPane fx:id="eventCreator" fitToHeight="true" fitToWidth="true" layoutX="434.0" layoutY="36.0" prefHeight="320.0" prefWidth="200.0" AnchorPane.rightAnchor="80.0" AnchorPane.topAnchor="40.0">
          <content>
             <VBox alignment="CENTER" prefWidth="100.0" spacing="15.0" style="-fx-border-radius: 10;">
@@ -108,8 +108,8 @@
                   <Label fx:id="eventError" textFill="#d00000" />
                   <HBox alignment="CENTER" prefHeight="30.0" prefWidth="200.0" spacing="15.0">
                      <children>
-                        <Button fx:id="createEvent" alignment="CENTER" mnemonicParsing="false" onAction="#createEvent" text="Create event" />
-                        <Button fx:id="closeEventCreator" alignment="TOP_RIGHT" contentDisplay="RIGHT" mnemonicParsing="false" onAction="#closeEventCreator" text="Cancel" />
+                        <Button alignment="CENTER" mnemonicParsing="false" onAction="#createEvent" text="Create event" />
+                        <Button alignment="TOP_RIGHT" contentDisplay="RIGHT" mnemonicParsing="false" onAction="#closeEventCreator" text="Cancel" />
                      </children>
                   </HBox>
                </children>
@@ -119,7 +119,7 @@
             </VBox>
          </content>
       </ScrollPane>
-      <Button fx:id="openEventCreator" layoutX="616.0" layoutY="11.0" mnemonicParsing="false" onAction="#openEventCreator" text="Create event" AnchorPane.rightAnchor="80.0" AnchorPane.topAnchor="10.0" />
+      <Button layoutX="616.0" layoutY="11.0" mnemonicParsing="false" onAction="#openEventCreator" text="Create event" AnchorPane.rightAnchor="80.0" AnchorPane.topAnchor="10.0" />
       <ScrollPane fx:id="eventPane" fitToWidth="true" layoutX="199.0" layoutY="27.0" prefWidth="182.0" style="-fx-background-color: #ababab; -fx-background-radius: 10;" AnchorPane.rightAnchor="368.0" AnchorPane.topAnchor="40.0">
          <content>
             <VBox alignment="CENTER" prefWidth="143.0" spacing="10.0" style="-fx-background-radius: 10;">
@@ -151,10 +151,10 @@
                   <HBox alignment="CENTER" prefHeight="30.0" prefWidth="200.0" spacing="15.0">
                      <children>
                         <ToggleButton fx:id="toggleEventButton" mnemonicParsing="false" onAction="#toggleEvent" text="Join event" />
-                        <Button fx:id="closeEvent" alignment="TOP_RIGHT" contentDisplay="RIGHT" mnemonicParsing="false" onAction="#hideEvent" text="Close" />
+                        <Button alignment="TOP_RIGHT" contentDisplay="RIGHT" mnemonicParsing="false" onAction="#hideEvent" text="Close" />
                      </children>
                   </HBox>
-                  <Button fx:id="deleteEvent" mnemonicParsing="false" onAction="#deleteEvent" style="-fx-background-color: #F56145;" text="Delete event">
+                  <Button mnemonicParsing="false" onAction="#deleteEvent" style="-fx-background-color: #F56145;" text="Delete event">
                      <VBox.margin>
                         <Insets bottom="10.0" />
                      </VBox.margin>
