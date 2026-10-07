@@ -216,6 +216,17 @@ public class UserFileManager implements user.UserRepository {
         }
     }
 
+    @Override
+    public void removeEvent(String title) {
+        Map<String, User> users = getUsers();
+        users.values().forEach(u -> {
+            if (u.isAttendingEvent(title)) {
+                u.removeEventId(title);
+            }
+        });
+        saveUsers(users);
+    }
+
     /**
      * Creates a new UserFileManager with the filePath variable.
      * returns The new UserFileManager with the filePath variable as the argument.
@@ -223,6 +234,7 @@ public class UserFileManager implements user.UserRepository {
     @Override 
     public UserFileManager copy() {
         return new UserFileManager(filePath);
+
     }
 }
 

@@ -38,9 +38,16 @@ public interface UserRepository {
     User getUser(String username);
 
     /**
+     * Removes an event from all users
+     * @param title
+     */
+    void removeEvent(String title);
+
+    /**
      * Get a copy of this object 
      * @return Copy of this object
      */
     UserRepository copy();
+
 
 }

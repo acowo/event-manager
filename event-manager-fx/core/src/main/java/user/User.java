@@ -34,7 +34,7 @@ public final class User {
     public User(User user) {
       setUsername(user.getUsername());
       setPassword(user.getPassword());
-      this.eventIdList = user.getEventIdList();
+      this.eventIdList = new ArrayList<>(user.getEventIdList());
     }
 
     /**

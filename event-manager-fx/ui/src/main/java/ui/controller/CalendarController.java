@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
 import java.time.temporal.ChronoField;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -51,7 +52,7 @@ public class CalendarController {
 
     private LocalDate today;
     private Map<String,Event> events;
-    private EventFileManager manager;
+    private EventManager manager;
     private User user;
     private UserFileManager userManager;
 
@@ -86,7 +87,7 @@ public class CalendarController {
     public void initialize() {
 
       this.today = LocalDate.now();
-      this.manager = new EventFileManager();
+      this.manager = new EventManager(new EventFileManager());
       events = manager.getEvents();
       user = UserSession.getUser();
       userManager = new UserFileManager();
@@ -132,6 +133,10 @@ public class CalendarController {
     public void closeEventCreator() {
       eventCreator.disableProperty().set(true);
       eventCreator.opacityProperty().set(0);
+      eventError.setText("");
+      setEventTime.setText("");
+      setEventTitle.setText("");
+      setEventLocation.setText("");
     }
 
     @FXML 
@@ -155,6 +160,8 @@ public class CalendarController {
     public void deleteEvent() {
       events.remove(eventTitle.getText());
       manager.removeEvent(eventTitle.getText());
+      userManager.removeEvent(eventTitle.getText());
+      if (user.isAttendingEvent(eventTitle.getText())) {user.removeEventId(eventTitle.getText());}
       setMonth(LocalDate.of(this.year,this.month,1));
       hideEvent();
     }
