@@ -1,0 +1,44 @@
+@startuml
+skinparam Style strictuml
+skinparam BoxPadding 10
+
+actor User as "User"
+
+box "UI" #LightBlue
+participant View as "LoginPage\n(JavaFX View)"
+participant Ctrl as "LoginPageController"
+end box
+
+box "Core" #LightGreen
+participant Mgr as "UserManager"
+participant Repo as "UserRepository\n(Interface)"
+end box
+
+box "Persistence" #LightPink
+participant Impl as "UserFileManager\n(Implementation)"
+end box
+
+User -> View ++ : Clicks Login Button
+View -> Ctrl ++ : handleLogin(event)
+View --
+
+Ctrl -> View ++ : usernameField.getText()
+return username
+
+Ctrl -> View ++ : passwordField.getText()
+return password
+
+Ctrl -> Mgr ++ : login(username, password)
+Mgr -> Repo ++ : check_password(username, password)
+Repo -> Impl ++ : check_password(username, password)
+
+return boolean
+return boolean
+return boolean
+
+alt login successful (true)
+    Ctrl -> Ctrl : changeScene()
+else login failed (false)
+    Ctrl -> View : Show Error Message Alert
+end
+Ctrl --
