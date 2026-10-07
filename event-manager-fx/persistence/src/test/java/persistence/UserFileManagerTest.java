@@ -1,19 +1,19 @@
 package persistence;
 
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 import java.nio.file.Path;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.nio.file.Files;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import user.User;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class UserFileManagerTest {
 
@@ -182,5 +182,111 @@ public class UserFileManagerTest {
         assertEquals(username1, reloadedUser.getUsername());
         assertEquals(password1, reloadedUser.getPassword());
     }
+
+    @Test
+    void testFileCreation() {
+        Path file = tempDir.resolve("users.json");
+        UserFileManager manager = new UserFileManager(file.toString());
+
+        assertTrue(manager.getUsers().isEmpty());
+        assertTrue(Files.exists(file));
+    }
+
+    @Test
+    void testFileCreationFailsWhenParentDirectoryIsMissing() {
+        Path file = tempDir.resolve("missing-folder/users.json");
+        UserFileManager manager = new UserFileManager(file.toString());
+
+        RuntimeException exception = assertThrows(
+                RuntimeException.class,
+                manager::getUsers
+        );
+
+        assertEquals("Could not create user file", exception.getMessage());
+        assertInstanceOf(IOException.class, exception.getCause());
+    }
+
+    @Test
+    void testSaveUsersIfNull() {
+        assertThrows(NullPointerException.class, () -> userFileManager.saveUsers(null));
+    }
+
+    @Test
+    void testSuccesfullCopy() {
+        userFileManager.addUser(user1);
+        UserFileManager copy = userFileManager.copy();
+
+        assertEquals(username1, copy.getUser(username1).getUsername());
+        assertEquals(password1, copy.getUser(username1).getPassword());
+        assertEquals(userFileManager.getUsers().keySet(), copy.getUsers().keySet());
+    }
+
+    @Test
+    void testConstructorWithDefaultFilePath() {
+        assertDoesNotThrow(() -> new UserFileManager());
+    }
+
+    @Test
+
+    void testRemoveEvent() {
+
+        user1.addEventId("test Event");
+        user2.addEventId("test Event");
+
+        userFileManager.addUser(user1);
+        userFileManager.addUser(user2);
+
+        userFileManager.removeEvent("test Event");
+        assertFalse(userFileManager.getUser(username1).isAttendingEvent("test Event"));
+        assertFalse(userFileManager.getUser(username2).isAttendingEvent("test Event"));
+        assertEquals(2, userFileManager.getUsers().size());
+    }
+
+    @Test
+    void testSaveUsersCreatesFile() {
+        Path file = tempDir.resolve("new-users.json");
+        UserFileManager manager = new UserFileManager(file.toString());
+
+        manager.saveUsers(Map.of(username1, user1));
+
+        assertTrue(Files.exists(file));
+        assertEquals(password1, manager.getUser(username1).getPassword());
+    }
+
+    @Test
+    void testSaveUsersThrowsWhenPathIsDirectory() {
+        UserFileManager manager =
+                new UserFileManager(tempDir.toString());
+
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> manager.saveUsers(Map.of()));
+
+        assertEquals("Could not write to file", exception.getMessage());
+        assertInstanceOf(IOException.class, exception.getCause());
+    }
+
+    @Test
+    void testGetUsersThrowsWhenPathIsDirectory() {
+        UserFileManager manager = new UserFileManager(tempDir.toString());
+
+        RuntimeException exception = assertThrows(RuntimeException.class,manager::getUsers);
+
+        assertEquals("An error has occurred", exception.getMessage());
+    }
+
+    @Test
+    void testLoadFromDirectoryReturnsEmptyMap() {
+        EventFileManager manager = new EventFileManager(tempDir.toString());
+        assertTrue(manager.getEvents().isEmpty());
+    }
+
+    @Test
+    void testConstructorUsesEmptyMapWhenLoadingFails() throws IOException {
+        Path file = tempDir.resolve("invalid.json");
+        Files.writeString(file, "{invalid json");
+        EventFileManager manager = new EventFileManager(file.toString());
+        assertTrue(manager.getEvents().isEmpty());
+    }
+
+
     
 }

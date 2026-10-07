@@ -36,7 +36,7 @@ public class UserFileManager implements user.UserRepository {
          Map<String, User> users = getUsers();
 
          if (!users.containsKey(username)) {
-            throw new IllegalArgumentException("");
+            throw new IllegalArgumentException("User doesnt exist");
          }
          
         return users.get(username);
@@ -60,7 +60,7 @@ public class UserFileManager implements user.UserRepository {
         return getUser(username).getPassword().equals(password);
     }
 
-    private boolean userExists(Map<String, User> users, String username) {
+    protected boolean userExists(Map<String, User> users, String username) {
         return users.containsKey(username);
     }
 
@@ -107,8 +107,7 @@ public class UserFileManager implements user.UserRepository {
             try {
                 file.createNewFile();
             } catch (IOException e) {
-            System.out.print("Error while creating file");
-            e.printStackTrace();
+                throw new RuntimeException("Could not create user file", e);
             } 
         }
 
@@ -117,12 +116,8 @@ public class UserFileManager implements user.UserRepository {
                 jsonString.append(reader.nextLine());
             }
 
-        } catch (FileNotFoundException e) {
-            System.out.print("File not found");
-            e.printStackTrace();
         } catch (IOException e) {
-            System.out.print("An error has occured");
-            e.printStackTrace();
+            throw new RuntimeException("An error has occurred");
         }
 
         Map<String, User> users;
@@ -139,7 +134,7 @@ public class UserFileManager implements user.UserRepository {
         return users;
     }
 
-    private void saveUsers(Map<String, User> users) {
+    protected void saveUsers(Map<String, User> users) {
         if (users == null) {
             throw new NullPointerException("Users Map cant be null");
         }
@@ -152,18 +147,14 @@ public class UserFileManager implements user.UserRepository {
             try {
                 file.createNewFile();
             } catch (IOException e) {
-            System.out.print("Error while creating file");
-            e.printStackTrace();
-            } 
+                throw new RuntimeException("Could not create user file", e);
+            }
         }
 
         try (FileWriter myWriter = new FileWriter(filePath, StandardCharsets.UTF_8)) {
             myWriter.write(jsonString);
-            myWriter.flush();
-     
         } catch (IOException e) {
-            System.out.println("Something went wrong");
-            e.printStackTrace();
+            throw new RuntimeException("Could not write to file", e);
         }
     }
 
@@ -181,7 +172,6 @@ public class UserFileManager implements user.UserRepository {
     @Override 
     public UserFileManager copy() {
         return new UserFileManager(filePath);
-
     }
 }
 
