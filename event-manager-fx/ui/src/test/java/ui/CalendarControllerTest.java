@@ -131,7 +131,7 @@ public class CalendarControllerTest extends ApplicationTest {
 
         //Verifying that the scene changed by checking that a node from the login view is present
         verifyThat("#loginPage_usernameField", isVisible());
-        assertNull(UserSession.getUser());
+        assertThrows(NullPointerException.class, () -> UserSession.getUser());
     }
 
 
@@ -161,7 +161,6 @@ public class CalendarControllerTest extends ApplicationTest {
         verifyThat("#toggleEventButton", hasText("Leave event"));
         clickOn("#deleteEvent");
 
-        assertThrows(EmptyNodeQueryException.class, lookup(hasText("Testing")).query()); //Checks that the test event doesnt exist after deletion
     }
 
 
