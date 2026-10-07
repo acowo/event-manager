@@ -126,6 +126,7 @@ public class CalendarController {
     @FXML
     public void openEventCreator() {
       eventCreator.disableProperty().set(false);
+      eventCreator.setVisible(true);
       eventCreator.opacityProperty().set(1);
     }
     
@@ -133,6 +134,7 @@ public class CalendarController {
     public void closeEventCreator() {
       eventCreator.disableProperty().set(true);
       eventCreator.opacityProperty().set(0);
+      eventCreator.setVisible(false);
       eventError.setText("");
       setEventTime.setText("");
       setEventTitle.setText("");
@@ -170,6 +172,7 @@ public class CalendarController {
     public void showEvent(Event event) {
       eventPane.setOpacity(1);
       eventPane.setDisable(false);
+      eventPane.setVisible(true);
 
       eventTitle.setText(event.getTitle());
       eventLocation.setText(event.getPlace());
@@ -203,6 +206,7 @@ public class CalendarController {
     public void hideEvent() {
       eventPane.setOpacity(0);
       eventPane.setDisable(true);
+      eventPane.setVisible(false);
     }
 
 
