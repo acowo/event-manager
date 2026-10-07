@@ -22,7 +22,11 @@ import static org.testfx.util.NodeQueryUtils.hasText;
 import static org.testfx.util.NodeQueryUtils.isVisible;
 
 public class LoginPageControllerTest extends ApplicationTest {
-
+    /**
+     * Starts the stage so the tests can take place.
+     * @param stage
+     * @throws IOException
+     */
     @Override
     public void start(Stage stage) throws IOException {
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/ui/loginPage.fxml")));
@@ -30,12 +34,18 @@ public class LoginPageControllerTest extends ApplicationTest {
         stage.show();
     }
 
+    /**
+     * Tests that the login page window loads by checking if an element is present.
+     */
     @Test
     void testWindowLoads() {
         // Simple test to check if the scene initialized properly
         verifyThat("#loginPage_usernameField", NodeMatchers.isVisible());
     }
 
+    /**
+     * Tests that the login page shows an error message when invalid credentials are used to try to log in.
+     */
     @Test
     public void testInvalidUserLogin() {
         clickOn("#loginPage_usernameField").write("invalid");
@@ -45,6 +55,9 @@ public class LoginPageControllerTest extends ApplicationTest {
         verifyThat("#loginPage_infotextField", hasText("An error has occured"));
     }
 
+    /**
+     * Tests that the login page shows an error message when a user tries registering with a username that has already been used.
+     */
     @Test
     public void testInvalidUserRegistration() {
         clickOn("#loginPage_usernameField").write("ola");
@@ -54,6 +67,9 @@ public class LoginPageControllerTest extends ApplicationTest {
         verifyThat("#loginPage_infotextField", hasText("A user by that name already exists"));
     }
 
+    /**
+     * Tests that the controller correctly switches to the calendar page after a successful login.
+     */
     @Test
     public void testValidLogin() throws InterruptedException {
         clickOn("#loginPage_usernameField").write("ola");
