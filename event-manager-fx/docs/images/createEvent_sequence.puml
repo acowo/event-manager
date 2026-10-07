@@ -9,30 +9,40 @@ participant View as "Calendar\n(JavaFX View)"
 participant Ctrl as "CalendarController"
 end box
 
+box "core" #LightPink
+participant mng as "EventManager"
+end box
 
 box "Persistence" #LightGreen
-participant mng as "EventFileManager"
+participant filemng as "EventFileManager"
 end box
 
 User -> View ++ : Clicks "Create event" button
-View -> Ctrl  ++: openEventCreator
+View -> Ctrl ++: openEventCreator
 View --
-
-Ctrl -> View  : Enable eventCreator window
+Ctrl -> View : Enable eventCreator window
 Ctrl --
-
 
 User -> View : Fills event form and clicks "Create event" button
-View -> Ctrl ++: createEvent
-
+View -> Ctrl ++: createEvent()
 Ctrl -> View ++: Get user input from eventCreator form
-View -> Ctrl: Event name, place, date and time
-View --
+View --> Ctrl --: Event title, place, time
 
-Ctrl -> mng: Create new Event and addEvent(Event)
-mng -> mng : saveEvents()
+Ctrl -> Ctrl : new Event(title, place, time)
+note left: Event constructor validates input and\nthrows IllegalArgumentException if invalid
 
-'Keep the line below or not? 
-'Ctrl -> Ctrl: closeEventCreator()
-Ctrl -> View: Disable eventCreator window
+alt Event created successfully
+    Ctrl -> mng ++: addEvent(event)
+    mng -> filemng ++: addEvent(event)
+    mng --
+    filemng -> filemng --: saveEvents()
+    Ctrl -> Ctrl : closeEventCreator()
+    Ctrl -> View : Disable eventCreator window
+
+else IllegalArgumentException thrown by Event constructor
+    Ctrl -> View : Show error alert dialog
+
+end
+
 Ctrl --
+@enduml
