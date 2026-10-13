@@ -106,8 +106,14 @@ public class EventFileManager implements EventRepository {
         }
     }
 
-    
-    //Retrieves an event by its title.
+
+
+    /**
+     * Finds and returns an event with a specific title.
+     * @param title The name of the event
+     * @return The event with the name of title if found.
+     * @throws IllegalArgumentException if the event does not exist.
+     */
     @Override 
     public Event getEvent(String title) {
         if (!eventExists(title)) {
@@ -120,14 +126,24 @@ public class EventFileManager implements EventRepository {
     }
 
 
-    //Checks whether an event with the specified title exists.
+
+    /**
+     * Checks whether an event with the specified title exists.
+     * @param title The title of the event in string form.
+     * @return True if event exists, otherwise false.
+     */
     @Override
     public boolean eventExists(String title) {
         return events.containsKey(title);
     }
 
     
-    //Adds an event to the stored events.
+
+    /**
+     * Adds an event to the stored events.
+     * @param event The event object to be added.
+     * @throws IllegalArgumentException If an event by the same name already exists.
+     */
     @Override
     public void addEvent(Event event) {
         if (eventExists(event.getTitle())) {
