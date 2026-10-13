@@ -196,23 +196,28 @@ public class EventFileManagerTest {
 
     @Test
     void testSaveToInvalidPathThrowsException() {
-        Path invalidPath = tempDir
-                .resolve("does-not-exist")
-                .resolve("eventdata.json");
+        Path invalidPath = tempDir.resolve("does-not-exist").resolve("eventdata.json");
 
-        EventFileManager manager =
-                new EventFileManager(invalidPath.toString());
+        EventFileManager manager = new EventFileManager(invalidPath.toString());
 
-        assertThrows(
-                RuntimeException.class,
-                () -> manager.addEvent(event)
-        );
+        assertThrows(RuntimeException.class, () -> manager.addEvent(event));
     }
 
     @Test
     void testDefaultConstructor() {
         EventFileManager manager = new EventFileManager();
-
         assertTrue(manager.getEvents() != null);
+    }
+
+    @Test
+    void testSuccesfullCopy() {
+        eventFileManager.addEvent(event);
+        EventFileManager copy = eventFileManager.copy();
+
+        Event copiedEvent = copy.getEvent(event.getTitle());
+        assertEquals(event.getTitle(), copiedEvent.getTitle());
+        assertEquals(event.getPlace(), copiedEvent.getPlace());
+        assertEquals(event.getTime(), copiedEvent.getTime());
+        assertEquals(eventFileManager.getEvents().keySet(), copy.getEvents().keySet());
     }
 }
