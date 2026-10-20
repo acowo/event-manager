@@ -28,7 +28,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 import javafx.scene.control.DatePicker;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import persistence.EventFileManager;
 import persistence.UserFileManager;
@@ -145,7 +145,7 @@ public class CalendarControllerTest extends ApplicationTest {
         
         createEvent(); //Creates a test event and localizes the button that shows the event pane
         Node label = lookup(hasText("Testing")).query();
-        VBox eventPane = (VBox) label.getParent();
+        HBox eventPane = (HBox) label.getParent();
         Button button = (Button) eventPane.getChildren().get(1);
         clickOn(button);
         
