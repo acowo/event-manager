@@ -27,6 +27,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
+import javafx.scene.control.DatePicker;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import persistence.EventFileManager;
@@ -172,10 +173,10 @@ public class CalendarControllerTest extends ApplicationTest {
 
         clickOn("#setEventTitle").write("Testing");
         clickOn("#setEventLocation").write("Testing location");
-        clickOn("#setEventDate").write("10/22/2026");
-        // Source - https://stackoverflow.com/a/59481991
-        // Posted by user12150819
-        // Retrieved 2026-10-05, License - CC BY-SA 4.0
+        
+        DatePicker datePicker = lookup("#setEventDate").queryAs(DatePicker.class);
+        interact(() -> datePicker.setValue(LocalDate.now().withDayOfMonth(1)));
+        
         press(KeyCode.ENTER).release(KeyCode.ENTER);
 
         clickOn("#setEventTime").write("10:00");
