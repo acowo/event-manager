@@ -52,9 +52,9 @@ public class CalendarController {
 
     private LocalDate today;
     private Map<String,Event> events;
-    private EventFileManager manager;
+    private EventManager manager;
     private User user;
-    private UserFileManager userManager;
+    private UserManager userManager;
 
     @FXML
     private GridPane calendar;
@@ -87,10 +87,10 @@ public class CalendarController {
     public void initialize() {
 
       this.today = LocalDate.now();
-      this.manager = new EventFileManager();
+      this.manager = new EventManager(new EventFileManager());
       events = manager.getEvents();
       user = UserSession.getUser();
-      userManager = new UserFileManager();
+      userManager = new UserManager(new UserFileManager());
 
       setMonth(this.today);
 
@@ -148,11 +148,13 @@ public class CalendarController {
         LocalDate date = setEventDate.getValue();
         LocalTime time = LocalTime.of(Integer.parseInt(setEventTime.getText(0,2)), Integer.parseInt(setEventTime.getText(3,5)));
         Event event = new Event(setEventTitle.getText(), setEventLocation.getText(), LocalDateTime.of(date, time));
-        this.manager.addEvent(event);
-        this.events.put(event.getTitle(), event);
-        setMonth(LocalDate.of(this.year,this.month,1));
-        closeEventCreator();
-        
+        if (this.manager.addEvent(event)) {
+          this.events.put(event.getTitle(), event);
+          setMonth(LocalDate.of(this.year,this.month,1));
+          closeEventCreator();
+        } else {
+          eventError.setText("Something went wrong. \nCheck that you have filled all fields properly");
+        }
       } catch (Exception e) {
         eventError.setText("Something went wrong. \nCheck that you have filled all fields properly");
       }
@@ -163,6 +165,7 @@ public class CalendarController {
       events.remove(eventTitle.getText());
       manager.removeEvent(eventTitle.getText());
       userManager.removeEvent(eventTitle.getText());
+      
       if (user.isAttendingEvent(eventTitle.getText())) {user.removeEventId(eventTitle.getText());}
       setMonth(LocalDate.of(this.year,this.month,1));
       hideEvent();
