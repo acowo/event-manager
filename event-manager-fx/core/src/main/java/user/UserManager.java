@@ -60,12 +60,22 @@ public class UserManager {
         return true;
     }
 
+    /**
+     * Edits a user by giving a username to update and an updated User-object
+     * @param username the user to be changed
+     * @param user the updated user object
+     * @return
+     */
    public boolean editUser(String username, User user) {
         if (!users.userExists(username)) {return false;}
         users.editUser(username, user);
         return true;
    }
 
+   /**
+    * Removes an event from all users
+    * @param eventTitle
+    */
    public void removeEvent(String eventTitle) {
         users.removeEvent(eventTitle);
    }
