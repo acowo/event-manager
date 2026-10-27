@@ -58,11 +58,25 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-checkstyle-plugin</artifactId>
                     <version>3.6.0</version>
+
+                    <dependencies>
+                        <dependency>
+                            <groupId>com.puppycrawl.tools</groupId>
+                            <artifactId>checkstyle</artifactId>
+                            <version>10.21.2</version>
+                        </dependency>
+                    </dependencies>
+
                     <configuration>
-                        <configLocation>${maven.multiModuleProjectDirectory}/config/checkstyle/eclipse-java-google-style.xml</configLocation>
+                        <configLocation>google_checks.xml</configLocation>
+                        <excludes>**/module-info.java</excludes>
                         <consoleOutput>true</consoleOutput>
                         <failsOnError>true</failsOnError>
                         <linkXRef>false</linkXRef>
+                        <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                        <sourceDirectories>
+                            <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
+                        </sourceDirectories>
                     </configuration>
                     <executions>
                         <execution>
