@@ -1,25 +1,30 @@
+
 package ui;
 
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
-import org.junit.jupiter.api.Test;
-import org.testfx.framework.junit5.ApplicationTest;
-import org.testfx.matcher.base.NodeMatchers;
-import org.testfx.matcher.control.LabeledMatchers;
-import javafx.scene.Parent;
-
-
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Objects;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+import org.testfx.framework.junit5.ApplicationTest;
+import org.testfx.matcher.base.NodeMatchers;
+
+import persistence.UserFileManager;
+import ui.controller.LoginPageController;
+import user.UserManager;
+import user.UserSession;
+
 import static org.testfx.api.FxAssert.verifyThat;
 import static org.testfx.util.NodeQueryUtils.hasText;
 import static org.testfx.util.NodeQueryUtils.isVisible;
+
 
 public class LoginPageControllerTest extends ApplicationTest {
     /**
@@ -27,9 +32,35 @@ public class LoginPageControllerTest extends ApplicationTest {
      * @param stage
      * @throws IOException
      */
-    @Override
+
+    @TempDir 
+    static Path tempDir;
+
+    @Override 
     public void start(Stage stage) throws IOException {
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/ui/loginPage.fxml")));
+        Path userFile = tempDir.resolve(
+            "userdata-" + java.util.UUID.randomUUID() + ".json"
+        );
+
+        UserFileManager repository = new UserFileManager(
+            userFile.toString()
+        );
+
+        UserManager manager = new UserManager(repository);
+
+        manager.register("ola", "banan");
+
+        FXMLLoader loader = new FXMLLoader(
+            Objects.requireNonNull(getClass().getResource("/ui/loginPage.fxml"))
+
+        );
+
+        Parent root = loader.load();
+
+        LoginPageController controller = loader.getController();
+        controller.setUserManager(manager);
+        controller.setCalendarView("/ui/TestCalendar.fxml");
+
         stage.setScene(new Scene(root));
         stage.show();
     }
@@ -48,11 +79,21 @@ public class LoginPageControllerTest extends ApplicationTest {
      */
     @Test
     public void testInvalidUserLogin() {
-        clickOn("#loginPage_usernameField").write("invalid");
-        clickOn("#loginPage_passwordField").write("invalid");
+        clickOn("#loginPage_usernameField");
+        write("ola");
 
-        clickOn("#loginPage_loginButton");
-        verifyThat("#loginPage_infotextField", hasText("An error has occured"));
+        clickOn("#loginPage_passwordField");
+        write("123");
+
+        verifyThat("#loginPage_usernameField", hasText("ola"));
+        verifyThat("#loginPage_passwordField", hasText("123"));
+
+        clickOn("#loginPage_registerButton");
+
+        verifyThat(
+            "#loginPage_infotextField",
+            hasText("A user by that name already exists")
+        );
     }
 
     /**
@@ -79,6 +120,11 @@ public class LoginPageControllerTest extends ApplicationTest {
 
         //Verifying that the scene changed by checking that a node from the calendar view is present
         verifyThat("#yearLabel", isVisible());
+    }
+
+    @AfterEach
+    void cleanUp() {
+        UserSession.logout();
     }
 
 }

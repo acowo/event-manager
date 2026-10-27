@@ -38,6 +38,26 @@ public class LoginPageController {
     private UserManager manager = new UserManager(new UserFileManager());
 
     /**
+     * Sets the user manager used by this controller.
+     *
+     * @param manager the user manager to use
+     */
+    public void setUserManager(UserManager manager) {
+        this.manager = Objects.requireNonNull(manager);
+    }
+
+    private String calendarView = "/ui/Calendar.fxml";
+
+    /**
+     * Sets the calendar view loaded after successful authentication.
+     *
+     * @param calendarView path to the calendar FXML resource
+     */
+    public void setCalendarView(String calendarView) {
+        this.calendarView = Objects.requireNonNull(calendarView);
+    }
+
+    /**
      * Handles the controller logic needed when a user presses the login button.
      * Uses imports from the Core and persistence modules. This function does not return a value.
      */
@@ -84,12 +104,14 @@ public class LoginPageController {
     @FXML
     private void changeScene() throws IOException {
         try {
-            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/ui/Calendar.fxml")));
+            Parent root = FXMLLoader.load(
+                Objects.requireNonNull(getClass().getResource(calendarView))
+            );
             Stage stage = (Stage) loginPage_registerButton.getScene().getWindow();
             stage.getScene().setRoot(root);
 
         } catch (Exception e) {
-            System.err.println(e);
+            e.printStackTrace();
         }
 
 
