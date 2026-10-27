@@ -38,6 +38,13 @@ public interface UserRepository {
     User getUser(String username);
 
     /**
+     * Uptades a user based on username
+     * @param username user to edit
+     * @param user the new version of user
+     */
+    void editUser(String username, User user);
+
+    /**
      * Removes an event from all users
      * @param title
      */

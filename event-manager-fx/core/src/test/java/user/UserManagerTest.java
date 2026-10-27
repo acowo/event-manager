@@ -33,6 +33,11 @@ public class UserManagerTest {
             return users.get(username);
         }
 
+        @Override 
+        public void editUser(String username, User user) {
+            users.put(username, user);
+        }
+
 
         @Override
         public void removeEvent(String title) {
