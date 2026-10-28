@@ -29,9 +29,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import persistence.EventFileManager;
 import persistence.UserFileManager;
@@ -67,7 +65,7 @@ public class CalendarController {
     private Slider hourSlider;
 
     @FXML 
-    private ScrollPane eventCreator, eventPane;
+    private ScrollPane eventCreator, eventPane, adminPane;
 
     @FXML 
     private TextField setEventTitle, setEventLocation, setEventTime;
@@ -78,8 +76,17 @@ public class CalendarController {
     @FXML 
     private ToggleButton toggleEventButton;
 
+    @FXML
+    private Button deleteEventButton, closeEventButton;
+
+    @FXML
+    private HBox eventButtons;
+
+    @FXML
+    private Pane resourcePane;
+
     /**
-     * Default method automatically called when opening the {@link Calendar.FXML} file
+     * Default method automatically called when opening the {@link Calendar.fxml} file
      * 
      * <p>Sets the view to show the current month and shows all events for the month</p>
      */
@@ -177,14 +184,22 @@ public class CalendarController {
 
     public void showEvent(Event event) {
       selectedEventId = event.getEventId();
-      eventPane.setOpacity(1);
-      eventPane.setDisable(false);
-      eventPane.setVisible(true);
 
-      eventTitle.setText(event.getTitle());
-      eventLocation.setText(event.getPlace());
-      eventDate.setText(event.getTime().toLocalDate().toString());
-      eventTime.setText(event.getTime().toLocalTime().toString());
+          eventPane.setDisable(false);
+          eventPane.setVisible(true);
+          eventTitle.setText(event.getTitle());
+          eventLocation.setText(event.getPlace());
+          eventDate.setText(event.getTime().toLocalDate().toString());
+          eventTime.setText(event.getTime().toLocalTime().toString());
+          eventButtons.getChildren().clear();
+
+
+
+      if (user.isAdministratingEvent(event.getTitle())) {
+          eventButtons.getChildren().add(deleteEventButton);
+      } else {
+          eventButtons.getChildren().add(toggleEventButton);
+
 
       if (user.isAttendingEvent(event.getEventId())) {
         toggleEventButton.setText("Leave event");
@@ -213,7 +228,6 @@ public class CalendarController {
     @FXML 
     public void hideEvent() {
       selectedEventId = null;
-      eventPane.setOpacity(0);
       eventPane.setDisable(true);
       eventPane.setVisible(false);
     }
@@ -284,8 +298,7 @@ public class CalendarController {
 
     /**
      * Displays all events of the current month showing
-     * 
-     * @param events list of all events
+     *
      * @throws IllegalStateException if this.month is null
      */
 

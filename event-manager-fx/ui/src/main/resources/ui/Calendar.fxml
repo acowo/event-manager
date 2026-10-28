@@ -11,6 +11,7 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
@@ -148,17 +149,16 @@
                         <Label fx:id="eventTime" text="EventTime" />
                      </children>
                   </HBox>
-                  <HBox alignment="CENTER" prefHeight="30.0" prefWidth="200.0" spacing="15.0">
-                     <children>
-                        <ToggleButton fx:id="toggleEventButton" mnemonicParsing="false" onAction="#toggleEvent" text="Join event" />
-                        <Button fx:id="closeEvent" alignment="TOP_RIGHT" contentDisplay="RIGHT" mnemonicParsing="false" onAction="#hideEvent" text="Close" />
-                     </children>
-                  </HBox>
-                  <Button fx:id="deleteEvent" mnemonicParsing="false" onAction="#deleteEvent" style="-fx-background-color: #F56145;" text="Delete event">
-                     <VBox.margin>
-                        <Insets bottom="10.0" />
-                     </VBox.margin>
-                  </Button>
+                  <GridPane fx:id="attendingUsers">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints vgrow="SOMETIMES" />
+                    </rowConstraints>
+                  </GridPane>
+                  <HBox fx:id="eventButtons" alignment="CENTER" prefHeight="30.0" prefWidth="200.0" spacing="15.0" />
                </children>
                <padding>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -166,5 +166,12 @@
             </VBox>
          </content>
       </ScrollPane>
+      <Pane fx:id="resourcePane" layoutX="191.0" layoutY="250.0" prefHeight="200.0" prefWidth="200.0" visible="false">
+         <children>
+            <Button fx:id="deleteEventButton" layoutX="88.0" layoutY="49.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#deleteEvent" style="-fx-background-color: #F56145;" text="Delete event" />
+            <ToggleButton fx:id="toggleEventButton" layoutX="15.0" layoutY="46.0" mnemonicParsing="false" onAction="#toggleEvent" text="Join event" />
+            <Button fx:id="closeEventButton" alignment="TOP_RIGHT" contentDisplay="RIGHT" layoutX="59.0" layoutY="97.0" mnemonicParsing="false" onAction="#hideEvent" text="Close" />
+         </children>
+      </Pane>
    </children>
 </AnchorPane>
