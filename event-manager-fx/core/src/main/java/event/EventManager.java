@@ -2,6 +2,8 @@ package event;
 
 import java.util.Map;
 
+import user.User;
+
 /**
  * 
  * EventManager implements core domain logic for event managing. 
@@ -28,7 +30,6 @@ public class EventManager {
         if (events.eventExists(event.getEventId())) {
             return false;
         }
-
         events.addEvent(event);
         return true;
     }

@@ -152,6 +152,7 @@ public class CalendarController {
         if (this.manager.addEvent(event)) {
           this.events.put(event.getEventId(), event);
           setMonth(LocalDate.of(this.year,this.month,1));
+          this.user.addEventId(setEventTitle.getText(),true);
           closeEventCreator();
         } else {
           eventError.setText("Something went wrong. \nCheck that you have filled all fields properly");
@@ -204,7 +205,7 @@ public class CalendarController {
               user.removeEventId(event.getEventId());
             } else {
               toggleEventButton.setText("Leave event");
-              user.addEventId(event.getEventId());
+              user.addEventId(event.getEventId(), false);
             }
             userManager.editUser(user.getUsername(), user);
     }
