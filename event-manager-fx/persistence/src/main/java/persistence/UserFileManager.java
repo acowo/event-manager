@@ -208,11 +208,11 @@ public class UserFileManager implements user.UserRepository {
     }
 
     @Override
-    public void removeEvent(String title) {
+    public void removeEvent(String eventId) {
         Map<String, User> users = getUsers();
         users.values().forEach(u -> {
-            if (u.isAttendingEvent(title)) {
-                u.removeEventId(title);
+            if (u.isAttendingEvent(eventId)) {
+                u.removeEventId(eventId);
             }
         });
         saveUsers(users);

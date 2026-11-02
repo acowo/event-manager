@@ -46,9 +46,9 @@ public interface UserRepository {
 
     /**
      * Removes an event from all users
-     * @param title
+     * @param eventId the event UUID as a string
      */
-    void removeEvent(String title);
+    void removeEvent(String eventId);
 
     /**
      * Get a copy of this object 

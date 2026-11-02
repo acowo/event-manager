@@ -74,10 +74,10 @@ public class UserManager {
 
    /**
     * Removes an event from all users
-    * @param eventTitle
+    * @param eventId
     */
-   public void removeEvent(String eventTitle) {
-        users.removeEvent(eventTitle);
+   public void removeEvent(String eventId) {
+        users.removeEvent(eventId);
    }
 
 }
