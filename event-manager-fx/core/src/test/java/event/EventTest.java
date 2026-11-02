@@ -1,6 +1,7 @@
 package event;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -10,11 +11,22 @@ class EventTest {
   void testCreateEvent() {
     LocalDateTime time = LocalDateTime.of(2026, 9, 20, 18, 0);
 
-    Event event = new Event("Game Night", "Gløshaugen", time);
+    String eventId = UUID.randomUUID().toString();
+    Event event = new Event(eventId, "Game Night", "Gløshaugen", time);
+    Assertions.assertEquals(eventId, event.getEventId());
 
     Assertions.assertEquals("Game Night", event.getTitle());
     Assertions.assertEquals("Gløshaugen", event.getPlace());
     Assertions.assertEquals(time, event.getTime());
+  }
+
+  @Test
+  void testInvalidIdThrowsException() {
+    LocalDateTime time = LocalDateTime.of(2026, 9, 20, 18, 0);
+    Assertions.assertThrows(IllegalArgumentException.class,
+        () -> new Event(null, "Game Night", "Gløshaugen", time));
+    Assertions.assertThrows(IllegalArgumentException.class,
+        () -> new Event(" ", "Game Night", "Gløshaugen", time));
   }
 
   @Test

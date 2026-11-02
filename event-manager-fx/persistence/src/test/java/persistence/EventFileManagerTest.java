@@ -12,6 +12,7 @@ import java.nio.file.Files;
 import org.junit.jupiter.api.io.TempDir;
 import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -36,8 +37,8 @@ public class EventFileManagerTest {
         );
 
         // Make sure tests start with no test event.
-        if (eventFileManager.eventExists("Test Event")) {
-            eventFileManager.removeEvent("Test Event");
+        if (eventFileManager.eventExists(event.getEventId())) {
+            eventFileManager.removeEvent(event.getEventId());
         }
     }
 
@@ -45,7 +46,7 @@ public class EventFileManagerTest {
     void testAddAndGetEvent() {
         eventFileManager.addEvent(event);
 
-        Event result = eventFileManager.getEvent("Test Event");
+        Event result = eventFileManager.getEvent(event.getEventId());
 
         assertEquals("Test Event", result.getTitle());
         assertEquals("Trondheim", result.getPlace());
@@ -57,11 +58,11 @@ public class EventFileManagerTest {
 
     @Test
     void testEventExists() {
-        assertFalse(eventFileManager.eventExists("Test Event"));
+        assertFalse(eventFileManager.eventExists(event.getEventId()));
 
         eventFileManager.addEvent(event);
 
-        assertTrue(eventFileManager.eventExists("Test Event"));
+        assertTrue(eventFileManager.eventExists(event.getEventId()));
     }
 
     @Test
@@ -70,10 +71,10 @@ public class EventFileManagerTest {
 
         Map<String, Event> events = eventFileManager.getEvents();
 
-        assertTrue(events.containsKey("Test Event"));
+        assertTrue(events.containsKey(event.getEventId()));
         assertEquals(
                 event.getTitle(),
-                events.get("Test Event").getTitle()
+                events.get(event.getEventId()).getTitle()
         );
     }
 
@@ -91,7 +92,7 @@ public class EventFileManagerTest {
     void testGetNonexistentEventThrowsException() {
         assertThrows(
                 IllegalArgumentException.class,
-                () -> eventFileManager.getEvent("Does Not Exist")
+                () -> eventFileManager.getEvent(UUID.randomUUID().toString())
         );
     }
 
@@ -99,18 +100,18 @@ public class EventFileManagerTest {
     void testRemoveEvent() {
         eventFileManager.addEvent(event);
 
-        assertTrue(eventFileManager.eventExists("Test Event"));
+        assertTrue(eventFileManager.eventExists(event.getEventId()));
 
-        eventFileManager.removeEvent("Test Event");
+        eventFileManager.removeEvent(event.getEventId());
 
-        assertFalse(eventFileManager.eventExists("Test Event"));
+        assertFalse(eventFileManager.eventExists(event.getEventId()));
     }
 
     @Test
     void testRemoveNonexistentEventThrowsException() {
         assertThrows(
                 IllegalArgumentException.class,
-                () -> eventFileManager.removeEvent("Does Not Exist")
+                () -> eventFileManager.removeEvent(UUID.randomUUID().toString())
         );
     }
 
@@ -118,15 +119,15 @@ public class EventFileManagerTest {
     void testEditEvent() {
         eventFileManager.addEvent(event);
 
-        Event editedEvent = new Event(
+        Event editedEvent = new Event(event.getEventId(),
                 "Test Event",
                 "Oslo",
                 LocalDateTime.of(2026, 11, 1, 20, 0)
         );
 
-        eventFileManager.editEvent("Test Event", editedEvent);
+        eventFileManager.editEvent(event.getEventId(), editedEvent);
 
-        Event result = eventFileManager.getEvent("Test Event");
+        Event result = eventFileManager.getEvent(event.getEventId());
 
         assertEquals("Test Event", result.getTitle());
         assertEquals("Oslo", result.getPlace());
@@ -138,7 +139,7 @@ public class EventFileManagerTest {
 
     @Test
     void testEditNonexistentEventThrowsException() {
-        Event editedEvent = new Event(
+        Event editedEvent = new Event(event.getEventId(),
                 "Does Not Exist",
                 "Oslo",
                 LocalDateTime.of(2026, 11, 1, 20, 0)
@@ -147,7 +148,7 @@ public class EventFileManagerTest {
         assertThrows(
                 IllegalArgumentException.class,
                 () -> eventFileManager.editEvent(
-                        "Does Not Exist",
+                        UUID.randomUUID().toString(),
                         editedEvent
                 )
         );
@@ -161,9 +162,9 @@ public class EventFileManagerTest {
             tempDir.resolve("eventdata.json").toString()
         );
 
-        assertTrue(reloadedManager.eventExists("Test Event"));
+        assertTrue(reloadedManager.eventExists(event.getEventId()));
 
-        Event reloadedEvent = reloadedManager.getEvent("Test Event");
+        Event reloadedEvent = reloadedManager.getEvent(event.getEventId());
 
         assertEquals("Test Event", reloadedEvent.getTitle());
         assertEquals("Trondheim", reloadedEvent.getPlace());
@@ -172,6 +173,49 @@ public class EventFileManagerTest {
             reloadedEvent.getTime()
         );
 
+    }
+
+
+
+    @Test
+    void sameNamesRemainIndependentAfterReloadAndEdit() {
+        Event other = new Event(event.getTitle(), "Bergen", event.getTime());
+        eventFileManager.addEvent(event);
+        eventFileManager.addEvent(other);
+        EventFileManager reloaded = eventFileManager.copy();
+        assertEquals(2, reloaded.getEvents().size());
+        assertThrows(IllegalArgumentException.class,
+                () -> eventFileManager.editEvent(event.getEventId(), other));
+        assertEquals(event.getTitle(), eventFileManager.copy().getEvent(event.getEventId()).getTitle());
+        assertEquals(event.getEventId(), eventFileManager.copy().getEvent(event.getEventId()).getEventId());
+        Event replacement = new Event(event.getEventId(), "Renamed", "Oslo", event.getTime());
+        reloaded.editEvent(event.getEventId(), replacement);
+        reloaded = reloaded.copy();
+        assertEquals(event.getEventId(), reloaded.getEvent(event.getEventId()).getEventId());
+        assertTrue(reloaded.eventExists(replacement.getEventId()));
+        assertEquals(2, reloaded.getEvents().size());
+        assertEquals("Renamed", reloaded.getEvent(event.getEventId()).getTitle());
+        assertEquals("Bergen", reloaded.getEvent(other.getEventId()).getPlace());
+        reloaded.removeEvent(event.getEventId());
+        assertTrue(reloaded.copy().eventExists(other.getEventId()));
+        assertFalse(reloaded.copy().eventExists(event.getEventId()));
+    }
+
+    @Test
+    void attendanceUsesUuidAndSurvivesReload() {
+        Event other = new Event(event.getTitle(), "Bergen", event.getTime());
+        eventFileManager.addEvent(event);
+        eventFileManager.addEvent(other);
+        UserFileManager users = new UserFileManager(tempDir.resolve("userdata.json").toString());
+        user.User attendee = new user.User("test", "test");
+        attendee.addEventId(event.getEventId());
+        users.addUser(attendee);
+        assertTrue(users.copy().getUser("test").isAttendingEvent(event.getEventId()));
+        assertFalse(users.getUser("test").isAttendingEvent(other.getEventId()));
+        users.removeEvent(other.getEventId());
+        assertTrue(users.getUser("test").isAttendingEvent(event.getEventId()));
+        users.removeEvent(event.getEventId());
+        assertTrue(users.copy().getUser("test").getEventIdList().isEmpty());
     }
 
     @Test
@@ -214,7 +258,7 @@ public class EventFileManagerTest {
         eventFileManager.addEvent(event);
         EventFileManager copy = eventFileManager.copy();
 
-        Event copiedEvent = copy.getEvent(event.getTitle());
+        Event copiedEvent = copy.getEvent(event.getEventId());
         assertEquals(event.getTitle(), copiedEvent.getTitle());
         assertEquals(event.getPlace(), copiedEvent.getPlace());
         assertEquals(event.getTime(), copiedEvent.getTime());
