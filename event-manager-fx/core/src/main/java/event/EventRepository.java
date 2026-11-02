@@ -8,21 +8,21 @@ import java.util.Map;
 public interface EventRepository {
 
     /**
-     * Gets an event by its title.
+     * Gets an event by its UUID.
      *
-     * @param title the title of the event
-     * @return the event with the given title
+     * @param eventId the UUID of the event
+     * @return the event with the given UUID
      * @throws IllegalArgumentException if the event does not exist
      */
-    Event getEvent(String title);
+    Event getEvent(String eventId);
 
     /**
-     * Checks whether an event with the given title exists.
+     * Checks whether an event with the given UUID exists.
      *
-     * @param title the title of the event
+     * @param eventId the UUID of the event
      * @return true if the event exists, otherwise false
      */
-    boolean eventExists(String title);
+    boolean eventExists(String eventId);
 
     /**
      * Adds an event.
@@ -33,26 +33,26 @@ public interface EventRepository {
     void addEvent(Event event);
 
     /**
-     * Removes an event by its title.
+     * Removes an event by its UUID.
      *
-     * @param title the title of the event to remove
+     * @param eventId the UUID of the event to remove
      * @throws IllegalArgumentException if the event does not exist
      */
-    void removeEvent(String title);
+    void removeEvent(String eventId);
 
     /**
-     * Updates an existing event.
+     * Updates an existing event. The updated event must have the same ID.
      *
-     * @param title the title of the event to update
+     * @param eventId the UUID of the event to update
      * @param event the updated event
      * @throws IllegalArgumentException if the event does not exist
      */
-    void editEvent(String title, Event event);
+    void editEvent(String eventId, Event event);
 
     /**
      * Gets all stored events.
      *
-     * @return a map containing all events, indexed by title
+     * @return a map containing all events, indexed by UUID
      */
     Map<String, Event> getEvents();
 
