@@ -1,6 +1,7 @@
 package event;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 /**
  * Represents an event with a title, place, and time.
@@ -9,17 +10,22 @@ public final class Event {
     private String title;
     private String place;
     private LocalDateTime time;
+    private final String eventId;
 
     /**
      * Creates a new event.
      *
+     * @param eventId the event UUID as a string
      * @param title the title of the event
      * @param place the place where the event takes place
      * @param time the date and time of the event
-     * @throws IllegalArgumentException if the title or place is null or blank,
+     * @throws IllegalArgumentException if the eventId, title or place is null or blank,
      *         or if the time is null
      */
-    public Event(String title, String place, LocalDateTime time) {
+    public Event(String eventId, String title, String place, LocalDateTime time) {
+      if (eventId == null || eventId.isBlank()) {
+        throw new IllegalArgumentException("Id cannot be empty");
+      }
 
       if (title == null || title.isBlank()) {
         throw new IllegalArgumentException("Title cannot be empty");
@@ -36,6 +42,20 @@ public final class Event {
     this.title = title;
     this.place = place;
     this.time = time;
+    this.eventId = eventId;
+    }
+
+    /**
+     * Creates a new event with a randomly generated UUID..
+     *
+     * @param title the title of the event
+     * @param place the place where the event takes place
+     * @param time the date and time of the event
+     * @throws IllegalArgumentException if the title or place is null or blank,
+     *         or if the time is null
+     */
+    public Event(String title, String place, LocalDateTime time) {
+        this(UUID.randomUUID().toString(), title, place, time);
     }
 
     /**
@@ -64,6 +84,13 @@ public final class Event {
     public LocalDateTime getTime(){
       return time;
     }
+
+    /**
+     * Returns the eventId for the event
+     *
+     * @return the event UUID
+     */
+    public String getEventId(){return eventId;}
 
 
 

@@ -43,7 +43,7 @@ public class EventFileManager implements EventRepository {
     private final String filePath;
 
     /**
-     * Map containing all currently stored events, indexed by their title.
+     * Map containing all currently stored events, indexed by their UUID.
      */
     private Map<String, Event> events;
 
@@ -109,32 +109,32 @@ public class EventFileManager implements EventRepository {
 
 
     /**
-     * Finds and returns an event with a specific title.
-     * @param title The name of the event
-     * @return The event with the name of title if found.
+     * Finds and returns an event with a specific UUID.
+     * @param eventId The UUID of the event
+     * @return The event with the UUID if found.
      * @throws IllegalArgumentException if the event does not exist.
      */
     @Override 
-    public Event getEvent(String title) {
-        if (!eventExists(title)) {
+    public Event getEvent(String eventId) {
+        if (!eventExists(eventId)) {
             throw new IllegalArgumentException(
-                    "Event does not exist: " + title
+                    "Event does not exist: " + eventId
             );
         }
 
-        return events.get(title);
+        return events.get(eventId);
     }
 
 
 
     /**
-     * Checks whether an event with the specified title exists.
-     * @param title The title of the event in string form.
+     * Checks whether an event with the specified UUID exists.
+     * @param eventId The UUID of the event.
      * @return True if event exists, otherwise false.
      */
     @Override
-    public boolean eventExists(String title) {
-        return events.containsKey(title);
+    public boolean eventExists(String eventId) {
+        return events.containsKey(eventId);
     }
 
     
@@ -142,35 +142,35 @@ public class EventFileManager implements EventRepository {
     /**
      * Adds an event to the stored events.
      * @param event The event object to be added.
-     * @throws IllegalArgumentException If an event by the same name already exists.
+     * @throws IllegalArgumentException If an event by the same UUID already exists.
      */
     @Override
     public void addEvent(Event event) {
-        if (eventExists(event.getTitle())) {
+        if (eventExists(event.getEventId())) {
             throw new IllegalArgumentException(
-                    "An event with this title already exists: "
-                            + event.getTitle()
+                    "An event with this UUID already exists: "
+                            + event.getEventId()
             );
         }
 
-        events.put(event.getTitle(), event);
+        events.put(event.getEventId(), event);
         saveEvents();
     }
 
     /**
-     * Removes an event with the specified title.
+     * Removes an event with the specified UUID.
      *
      * <p>The updated event collection is saved to the JSON file after removal.
      */
     @Override
-    public void removeEvent(String title) {
-        if (!eventExists(title)) {
+    public void removeEvent(String eventId) {
+        if (!eventExists(eventId)) {
             throw new IllegalArgumentException(
-                    "Event does not exist: " + title
+                    "Event does not exist: " + eventId
             );
         }
 
-        events.remove(title);
+        events.remove(eventId);
         saveEvents();
     }
 
@@ -180,14 +180,17 @@ public class EventFileManager implements EventRepository {
      * <p>The updated event collection is saved to the JSON file after editing.
      */
     @Override
-    public void editEvent(String title, Event event) {
-        if (!eventExists(title)) {
+    public void editEvent(String eventId, Event event) {
+        if (!eventExists(eventId)) {
             throw new IllegalArgumentException(
-                    "Event does not exist: " + title
+                    "Event does not exist: " + eventId
             );
         }
 
-        events.put(title, event);
+        if (!eventId.equals(event.getEventId())) {
+            throw new IllegalArgumentException("Updated event must keep its original ID");
+        }
+        events.put(eventId, event);
         saveEvents();
     }
 

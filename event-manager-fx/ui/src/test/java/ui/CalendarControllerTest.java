@@ -12,6 +12,7 @@ import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Objects;
+import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Disabled;
@@ -44,9 +45,12 @@ public class CalendarControllerTest extends ApplicationTest {
     @Override
     public void start(Stage stage) throws IOException {
         EventFileManager files = new EventFileManager();
-        if (files.eventExists("Testing")) {
-            files.removeEvent("Testing");
-        }
+        files.getEvents().values().stream()
+                .filter(event -> event.getTitle().equals("Testing"))
+                .forEach(event -> {
+                    files.removeEvent(event.getEventId());
+                    new UserFileManager().removeEvent(event.getEventId());
+                });
         UserFileManager users = new UserFileManager();
         users.removeEvent("Testing");
 
@@ -60,9 +64,12 @@ public class CalendarControllerTest extends ApplicationTest {
     @AfterEach
     void cleanUp() {
         EventFileManager files = new EventFileManager();
-        if (files.eventExists("Testing")) {
-            files.removeEvent("Testing");
-        }
+        files.getEvents().values().stream()
+                .filter(event -> event.getTitle().equals("Testing"))
+                .forEach(event -> {
+                    files.removeEvent(event.getEventId());
+                    new UserFileManager().removeEvent(event.getEventId());
+                });
     }
 
     /**
@@ -107,7 +114,7 @@ public class CalendarControllerTest extends ApplicationTest {
     }
  
     /**
-     * Tests that the eventcreator manages to create an event, but throws error when making a duplicate or making an event with incomplete fields.
+     * Tests that the eventcreator manages to create an event, but allows duplicate names and rejects incomplete fields.
      */
     @Test 
     void testEventCreator() {
@@ -115,7 +122,9 @@ public class CalendarControllerTest extends ApplicationTest {
         verifyThat("#eventError", hasText(""));
         
         createEvent();
-        verifyThat("#eventError", hasText("Something went wrong. \nCheck that you have filled all fields properly"));
+        verifyThat("#eventError", hasText(""));
+        assertEquals(2, new EventFileManager().getEvents().values().stream()
+                .filter(event -> event.getTitle().equals("Testing")).count());
         
         clickOn("#openEventCreator");
         clickOn("#createEvent");
@@ -164,6 +173,31 @@ public class CalendarControllerTest extends ApplicationTest {
 
     }
 
+    /**
+     * Tests that the events have independent attendance and deletion
+     */
+    @Test
+    void sameNamedEventsHaveIndependentAttendanceAndDeletion() {
+        createEvent();
+        createEvent();
+        List<Button> buttons = lookup(hasText("Testing")).queryAll().stream()
+                .filter(node -> node.getParent() instanceof HBox)
+                .map(node -> (Button) ((HBox) node.getParent()).getChildren().get(1))
+                .toList();
+        assertEquals(2, buttons.size());
+        clickOn(buttons.get(0));
+        clickOn("#toggleEventButton");
+        verifyThat("#toggleEventButton", hasText("Leave event"));
+        clickOn("#closeEvent");
+        clickOn(buttons.get(1));
+        verifyThat("#toggleEventButton", hasText("Join event"));
+        clickOn("#deleteEvent");
+        Node remaining = lookup(hasText("Testing")).query();
+        clickOn((Button) ((HBox) remaining.getParent()).getChildren().get(1));
+        verifyThat("#toggleEventButton", hasText("Leave event"));
+        assertEquals(1, new EventFileManager().getEvents().values().stream()
+                .filter(event -> event.getTitle().equals("Testing")).count());
+    }
 
     /**
      * Help function to create test event
