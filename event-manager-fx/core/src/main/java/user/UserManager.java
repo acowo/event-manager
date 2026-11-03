@@ -2,12 +2,12 @@ package user;
 
 
 /**
+ * UserManager implements domain logic for managing user aspects.
  * 
- * UserManager implements domain logic for managing user aspects:
  * <ul>
- *   <li>Login</li>
- *   <li>Registration</li>
- *   <li>Communicating with persistence</li>
+ *   <li>Login
+ *   <li>Registration
+ *   <li>Communicating with persistence
  * </ul>
  */
 public class UserManager {
@@ -15,7 +15,8 @@ public class UserManager {
     private final UserRepository users;
 
     /**
-     * Creates a UserManager object from a UserRepository
+   * Creates a UserManager object from a UserRepository.
+   *
      * @param users An implementation of a UserRepository
      */
     public UserManager(UserRepository users){
@@ -24,7 +25,8 @@ public class UserManager {
 
 
     /**
-     * Logs in using user credentials 
+   * Logs in using user credentials.
+   *
      * @param username the user's username credential
      * @param password the user's password credential
      * @return {@code true} if login was successful;
@@ -41,11 +43,12 @@ public class UserManager {
         
     }
     /**
-     * Creates a new user with the username and password and logs in with the same user credentials
+   * Creates a new user with the username and password and logs in with the same user credentials.
+   *
      * @param username the user's username credential
      * @param password the user's password credential
-     * @return {@code true} if registration and login was successfull;
-     *  {@code false} if user with the same username credential already exists
+   * @return {@code true} if registration and login was successful; {@code false} if user with the
+   *     same username credential already exists
      * @throws NullPointerException if username is null
      * @throws IllegalArgumentException if username is blank
      */
@@ -61,7 +64,8 @@ public class UserManager {
     }
 
     /**
-     * Edits a user by giving a username to update and an updated User-object
+   * Edits a user by giving a username to update and an updated User-object.
+   *
      * @param username the user to be changed
      * @param user the updated user object
      * @return
@@ -73,8 +77,9 @@ public class UserManager {
    }
 
    /**
-    * Removes an event from all users
-    * @param eventId
+   * Removes an event from all users.
+   *
+   * @param eventId the Event UUID to be removed
     */
    public void removeEvent(String eventId) {
         users.removeEvent(eventId);

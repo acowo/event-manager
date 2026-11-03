@@ -9,7 +9,8 @@ import java.time.LocalDateTime;
 
 
 /**
- * Used by Gson to serialize {@link LocalDateTime} objects to <a href="https://en.wikipedia.org/wiki/ISO_8601">ISO 8601</a> text strings
+ * Used by Gson to serialize {@link LocalDateTime} objects to <a
+ * href="https://en.wikipedia.org/wiki/ISO_8601">ISO 8601</a> text strings.
 */
 public class LocalDateTimeAdapter extends TypeAdapter<LocalDateTime> {
 

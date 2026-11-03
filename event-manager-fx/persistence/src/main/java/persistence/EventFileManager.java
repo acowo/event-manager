@@ -21,35 +21,25 @@ import event.EventRepository;
 /**
  * Manages the persistence of {@link Event} objects using a JSON file.
  *
- * <p>Events are stored in memory in a map and synchronized with the
- * {@code eventdata.json} file whenever an event is added, edited, or removed.
- * Gson is used to serialize and deserialize the event data.
+ * <p>Events are stored in memory in a map and synchronized with the {@code eventdata.json} file
+ * whenever an event is added, edited, or removed. Gson is used to serialize and deserialize the
+ * event data.
  */
 public class EventFileManager implements EventRepository {
 
-    /**
-     * Gson instance configured with an adapter for {@link LocalDateTime}.
-     */
-    private static final Gson gson = new GsonBuilder()
-            .registerTypeAdapter(
-                    LocalDateTime.class,
-                    new LocalDateTimeAdapter()
-            )
+  /** Gson instance configured with an adapter for {@link LocalDateTime}. */
+  private static final Gson gson =
+      new GsonBuilder()
+          .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
             .create();
 
-    /**
-     * Path to the JSON file containing the event data.
-     */
+  /** Path to the JSON file containing the event data. */
     private final String filePath;
 
-    /**
-     * Map containing all currently stored events, indexed by their UUID.
-     */
+  /** Map containing all currently stored events, indexed by their UUID. */
     private Map<String, Event> events;
 
-    /**
-     *  creates an EventFilemanager using the default event data file.
-     */
+  /** Creates an EventFileManager using the default event data file. */
     public EventFileManager() {
         this("../data/eventdata.json");
     }
@@ -110,6 +100,7 @@ public class EventFileManager implements EventRepository {
 
     /**
      * Finds and returns an event with a specific UUID.
+   *
      * @param eventId The UUID of the event
      * @return The event with the UUID if found.
      * @throws IllegalArgumentException if the event does not exist.
@@ -129,6 +120,7 @@ public class EventFileManager implements EventRepository {
 
     /**
      * Checks whether an event with the specified UUID exists.
+   *
      * @param eventId The UUID of the event.
      * @return True if event exists, otherwise false.
      */
@@ -141,6 +133,7 @@ public class EventFileManager implements EventRepository {
 
     /**
      * Adds an event to the stored events.
+   *
      * @param event The event object to be added.
      * @throws IllegalArgumentException If an event by the same UUID already exists.
      */
@@ -197,8 +190,8 @@ public class EventFileManager implements EventRepository {
     /**
      * Retrieves all stored events.
      *
-     * <p>A copy of the internal map is returned so that callers cannot
-     * directly modify the stored collection.
+   * <p>A copy of the internal map is returned so that callers cannot directly modify the stored
+   * collection.
      */
     @Override
     public Map<String, Event> getEvents() {
@@ -223,7 +216,7 @@ public class EventFileManager implements EventRepository {
 
     
     /**
-     * Copies this class
+   * Copies this class.
      *
      * @return a EventRepository that is a copy
      */

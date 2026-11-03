@@ -3,9 +3,7 @@ package event;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-/**
- * Represents an event with a title, place, and time.
- */
+/** Represents an event with a title, place, and time. */
 public final class Event {
     private String title;
     private String place;
@@ -19,8 +17,8 @@ public final class Event {
      * @param title the title of the event
      * @param place the place where the event takes place
      * @param time the date and time of the event
-     * @throws IllegalArgumentException if the eventId, title or place is null or blank,
-     *         or if the time is null
+   * @throws IllegalArgumentException if the eventId, title or place is null or blank, or if the
+   *     time is null
      */
     public Event(String eventId, String title, String place, LocalDateTime time) {
       if (eventId == null || eventId.isBlank()) {
@@ -46,13 +44,12 @@ public final class Event {
     }
 
     /**
-     * Creates a new event with a randomly generated UUID..
+   * Creates a new event with a randomly generated UUID.
      *
      * @param title the title of the event
      * @param place the place where the event takes place
      * @param time the date and time of the event
-     * @throws IllegalArgumentException if the title or place is null or blank,
-     *         or if the time is null
+   * @throws IllegalArgumentException if the title or place is null or blank, or if the time is null
      */
     public Event(String title, String place, LocalDateTime time) {
         this(UUID.randomUUID().toString(), title, place, time);
@@ -86,7 +83,7 @@ public final class Event {
     }
 
     /**
-     * Returns the eventId for the event
+   * Returns the eventId for the event.
      *
      * @return the event UUID
      */

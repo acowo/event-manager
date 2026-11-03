@@ -38,8 +38,8 @@ public class LoginPageController {
     private UserManager manager = new UserManager(new UserFileManager());
 
     /**
-     * Handles the controller logic needed when a user presses the login button.
-     * Uses imports from the Core and persistence modules. This function does not return a value.
+   * Handles the controller logic needed when a user presses the login button. Uses imports from the
+   * Core and persistence modules. This function does not return a value.
      */
     @FXML
     private void handleLogin() throws Exception {
@@ -57,8 +57,8 @@ public class LoginPageController {
     }
 
     /**
-     * Handles the controller logic needed when a user presses the register button.
-     * Uses imports from the Core and persistence modules. This function does not return a value.
+   * Handles the controller logic needed when a user presses the register button. Uses imports from
+   * the Core and persistence modules. This function does not return a value.
      */
     @FXML
     private void handleRegistration() throws Exception {
@@ -77,9 +77,9 @@ public class LoginPageController {
 
 
     /**
-     * Handles the controller logic needed when a user successfully creates a session through a valid account.
-     * Switches the scene away from the login page to the calendar view, can be changed in the future.
-     * This function does not return a value.
+   * Handles the controller logic needed when a user successfully creates a session through a valid
+   * account. Switches the scene away from the login page to the calendar view, can be changed in
+   * the future. This function does not return a value.
      */
     @FXML
     private void changeScene() throws IOException {
@@ -97,7 +97,9 @@ public class LoginPageController {
 
     /**
      * Handles the controller logic needed to check whether a user has populated the required fields.
-     * Mainly used to save resources by preventing unnecessary calls to heavier functions when not needed.
+   * Mainly used to save resources by preventing unnecessary calls to heavier functions when not
+   * needed.
+   *
      * @param username The string in the username field.
      * @param password The string in the password field.
      * @return True if fields are populated, false otherwise.

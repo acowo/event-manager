@@ -2,21 +2,17 @@ package user;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * 
- * A data class that represents a user within the system
- */
+/** A data class that represents a user within the system. */
 public final class User {
-  /**
-   * List of all identifiers for Events this User is attending 
-   */
+  /** List of all identifiers for Events this User is attending. */
     private List<String> eventIdList = new ArrayList<>();
     private String username;
     private String password;
 
 
     /**
-     * Creates a new User object with an empty attending events list 
+   * Creates a new User object with an empty attending events list.
+   *
      * @param username identifier of User
      * @param password password of User 
      * @throws NullPointerException if username is null
@@ -28,7 +24,8 @@ public final class User {
     }
 
     /**
-     * Creates a copy of an existing User 
+   * Creates a copy of an existing User.
+   *
      * @param user User object to be copied 
      */
     public User(User user) {
@@ -89,7 +86,8 @@ public final class User {
 
 
     /**
-     * Adds event to this users attending events using event identifier
+   * Adds event to this users attending events using event identifier.
+   *
      * @param eventId identifier of Event to be added 
      * @throws NullPointerException if eventId is null
      * @throws IllegalArgumentException if eventId is blank
@@ -105,7 +103,8 @@ public final class User {
     }
 
     /**
-     * Removes event from user's attending events using the event identifier 
+   * Removes event from user's attending events using the event identifier.
+   *
      * @param eventId identifier of event to remove
      * @throws NullPointerException if eventId is null
      * @throws IllegalArgumentException if eventId is blank
@@ -126,10 +125,10 @@ public final class User {
     }
 
     /**
-     * Checks if user is attending event using event identifier
+   * Checks if user is attending event using event identifier.
+   *
      * @param eventId identifier of event to check 
-     * @return {@code true} if user is attending event;
-     *  {@code false} if user is not attending event 
+   * @return {@code true} if user is attending event; {@code false} if user is not attending event
      * @throws NullPointerException if eventId is null
      * @throws IllegalArgumentException if eventId is blank
      */

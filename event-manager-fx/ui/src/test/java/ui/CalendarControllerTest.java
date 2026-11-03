@@ -38,9 +38,12 @@ import user.UserSession;
 
 public class CalendarControllerTest extends ApplicationTest {
 
-    /**    (non-Javadoc)
-     * Setup before each test. Clears the event and user files for the test event and sets user session with test user
-     * @see org.testfx.framework.junit5.ApplicationTest#start(javafx.stage.Stage)
+  /**
+   * Setup before each test. Clears the event and user files for the test event and
+   * sets user session with test user.
+   *
+   * @param stage the primary stage
+   * @throws IOException if loading the FXML fails
      */
     @Override
     public void start(Stage stage) throws IOException {
@@ -72,9 +75,7 @@ public class CalendarControllerTest extends ApplicationTest {
                 });
     }
 
-    /**
-     * Tests that the calendar opens properly with the month and year of today
-     */
+  /** Tests that the calendar opens properly with the month and year of today. */
     @Test 
     void testWindowLoads() {
         verifyThat("#yearLabel", isVisible());
@@ -82,9 +83,7 @@ public class CalendarControllerTest extends ApplicationTest {
         verifyThat("#monthLabel", hasText(LocalDate.now().getMonth().name()));
     }
 
-    /**
-     * Tests that the months change properly when using the arrows to traverse months
-     */
+  /** Tests that the months change properly when using the arrows to traverse months. */
     @Test 
     void testMonthChange() {
         clickOn("#nextMonth");
@@ -98,7 +97,8 @@ public class CalendarControllerTest extends ApplicationTest {
     }
 
     /**
-     * Tests that the create event button opens the eventcreator window and that the window closes upon pressing the cancel button
+   * Tests that the create event button opens the eventcreator window and that the window closes
+   * upon pressing the cancel button.
      */
     @Test 
     void showEventCreator() {
@@ -114,7 +114,8 @@ public class CalendarControllerTest extends ApplicationTest {
     }
  
     /**
-     * Tests that the eventcreator manages to create an event, but allows duplicate names and rejects incomplete fields.
+   * Tests that the eventcreator manages to create an event, but allows duplicate names and rejects
+   * incomplete fields.
      */
     @Test 
     void testEventCreator() {
@@ -132,8 +133,9 @@ public class CalendarControllerTest extends ApplicationTest {
     }
 
     /**
-     * tests that the logout button opens the loginPage and that the user in session is removed
-     * @throws InterruptedException
+   * Tests that the logout button opens the loginPage and that the user in session is removed.
+   *
+   * @throws InterruptedException if interrupted
      */
     @Test
     public void testValidLogout() throws InterruptedException {
@@ -144,10 +146,7 @@ public class CalendarControllerTest extends ApplicationTest {
         assertThrows(NullPointerException.class, () -> UserSession.getUser());
     }
 
-
-    /**
-     * Tests that the event pane for an event shows properly
-     */
+  /** Tests that the event pane for an event shows properly. */
     @Test
     public void testEventPane() {
         verifyThat("#eventPane", isVisible().negate()); //Checks that the pane is invisible initially
@@ -173,9 +172,7 @@ public class CalendarControllerTest extends ApplicationTest {
 
     }
 
-    /**
-     * Tests that the events have independent attendance and deletion
-     */
+  /** Tests that the events have independent attendance and deletion. */
     @Test
     void sameNamedEventsHaveIndependentAttendanceAndDeletion() {
         createEvent();

@@ -32,9 +32,10 @@ public class UserFileManager implements user.UserRepository {
 
     /**
      * Finds and returns a user with a specific username.
-     * @param username The name of the user in string form.
-     * @return The user object of the given user.
-     * @throws IllegalArgumentException if the user does not exist.
+   *
+   * @param username the name of the user in string form
+   * @return the user object of the given user
+   * @throws IllegalArgumentException if the user does not exist
      */
     @Override
     public User getUser(String username) {
@@ -60,13 +61,13 @@ public class UserFileManager implements user.UserRepository {
 
     /**
      * Checks if a specific username and password combination is valid.
-     * @param username The name of the user in string form.
-     * @param password The password of the user in string form.
-     * @return Boolean. True if the combination of the two fields exist, false otherwise.
-     * @throws IllegalArgumentException if the password is null.
+   *
+   * @param username the name of the user in string form
+   * @param password the password of the user in string form
+   * @return {@code true} if the combination of the two fields exists; {@code false} otherwise
+   * @throws IllegalArgumentException if the password is null
      */
-
-    //Note for future work, the method should also check if the username is null.
+  // Note for future work, the method should also check if the username is null.
     @Override
     public boolean check_password(String username, String password) {
         if (password == null) {
@@ -91,8 +92,9 @@ public class UserFileManager implements user.UserRepository {
 
     /**
      * Adds a user to the user map.
-     * @param user The user to be added to the user map.
-     * @throws IllegalArgumentException If the user already exists within the map.
+   *
+   * @param user the user to be added to the user map
+   * @throws IllegalArgumentException if the user already exists within the map
      */
     @Override
     public void addUser(User user) {
@@ -123,8 +125,10 @@ public class UserFileManager implements user.UserRepository {
 
     /**
      * Edits a user from the user map.
-     * @param username The user to be edited in the user map.
-     * @throws IllegalArgumentException If the user does not exist within the map.
+   *
+   * @param username the user to be edited in the user map
+   * @param user the new version of the user
+   * @throws IllegalArgumentException if the user does not exist within the map
      */
     public void editUser(String username, User user) {
         Map<String, User> users = getUsers(); 
@@ -181,7 +185,9 @@ public class UserFileManager implements user.UserRepository {
 
     /**
      * Saves all users from the user map to file.
-     * @throws IOException If there is an error while working with the user json file.
+   *
+   * @param users the map of users to be saved
+   * @throws NullPointerException if the users map is null
      */
     protected void saveUsers(Map<String, User> users) {
         if (users == null) {

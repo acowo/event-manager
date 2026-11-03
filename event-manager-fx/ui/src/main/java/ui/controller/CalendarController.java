@@ -41,11 +41,7 @@ import user.UserSession;
 import event.Event;
 
 
-/**
- * Controller for {@code /ui/CalendarApp.fxml}. 
- */
-
-
+/** Controller for {@code /ui/CalendarApp.fxml}. */
 public class CalendarController {
     private Month month;
     private int year;
@@ -79,11 +75,10 @@ public class CalendarController {
     private ToggleButton toggleEventButton;
 
     /**
-     * Default method automatically called when opening the {@link Calendar.FXML} file
+   * Default method automatically called when opening the {@link Calendar.fxml} file.
      * 
-     * <p>Sets the view to show the current month and shows all events for the month</p>
+   * <p>Sets the view to show the current month and shows all events for the month.
      */
-
     @FXML
     public void initialize() {
 
@@ -100,20 +95,22 @@ public class CalendarController {
     }
 
     /**
-     * <p>Changes {@link #month month} to one month before <br>
-     * Updates the display to fit the new month with {@link #setMonth setMonth()} </p>
+   * Changes {@link #month month} to one month before. <br>
+   * Updates the display to fit the new month with {@link #setMonth setMonth()}
+   *
      * @see #nextMonth nextMonth
      */
-    
     @FXML 
     public void prevMonth() {
       if (this.month.equals(Month.JANUARY)) {this.year -= 1;}
       this.month = this.month.minus(1);
       setMonth(this.month, this.year);
     }
+
     /**
-     * <p>Changes {@link #month month} to one month after <br>
-     * Updates the display to fit the new month with {@link #setMonth setMonth()} </p>
+   * Changes {@link #month month} to one month after. <br>
+   * Updates the display to fit the new month with {@link #setMonth setMonth()}
+   *
      * @see #prevMonth prevMonth
      */
     
@@ -219,9 +216,10 @@ public class CalendarController {
 
 
     /**
-     * Ends the current user session and changes back to the login page
+   * Ends the current user session and changes back to the login page.
+   *
      * @param event the FXML event
-     * @throws IOException
+   * @throws IOException if FXML cannot be found
      */
     @FXML 
     public void handleLogout(javafx.event.Event event) throws IOException{
@@ -231,7 +229,8 @@ public class CalendarController {
     }
 
     /**
-     * Displays a month in the UI based on a specific date
+   * Displays a month in the UI based on a specific date.
+   *
      * @param date the date of the month to be shown
      * @throws IllegalArgumentException if date is null
      */
@@ -270,7 +269,8 @@ public class CalendarController {
 
 
     /**
-     * Displays a month in the UI based on a specific month in a year
+   * Displays a month in the UI based on a specific month in a year.
+   *
      * @param month the month to be shown
      * @param year the year of the month to be shown
      * @throws IllegalArgumentException if month or year before 1970
@@ -282,9 +282,8 @@ public class CalendarController {
     }
 
     /**
-     * Displays all events of the current month showing
+   * Displays all events of the current month showing.
      * 
-     * @param events list of all events
      * @throws IllegalStateException if this.month is null
      */
 
@@ -297,7 +296,7 @@ public class CalendarController {
           VBox pane = (VBox) calendar.getChildren().get(dayOfMonth);
           HBox eventPane = new HBox();
 
-          //TODO: Fix the styling of new events
+        // TODO: Fix the styling of new events
           eventPane.setStyle("-fx-background-color: #cc76fb; -fx-background-radius:5px;");
           eventPane.getChildren().add(new Label(event.getTitle()));
 
@@ -315,10 +314,11 @@ public class CalendarController {
 
 
     /**
-     * Changes the FXML to a different view
+   * Changes the FXML to a different view.
+   *
      * @param event the FXML event that caused the function to run
      * @param filepath the filepath of the new view
-     * @throws IOException
+   * @throws IOException if FXML cannot be found
      */
     private void changeScene(javafx.event.Event event, String filepath) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource(filepath));

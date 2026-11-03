@@ -2,9 +2,7 @@ package event;
 
 import java.util.Map;
 
-/**
- * Defines the operations for storing and retrieving events.
- */
+/** Defines the operations for storing and retrieving events. */
 public interface EventRepository {
 
     /**
@@ -57,7 +55,7 @@ public interface EventRepository {
     Map<String, Event> getEvents();
 
     /**
-     * Copies this class
+   * Copies this class.
      *
      * @return a EventRepository that is a copy
      */

@@ -1,8 +1,6 @@
 package user;
-/**
- * 
- * UserSession works as a global variable for accessing which user is currently logged in
- */
+
+/** UserSession works as a global variable for accessing which user is currently logged in. */
 public class UserSession {
     private static User user;
 
