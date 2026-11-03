@@ -45,17 +45,23 @@ public class CalendarController {
     private User user;
     private UserManager userManager;
 
+    public CalendarController() {
+      this(new EventFileManager(), new UserFileManager());
+    }
+
+    public CalendarController(EventFileManager eventManager, UserFileManager userManager) {
+      this.manager = Objects.requireNonNull(eventManager);
+      this.userManager = Objects.requireNonNull(userManager);
+    }
+
     @FXML
     private GridPane calendar;
 
     @FXML
-    private Label monthLabel,
-            yearLabel,
-            eventTitle,
-            eventDate,
-            eventTime,
-            eventLocation,
-            eventError;
+    private Label monthLabel, yearLabel, time, eventTitle, eventDate, eventTime, eventLocation, eventError;
+
+    @FXML 
+    private Slider hourSlider;
 
     @FXML
     private ScrollPane eventCreator, eventPane;
@@ -89,9 +95,10 @@ public class CalendarController {
 
         this.today = LocalDate.now();
         this.manager = new EventManager(new EventFileManager());
-        events = manager.getEvents();
         user = UserSession.getUser();
         userManager = new UserManager(new UserFileManager());
+      this.events = manager.getEvents();
+      this.user = UserSession.getUser();
 
         setMonth(this.today);
 
