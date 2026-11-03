@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.AfterEach;
 
 public class UserManagerTest {
 
@@ -98,5 +99,10 @@ public class UserManagerTest {
         UserManager manager = new UserManager(repository);
 
         assertFalse(manager.register("existingUser", "newPassword"));
+    }
+
+    @AfterEach 
+    void tearDown() {
+        UserSession.logout();
     }
 }
