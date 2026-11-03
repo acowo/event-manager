@@ -123,7 +123,7 @@
                         <xmlOutput>false</xmlOutput>
                         <htmlOutput>true</htmlOutput>
                         <excludeFilterFile>${maven.multiModuleProjectDirectory}/config/spotbugs/exclude.xml</excludeFilterFile>
-                        <threshold>Low</threshold>
+                        <threshold>Medium</threshold>
                         <failOnError>true</failOnError>
                     </configuration>
                     <executions>
