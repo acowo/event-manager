@@ -69,6 +69,9 @@ public class UserManager {
    public boolean editUser(String username, User user) {
         if (!users.userExists(username)) {return false;}
         users.editUser(username, user);
+        if (UserSession.getUser().getUsername().equals(username)) {
+            UserSession.setUser(user);
+        }
         return true;
    }
 

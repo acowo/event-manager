@@ -5,10 +5,12 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.List;
+import java.util.Map;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+/** Tests user creation, validation, and management of usernames, passwords, and event IDs. */
 public class UserTest {
 
     private User user;
@@ -22,7 +24,7 @@ public class UserTest {
     void testCreateUser() {
         assertEquals("testUser", user.getUsername());
         assertEquals("testPassword", user.getPassword());
-        assertTrue(user.getEventIdList().isEmpty());
+        assertTrue(user.getEventIds().isEmpty());
     }
 
     @Test
@@ -73,17 +75,17 @@ public class UserTest {
 
     @Test
     void testAddEventId() {
-        user.addEventId("event1");
+        user.addEventId("event1", true);
 
         assertTrue(user.isAttendingEvent("event1"));
-        assertEquals(List.of("event1"), user.getEventIdList());
+        assertEquals(Map.of("event1", true), user.getEventIds());
     }
 
     @Test
     void testAddNullEventIdThrowsException() {
         assertThrows(
                 NullPointerException.class,
-                () -> user.addEventId(null)
+                () -> user.addEventId(null, false)
         );
     }
 
@@ -91,13 +93,13 @@ public class UserTest {
     void testAddBlankEventIdThrowsException() {
         assertThrows(
                 IllegalArgumentException.class,
-                () -> user.addEventId(" ")
+                () -> user.addEventId(" ", false)
         );
     }
 
     @Test
     void testRemoveEventId() {
-        user.addEventId("event1");
+        user.addEventId("event1", true);
 
         user.removeEventId("event1");
 
@@ -130,7 +132,7 @@ public class UserTest {
 
     @Test
     void testIsAttendingEventReturnsTrueWhenAttending() {
-        user.addEventId("event1");
+        user.addEventId("event1", true);
 
         assertTrue(user.isAttendingEvent("event1"));
     }
@@ -158,15 +160,15 @@ public class UserTest {
 
     @Test
     void testGetEventIdListReturnsCopy() {
-        user.addEventId("event1");
+        user.addEventId("event1", false);
 
-        List<String> events = user.getEventIdList();
+        Map<String, Boolean> events = user.getEventIds();
 
         assertThrows(
                 UnsupportedOperationException.class,
-                () -> events.add("event2")
+                () -> events.put("event2", false)
         );
 
-        assertEquals(List.of("event1"), user.getEventIdList());
+        assertEquals(Map.of("event1", false), user.getEventIds());
     }
 }

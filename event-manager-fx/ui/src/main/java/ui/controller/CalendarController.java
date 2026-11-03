@@ -10,6 +10,8 @@ import java.time.Month;
 import java.time.temporal.ChronoField;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -40,18 +42,18 @@ public class CalendarController {
 
     private LocalDate today;
     private Map<String, Event> events;
-    private EventManager manager;
+    private final EventManager eventManager;
     private String selectedEventId;
     private User user;
-    private UserManager userManager;
+    private final UserManager userManager;
 
     public CalendarController() {
       this(new EventFileManager(), new UserFileManager());
     }
 
     public CalendarController(EventFileManager eventManager, UserFileManager userManager) {
-      this.manager = Objects.requireNonNull(eventManager);
-      this.userManager = Objects.requireNonNull(userManager);
+      this.eventManager = new EventManager(Objects.requireNonNull(eventManager));
+      this.userManager = new UserManager(Objects.requireNonNull(userManager));
     }
 
     @FXML
@@ -59,9 +61,6 @@ public class CalendarController {
 
     @FXML
     private Label monthLabel, yearLabel, time, eventTitle, eventDate, eventTime, eventLocation, eventError;
-
-    @FXML 
-    private Slider hourSlider;
 
     @FXML
     private ScrollPane eventCreator, eventPane;
@@ -92,13 +91,10 @@ public class CalendarController {
 
     @FXML
     public void initialize() {
-
         this.today = LocalDate.now();
-        this.manager = new EventManager(new EventFileManager());
         user = UserSession.getUser();
-        userManager = new UserManager(new UserFileManager());
-      this.events = manager.getEvents();
-      this.user = UserSession.getUser();
+        this.events = this.eventManager.getEvents();
+        this.user = UserSession.getUser();
 
         setMonth(this.today);
 
@@ -163,7 +159,7 @@ public class CalendarController {
             LocalDate date = setEventDate.getValue();
             LocalTime time = LocalTime.of(Integer.parseInt(setEventTime.getText(0, 2)), Integer.parseInt(setEventTime.getText(3, 5)));
             Event event = new Event(setEventTitle.getText(), setEventLocation.getText(), LocalDateTime.of(date, time));
-            if (this.manager.addEvent(event)) {
+            if (this.eventManager.addEvent(event)) {
                 this.events.put(event.getEventId(), event);
                 setMonth(LocalDate.of(this.year, this.month, 1));
                 this.user.addEventId(event.getEventId(), true);
@@ -183,7 +179,7 @@ public class CalendarController {
             return;
         }
         userManager.removeEvent(selectedEventId);
-        manager.removeEvent(selectedEventId);
+        eventManager.removeEvent(selectedEventId);
         events.remove(selectedEventId);
 
         if (user.isAttendingEvent(selectedEventId)) {

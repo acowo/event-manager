@@ -1,9 +1,6 @@
 package ui;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.testfx.api.FxAssert.verifyThat;
 import static org.testfx.util.NodeQueryUtils.hasText;
 import static org.testfx.util.NodeQueryUtils.isVisible;
@@ -11,10 +8,12 @@ import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.nio.file.Path;
 import java.util.List;
 
+import event.Event;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Disabled;
@@ -40,6 +39,14 @@ import user.UserManager;
 import user.UserSession;
 
 public class CalendarControllerTest extends ApplicationTest {
+    private EventFileManager eventFiles;
+    private UserFileManager userFiles;
+    private List<Event> savedEvents(String title) {
+        return new EventFileManager(tempDir.resolve("eventdata.json").toString())
+                .getEvents().values().stream()
+                .filter(e -> e.getTitle().equals(title))
+                .toList();
+    }
 
     @TempDir
     Path tempDir;
@@ -50,11 +57,11 @@ public class CalendarControllerTest extends ApplicationTest {
      */
     @Override
     public void start(Stage stage) throws IOException {
-        EventFileManager eventFiles = new EventFileManager(
+        eventFiles = new EventFileManager(
             tempDir.resolve("eventdata.json").toString()
         );
 
-        UserFileManager userFiles = new UserFileManager(
+        userFiles = new UserFileManager(
             tempDir.resolve("userdata.json").toString()
         );
 
@@ -62,29 +69,17 @@ public class CalendarControllerTest extends ApplicationTest {
         manager.register("testuser", "testpassword");
         manager.login("testuser", "testpassword");
 
-        FXMLLoader loader = new FXMLLoader(
-            CalendarController.class.getResource("/ui/Calendar.fxml")
-        );
+        eventFiles.addEvent(new Event("Not Admin", "Home", LocalDateTime.now()));
 
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/Calendar.fxml"));
         loader.setControllerFactory(type -> {
-            if(type == CalendarController.class) {
+            if (type == CalendarController.class) {
                 return new CalendarController(eventFiles, userFiles);
             }
             throw new IllegalArgumentException("Unexpected controller: " + type);
         });
-        EventFileManager files = new EventFileManager();
-        files.getEvents().values().stream()
-                .filter(event -> event.getTitle().equals("Testing"))
-                .forEach(event -> {
-                    files.removeEvent(event.getEventId());
-                    new UserFileManager().removeEvent(event.getEventId());
-                });
-        UserFileManager users = new UserFileManager();
-        users.removeEvent("Testing");
 
-        UserManager manager = new UserManager(new UserFileManager());
-        manager.login("ola", "banan"); //Sets user to testuser so the application properly opens
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/ui/Calendar.fxml")));
+        Parent root = loader.load();   // instance load, not the static FXMLLoader.load
         stage.setScene(new Scene(root));
         stage.show();
 
@@ -93,13 +88,6 @@ public class CalendarControllerTest extends ApplicationTest {
     @AfterEach
     void cleanUp() {
         UserSession.logout();
-        EventFileManager files = new EventFileManager();
-        files.getEvents().values().stream()
-                .filter(event -> event.getTitle().equals("Testing"))
-                .forEach(event -> {
-                    files.removeEvent(event.getEventId());
-                    new UserFileManager().removeEvent(event.getEventId());
-                });
     }
 
     /**
@@ -153,8 +141,7 @@ public class CalendarControllerTest extends ApplicationTest {
         
         createEvent();
         verifyThat("#eventError", hasText(""));
-        assertEquals(2, new EventFileManager().getEvents().values().stream()
-                .filter(event -> event.getTitle().equals("Testing")).count());
+        assertEquals(2, savedEvents("Testing").size());
         
         clickOn("#openEventCreator");
         clickOn("#createEvent");
@@ -163,15 +150,15 @@ public class CalendarControllerTest extends ApplicationTest {
 
     /**
      * tests that the logout button opens the loginPage and that the user in session is removed
-     * @throws InterruptedException
+     *
      */
     @Test
-    public void testValidLogout() throws InterruptedException {
+    public void testValidLogout() {
         clickOn("#logout");
 
         //Verifying that the scene changed by checking that a node from the login view is present
         verifyThat("#loginPage_usernameField", isVisible());
-        assertThrows(NullPointerException.class, () -> UserSession.getUser());
+        assertThrows(NullPointerException.class, UserSession::getUser);
     }
 
 
@@ -181,25 +168,21 @@ public class CalendarControllerTest extends ApplicationTest {
     @Test
     public void testEventPane() {
         verifyThat("#eventPane", isVisible().negate()); //Checks that the pane is invisible initially
-        
+
         createEvent(); //Creates a test event and localizes the button that shows the event pane
         Node label = lookup(hasText("Testing")).query();
         HBox eventPane = (HBox) label.getParent();
         Button button = (Button) eventPane.getChildren().get(1);
         clickOn(button);
-        
+
         verifyThat("#eventPane", isVisible());
-        
-        verifyThat("#toggleEventButton", hasText("Join event")); //Checks that the user isnt signed up for an event that was just created, checks that the status changes after the button is pressed
-        clickOn("#toggleEventButton");
-        verifyThat("#toggleEventButton", hasText("Leave event"));
-        
-        clickOn("#closeEvent");
+
+        clickOn("#closeEventButton");
         verifyThat("#eventPane", isVisible().negate());
-        
+
         clickOn(button);
-        verifyThat("#toggleEventButton", hasText("Leave event"));
-        clickOn("#deleteEvent");
+        //verifyThat("#toggleEventButton", hasText("Leave event"));
+        clickOn("#deleteEventButton");
 
     }
 
@@ -207,7 +190,7 @@ public class CalendarControllerTest extends ApplicationTest {
      * Tests that the events have independent attendance and deletion
      */
     @Test
-    void sameNamedEventsHaveIndependentAttendanceAndDeletion() {
+    void sameNamedEventsHaveIndependentDeletion() {
         createEvent();
         createEvent();
         List<Button> buttons = lookup(hasText("Testing")).queryAll().stream()
@@ -216,17 +199,48 @@ public class CalendarControllerTest extends ApplicationTest {
                 .toList();
         assertEquals(2, buttons.size());
         clickOn(buttons.get(0));
+        verifyThat("#deleteEventButton", isVisible());
+        clickOn("#closeEventButton");
+
+        clickOn(buttons.get(1));
+        verifyThat("#deleteEventButton", isVisible());
+        clickOn("#closeEventButton");
+
+        assertEquals(2, savedEvents("Testing").size());
+
+        clickOn(buttons.get(0));
+        clickOn("#deleteEventButton");
+
+        assertEquals(1, savedEvents("Testing").size());
+
+    }
+
+    @Test
+    void canJoinAndLeaveNonAdministrativeEvents() {
+        Event nonAdmin = eventFiles.getEvents().values().stream().findFirst().orElseThrow(IllegalStateException::new);
+
+        Node label = lookup(hasText("Not Admin")).query();
+        HBox eventPane = (HBox) label.getParent();
+        Button button = (Button) eventPane.getChildren().get(1);
+        clickOn(button);
+
+        verifyThat("#eventPane", isVisible());
+        verifyThat("#toggleEventButton", isVisible());
+        verifyThat("#toggleEventButton", hasText("Join event"));
+        assertFalse(UserSession.getUser().isAttendingEvent(nonAdmin.getEventId()));
+
         clickOn("#toggleEventButton");
         verifyThat("#toggleEventButton", hasText("Leave event"));
-        clickOn("#closeEvent");
-        clickOn(buttons.get(1));
-        verifyThat("#toggleEventButton", hasText("Join event"));
-        clickOn("#deleteEvent");
-        Node remaining = lookup(hasText("Testing")).query();
-        clickOn((Button) ((HBox) remaining.getParent()).getChildren().get(1));
+        assertTrue(UserSession.getUser().isAttendingEvent(nonAdmin.getEventId()));
+
+        clickOn("#closeEventButton");
+        clickOn(button);
+
         verifyThat("#toggleEventButton", hasText("Leave event"));
-        assertEquals(1, new EventFileManager().getEvents().values().stream()
-                .filter(event -> event.getTitle().equals("Testing")).count());
+        clickOn("#toggleEventButton");
+        verifyThat("#toggleEventButton", hasText("Join event"));
+
+
     }
 
     /**
@@ -237,17 +251,17 @@ public class CalendarControllerTest extends ApplicationTest {
 
         clickOn("#setEventTitle").write("Testing");
         clickOn("#setEventLocation").write("Testing location");
-        
+
         DatePicker datePicker = lookup("#setEventDate").queryAs(DatePicker.class);
         interact(() -> datePicker.setValue(LocalDate.now().withDayOfMonth(1)));
-        
+
         press(KeyCode.ENTER).release(KeyCode.ENTER);
 
         clickOn("#setEventTime").write("10:00");
-        
+
         clickOn("#createEvent");
         waitForFxEvents();
     }
-    
+
 
 }

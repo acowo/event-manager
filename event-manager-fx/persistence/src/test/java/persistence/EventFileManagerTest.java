@@ -208,14 +208,14 @@ public class EventFileManagerTest {
         eventFileManager.addEvent(other);
         UserFileManager users = new UserFileManager(tempDir.resolve("userdata.json").toString());
         user.User attendee = new user.User("test", "test");
-        attendee.addEventId(event.getEventId());
+        attendee.addEventId(event.getEventId(), true);
         users.addUser(attendee);
         assertTrue(users.copy().getUser("test").isAttendingEvent(event.getEventId()));
         assertFalse(users.getUser("test").isAttendingEvent(other.getEventId()));
         users.removeEvent(other.getEventId());
         assertTrue(users.getUser("test").isAttendingEvent(event.getEventId()));
         users.removeEvent(event.getEventId());
-        assertTrue(users.copy().getUser("test").getEventIdList().isEmpty());
+        assertTrue(users.copy().getUser("test").getEventIds().isEmpty());
     }
 
     @Test
