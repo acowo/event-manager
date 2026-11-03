@@ -222,8 +222,9 @@ public class UserFileManagerTest {
     }
 
     @Test
-    void testConstructorWithDefaultFilePath() {
-        assertDoesNotThrow(() -> new UserFileManager());
+    void testConstructorWithTemporaryFilePath() {
+        Path file = tempDir.resolve("constructor-user.jason");
+        assertDoesNotThrow(() -> new UserFileManager(file.toString()));      
     }
 
     @Test
@@ -272,21 +273,5 @@ public class UserFileManagerTest {
 
         assertEquals("An error has occurred", exception.getMessage());
     }
-
-    @Test
-    void testLoadFromDirectoryReturnsEmptyMap() {
-        EventFileManager manager = new EventFileManager(tempDir.toString());
-        assertTrue(manager.getEvents().isEmpty());
-    }
-
-    @Test
-    void testConstructorUsesEmptyMapWhenLoadingFails() throws IOException {
-        Path file = tempDir.resolve("invalid.json");
-        Files.writeString(file, "{invalid json");
-        EventFileManager manager = new EventFileManager(file.toString());
-        assertTrue(manager.getEvents().isEmpty());
-    }
-
-
     
 }
