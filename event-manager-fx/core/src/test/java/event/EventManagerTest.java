@@ -10,9 +10,12 @@ import java.util.Map;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
-
+/**
+ * EventManagerTest contains unit tests for the {@link EventManager} class, verifying core
+ * functionalities such as adding, editing, removing, and retrieving events using an in-memory fake
+ * repository implementation.
+ */
 public class EventManagerTest {
 
   private EventManager eventManager;

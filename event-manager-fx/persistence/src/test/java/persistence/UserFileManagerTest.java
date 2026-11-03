@@ -16,8 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import user.User;
 
-import static org.junit.jupiter.api.Assertions.*;
-
+/** Tests for {@link UserFileManager}. */
 public class UserFileManagerTest {
 
     private User user1;

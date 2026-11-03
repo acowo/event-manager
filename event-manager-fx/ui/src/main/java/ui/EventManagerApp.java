@@ -5,7 +5,17 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+/** JavaFX entry point for the UI module. */
 public class EventManagerApp extends Application {
+
+  /**
+   * Launches the JavaFX application.
+   *
+   * @param args command-line arguments
+   */
+  public static void main(String[] args) {
+    launch(args);
+  }
 
     @Override
     public void start(Stage stage) throws Exception {

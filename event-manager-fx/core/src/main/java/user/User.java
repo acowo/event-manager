@@ -35,13 +35,14 @@ public final class User {
       this.eventIdList = new ArrayList<>(user.getEventIdList());
     }
 
-    /**
-     * 
-     * @return username of this User
-     */
-    public String getUsername(){
-      return this.username;
-    }
+  /**
+   * Gets username of this User object.
+   *
+   * @return username of this User
+   */
+  public String getUsername() {
+    return this.username;
+  }
 
     /**
    * Sets username of this User.
@@ -147,13 +148,14 @@ public final class User {
       return this.eventIdList.contains(eventId);
     }
 
-    /**
-     * 
-     * @return unmodifiable list of identifiers of all events user is attending
-     */
-    public List<String> getEventIdList(){
-      return List.copyOf(this.eventIdList);
-    }
+  /**
+   * Gets all events user is attending.
+   *
+   * @return unmodifiable list of identifiers of all events user is attending
+   */
+  public List<String> getEventIdList() {
+    return List.copyOf(this.eventIdList);
+  }
 }
 
 

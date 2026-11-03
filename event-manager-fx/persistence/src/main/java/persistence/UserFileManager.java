@@ -12,19 +12,32 @@ import java.util.Map;
 import java.util.Scanner;
 import user.User;
 
+/**
+ * UserFileManager handles the persistence of user data using JSON files.
+ * It implements the {@link user.UserRepository} interface to store, retrieve,
+ * and update user records locally via Google Gson.
+ */
 public class UserFileManager implements user.UserRepository {
 
     private final Gson gson = new Gson();
 
     private final String filePath;
 
-    public UserFileManager() {
-        this("../data/userdata.json");
-    }
+  /**
+   * Constructs a new UserFileManager with the default file path.
+   */
+  public UserFileManager() {
+    this("../data/userdata.json");
+  }
 
-    public UserFileManager(String filePath) {
-        this.filePath = filePath;
-    }
+  /**
+   * Constructs a new UserFileManager with the specified file path.
+   *
+   * @param filePath the path to the user data file
+   */
+  public UserFileManager(String filePath) {
+    this.filePath = filePath;
+  }
 
   /**
    * Checks if a user by the given username exists.
@@ -206,11 +219,19 @@ public class UserFileManager implements user.UserRepository {
         }
     }
 
-    @Override
-    public void removeEvent(String eventId) {
-        Map<String, User> users = getUsers();
-        users.values().forEach(u -> {
-            if (u.isAttendingEvent(eventId)) {
+  /**
+   * Removes an event from all users.
+   *
+   * @param eventId the event UUID as a string
+   */
+  @Override
+  public void removeEvent(String eventId) {
+    Map<String, User> users = getUsers();
+    users
+        .values()
+        .forEach(
+            u -> {
+              if (u.isAttendingEvent(eventId)) {
                 u.removeEventId(eventId);
             }
         });

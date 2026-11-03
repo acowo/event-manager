@@ -9,6 +9,7 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+/** Tests user creation, validation, and management of usernames, passwords, and event IDs. */
 public class UserTest {
 
     private User user;

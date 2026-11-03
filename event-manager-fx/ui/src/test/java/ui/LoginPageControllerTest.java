@@ -13,18 +13,8 @@ import javafx.stage.Stage;
 import org.junit.jupiter.api.Test;
 import org.testfx.framework.junit5.ApplicationTest;
 import org.testfx.matcher.base.NodeMatchers;
-import org.testfx.matcher.control.LabeledMatchers;
-import javafx.scene.Parent;
 
-
-import java.io.IOException;
-import java.util.Objects;
-
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.testfx.api.FxAssert.verifyThat;
-import static org.testfx.util.NodeQueryUtils.hasText;
-import static org.testfx.util.NodeQueryUtils.isVisible;
-
+/** UI tests for {@link ui.controller.LoginPageController}. */
 public class LoginPageControllerTest extends ApplicationTest {
     /**
      * Starts the stage so the tests can take place.

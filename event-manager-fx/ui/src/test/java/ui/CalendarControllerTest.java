@@ -30,6 +30,9 @@ import persistence.UserFileManager;
 import user.UserManager;
 import user.UserSession;
 
+/**
+ * Test class for CalendarController, verifying UI behavior and user interactions.
+ */
 public class CalendarControllerTest extends ApplicationTest {
 
   /**

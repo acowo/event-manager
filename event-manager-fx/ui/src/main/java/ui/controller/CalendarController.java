@@ -114,61 +114,79 @@ public class CalendarController {
       setMonth(this.month, this.year);
     }
 
-    @FXML
-    public void openEventCreator() {
-      eventCreator.disableProperty().set(false);
-      eventCreator.setVisible(true);
-      eventCreator.opacityProperty().set(1);
-    }
-    
-    @FXML
-    public void closeEventCreator() {
-      eventCreator.disableProperty().set(true);
-      eventCreator.opacityProperty().set(0);
-      eventCreator.setVisible(false);
-      eventError.setText("");
-      setEventTime.setText("");
-      setEventTitle.setText("");
-      setEventLocation.setText("");
-    }
+  /** Opens the event creator pane. */
+  @FXML
+  public void openEventCreator() {
+    eventCreator.disableProperty().set(false);
+    eventCreator.setVisible(true);
+    eventCreator.opacityProperty().set(1);
+  }
 
-    @FXML 
-    public void createEvent() {
-      
-      try {
-        LocalDate date = setEventDate.getValue();
-        LocalTime time = LocalTime.of(Integer.parseInt(setEventTime.getText(0,2)), Integer.parseInt(setEventTime.getText(3,5)));
-        Event event = new Event(setEventTitle.getText(), setEventLocation.getText(), LocalDateTime.of(date, time));
-        if (this.manager.addEvent(event)) {
-          this.events.put(event.getEventId(), event);
-          setMonth(LocalDate.of(this.year,this.month,1));
-          closeEventCreator();
-        } else {
-          eventError.setText("Something went wrong. \nCheck that you have filled all fields properly");
-        }
-      } catch (Exception e) {
-        eventError.setText("Something went wrong. \nCheck that you have filled all fields properly");
+  /** Closes the event creator pane and clears its input fields. */
+  @FXML
+  public void closeEventCreator() {
+    eventCreator.disableProperty().set(true);
+    eventCreator.opacityProperty().set(0);
+    eventCreator.setVisible(false);
+    eventError.setText("");
+    setEventTime.setText("");
+    setEventTitle.setText("");
+    setEventLocation.setText("");
+  }
+
+  /** Creates a new event from user inputs and adds it to the manager. */
+  @FXML
+  public void createEvent() {
+
+    try {
+      LocalDate date = setEventDate.getValue();
+      LocalTime time =
+          LocalTime.of(
+              Integer.parseInt(setEventTime.getText(0, 2)),
+              Integer.parseInt(setEventTime.getText(3, 5)));
+      Event event =
+          new Event(
+              setEventTitle.getText(), setEventLocation.getText(), LocalDateTime.of(date, time));
+      if (this.manager.addEvent(event)) {
+        this.events.put(event.getEventId(), event);
+        setMonth(LocalDate.of(this.year, this.month, 1));
+        closeEventCreator();
+      } else {
+        eventError.setText(
+            "Something went wrong. \nCheck that you have filled all fields properly");
       }
+    } catch (Exception e) {
+      eventError.setText("Something went wrong. \nCheck that you have filled all fields properly");
     }
+  }
 
-    @FXML 
-    public void deleteEvent() {
-      if (selectedEventId == null) {return;}
-      userManager.removeEvent(selectedEventId);
-      manager.removeEvent(selectedEventId);
-      events.remove(selectedEventId);
-      
-      if (user.isAttendingEvent(selectedEventId)) {user.removeEventId(selectedEventId);}
-      setMonth(LocalDate.of(this.year,this.month,1));
-      hideEvent();
+  /** Deletes the currently selected event from the repository and calendar view. */
+  @FXML
+  public void deleteEvent() {
+    if (selectedEventId == null) {
+      return;
     }
+    userManager.removeEvent(selectedEventId);
+    manager.removeEvent(selectedEventId);
+    events.remove(selectedEventId);
 
+    if (user.isAttendingEvent(selectedEventId)) {
+      user.removeEventId(selectedEventId);
+    }
+    setMonth(LocalDate.of(this.year, this.month, 1));
+    hideEvent();
+  }
 
-    public void showEvent(Event event) {
-      selectedEventId = event.getEventId();
-      eventPane.setOpacity(1);
-      eventPane.setDisable(false);
-      eventPane.setVisible(true);
+  /**
+   * Displays the details of the specified event in the event pane.
+   *
+   * @param event the event to display
+   */
+  public void showEvent(Event event) {
+    selectedEventId = event.getEventId();
+    eventPane.setOpacity(1);
+    eventPane.setDisable(false);
+    eventPane.setVisible(true);
 
       eventTitle.setText(event.getTitle());
       eventLocation.setText(event.getPlace());
@@ -184,29 +202,32 @@ public class CalendarController {
       }
     }
 
-    @FXML 
-    public void toggleEvent() {
-      if (selectedEventId == null) {return;}
-      Event event = events.get(selectedEventId);
-      
-      if (toggleEventButton.getText().equals("Leave event")) {
-              toggleEventButton.setText("Join event");
-              user.removeEventId(event.getEventId());
-            } else {
-              toggleEventButton.setText("Leave event");
-              user.addEventId(event.getEventId());
-            }
-            userManager.editUser(user.getUsername(), user);
+  /** Toggles the current user's attendance status for the selected event. */
+  @FXML
+  public void toggleEvent() {
+    if (selectedEventId == null) {
+      return;
     }
-    
-    @FXML 
-    public void hideEvent() {
-      selectedEventId = null;
-      eventPane.setOpacity(0);
-      eventPane.setDisable(true);
-      eventPane.setVisible(false);
-    }
+    Event event = events.get(selectedEventId);
 
+    if (toggleEventButton.getText().equals("Leave event")) {
+      toggleEventButton.setText("Join event");
+      user.removeEventId(event.getEventId());
+    } else {
+      toggleEventButton.setText("Leave event");
+      user.addEventId(event.getEventId());
+    }
+    userManager.editUser(user.getUsername(), user);
+  }
+
+  /** Hides the event details pane. */
+  @FXML
+  public void hideEvent() {
+    selectedEventId = null;
+    eventPane.setOpacity(0);
+    eventPane.setDisable(true);
+    eventPane.setVisible(false);
+  }
 
     /**
    * Ends the current user session and changes back to the login page.

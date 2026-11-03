@@ -15,6 +15,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+/**
+ * EventFileManagerTest contains unit and integration tests for the {@link EventFileManager} class,
+ * verifying persistence operations such as adding, editing, removing, loading, and copying events
+ * with file-based storage.
+ */
 public class EventFileManagerTest {
 
     @TempDir

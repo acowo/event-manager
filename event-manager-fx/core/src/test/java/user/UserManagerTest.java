@@ -7,6 +7,10 @@ import java.util.HashMap;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Tests the login and registration behavior of {@link UserManager}, including successful operations
+ * and failure cases.
+ */
 public class UserManagerTest {
 
     void isSameUser(User user1, User user2) {
