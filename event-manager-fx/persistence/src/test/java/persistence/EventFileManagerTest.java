@@ -1,20 +1,19 @@
 package persistence;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import event.Event;
-import java.nio.file.Path;
 import java.nio.file.Files;
-import org.junit.jupiter.api.io.TempDir;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 public class EventFileManagerTest {
 

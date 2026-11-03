@@ -1,10 +1,14 @@
 package ui;
 
+import static org.testfx.api.FxAssert.verifyThat;
+import static org.testfx.util.NodeQueryUtils.hasText;
+import static org.testfx.util.NodeQueryUtils.isVisible;
+
+import java.io.IOException;
+import java.util.Objects;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.junit.jupiter.api.Test;
 import org.testfx.framework.junit5.ApplicationTest;

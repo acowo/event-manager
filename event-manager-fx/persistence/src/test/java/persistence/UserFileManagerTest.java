@@ -1,16 +1,19 @@
 package persistence;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
-import java.nio.file.Path;
 import java.nio.file.Files;
-
+import java.nio.file.Path;
+import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-
 import user.User;
 
 import static org.junit.jupiter.api.Assertions.*;

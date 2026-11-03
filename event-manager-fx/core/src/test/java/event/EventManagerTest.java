@@ -1,5 +1,6 @@
 package event;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -14,53 +15,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class EventManagerTest {
 
-    private EventManager eventManager;
-    private Event event;
-
-    private static class FakeEventRepository implements EventRepository {
-
-        private final Map<String, Event> events = new HashMap<>();
-
-        @Override
-        public Event getEvent(String title) {
-            if (!eventExists(title)) {
-                throw new IllegalArgumentException(
-                        "Event does not exist: " + title
-                );
-            }
-            return events.get(title);
-        }
-
-        @Override
-        public boolean eventExists(String eventId) {
-            return events.containsKey(eventId);
-        }
-
-        @Override
-        public void addEvent(Event event) {
-            events.put(event.getEventId(), event);
-        }
-
-        @Override
-        public void removeEvent(String eventId) {
-            events.remove(eventId);
-        }
-
-        @Override
-        public void editEvent(String eventId, Event event) {
-            events.put(eventId, event);
-        }
-
-        @Override
-        public Map<String, Event> getEvents() {
-            return new HashMap<>(events);
-        }
-
-        @Override
-        public FakeEventRepository copy() {
-            return this;
-        }
-    }
+  private EventManager eventManager;
+  private Event event;
 
     @BeforeEach
     void setUp() {
@@ -153,6 +109,49 @@ public class EventManagerTest {
 
         Map<String, Event> result = eventManager.getEvents();
 
-        assertTrue(result.containsKey(event.getEventId()));
+    assertTrue(result.containsKey(event.getEventId()));
+  }
+
+  private static class FakeEventRepository implements EventRepository {
+
+    private final Map<String, Event> events = new HashMap<>();
+
+    @Override
+    public Event getEvent(String title) {
+      if (!eventExists(title)) {
+        throw new IllegalArgumentException("Event does not exist: " + title);
+      }
+      return events.get(title);
     }
+
+    @Override
+    public boolean eventExists(String eventId) {
+      return events.containsKey(eventId);
+    }
+
+    @Override
+    public void addEvent(Event event) {
+      events.put(event.getEventId(), event);
+    }
+
+    @Override
+    public void removeEvent(String eventId) {
+      events.remove(eventId);
+    }
+
+    @Override
+    public void editEvent(String eventId, Event event) {
+      events.put(eventId, event);
+    }
+
+    @Override
+    public Map<String, Event> getEvents() {
+      return new HashMap<>(events);
+    }
+
+    @Override
+    public FakeEventRepository copy() {
+      return this;
+    }
+  }
 }

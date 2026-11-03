@@ -1,7 +1,7 @@
-
 package ui.controller;
 
-
+import event.Event;
+import event.EventManager;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -11,14 +11,9 @@ import java.time.temporal.ChronoField;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-
-import event.Event;
-import event.EventManager;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
-
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -38,8 +33,6 @@ import persistence.UserFileManager;
 import user.User;
 import user.UserManager;
 import user.UserSession;
-import event.Event;
-
 
 /** Controller for {@code /ui/CalendarApp.fxml}. */
 public class CalendarController {

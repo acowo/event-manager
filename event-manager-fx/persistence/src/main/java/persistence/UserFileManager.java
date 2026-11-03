@@ -1,7 +1,8 @@
 package persistence;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -9,10 +10,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
-
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
 import user.User;
 
 public class UserFileManager implements user.UserRepository {
@@ -29,6 +26,28 @@ public class UserFileManager implements user.UserRepository {
         this.filePath = filePath;
     }
 
+  /**
+   * Checks if a user by the given username exists.
+   *
+   * @param username the name of the user in string form
+   * @return {@code true} if the user exists; {@code false} otherwise
+   */
+  @Override
+  public boolean userExists(String username) {
+    Map<String, User> users = getUsers();
+    return users.containsKey(username);
+  }
+
+  /**
+   * Checks if a specific user exists in a user map.
+   *
+   * @param users a map of all users containing their username and user object
+   * @param username the name of the user in string form
+   * @return {@code true} if the user exists; {@code false} otherwise
+   */
+  protected boolean userExists(Map<String, User> users, String username) {
+    return users.containsKey(username);
+  }
 
     /**
      * Finds and returns a user with a specific username.
@@ -41,23 +60,12 @@ public class UserFileManager implements user.UserRepository {
     public User getUser(String username) {
          Map<String, User> users = getUsers();
 
-         if (!users.containsKey(username)) {
-            throw new IllegalArgumentException("User doesnt exist");
-         }
-         
-        return users.get(username);
+    if (!users.containsKey(username)) {
+      throw new IllegalArgumentException("User doesnt exist");
     }
 
-    /**
-     * Checks if a user by the given username exists.
-     * @param username The name of the user in string form.
-     * @return Boolean. True if user exists, false otherwise.
-     */
-    @Override
-    public boolean userExists(String username) {
-        Map<String, User> users = getUsers();
-        return users.containsKey(username);
-    }
+    return users.get(username);
+  }
 
     /**
      * Checks if a specific username and password combination is valid.
@@ -74,21 +82,11 @@ public class UserFileManager implements user.UserRepository {
             throw new IllegalArgumentException("Password cannot be null");
         }
 
-        if (!userExists(username)) {
-            return false;
-        }
-        return getUser(username).getPassword().equals(password);
+    if (!userExists(username)) {
+      return false;
     }
-
-    /**
-     * Checks if a specific user exists in a user map.
-     * @param users A map of all users containing their username and user object.
-     * @param username The password of the user in string form.
-     * @return Boolean. True if the user exists, false otherwise.
-     */
-    protected boolean userExists(Map<String, User> users, String username) {
-        return users.containsKey(username);
-    }
+    return getUser(username).getPassword().equals(password);
+  }
 
     /**
      * Adds a user to the user map.
@@ -104,24 +102,9 @@ public class UserFileManager implements user.UserRepository {
             throw new IllegalArgumentException("User already exists");
         }
 
-        users.put(user.getUsername(), user);
-        saveUsers(users);
-    }
-
-    /**
-     * Removes a user from the user map.
-     * @param username The user to be removed from the user map.
-     * @throws IllegalArgumentException If the user does not exist within the map.
-     */
-    public void removeUser(String username) {
-        Map<String, User> users = getUsers();
-        
-        if (!userExists(users, username)) {
-            throw new IllegalArgumentException("User doesn't exists");
-        }
-        users.remove(username);
-        saveUsers(users);
-    }
+    users.put(user.getUsername(), user);
+    saveUsers(users);
+  }
 
     /**
      * Edits a user from the user map.
@@ -141,13 +124,23 @@ public class UserFileManager implements user.UserRepository {
         saveUsers(users);
     }
 
-    /**
-     * Gets all users, returns the user map.
-     * returns The map of all user objects with their usernames.
-     * @throws IOException If there is an error while working with the user json file.
-     */
-    public Map<String, User> getUsers() {
-        File file = new File(filePath);
+  /**
+   * Creates a copy of this UserFileManager.
+   *
+   * @return a new UserFileManager with the file path argument
+   */
+  @Override
+  public UserFileManager copy() {
+    return new UserFileManager(filePath);
+  }
+
+  /**
+   * Gets all users from the user map file.
+   *
+   * @return the map of all user objects with their usernames
+   */
+  public Map<String, User> getUsers() {
+    File file = new File(filePath);
 
         StringBuilder jsonString = new StringBuilder();
 
@@ -224,13 +217,19 @@ public class UserFileManager implements user.UserRepository {
         saveUsers(users);
     }
 
-    /**
-     * Creates a new UserFileManager with the filePath variable.
-     * returns The new UserFileManager with the filePath variable as the argument.
-     */
-    @Override 
-    public UserFileManager copy() {
-        return new UserFileManager(filePath);
-    }
-}
+  /**
+   * Removes a user from the user map.
+   *
+   * @param username the user to be removed from the user map
+   * @throws IllegalArgumentException if the user does not exist within the map
+   */
+  public void removeUser(String username) {
+    Map<String, User> users = getUsers();
 
+    if (!userExists(users, username)) {
+      throw new IllegalArgumentException("User doesn't exists");
+    }
+    users.remove(username);
+    saveUsers(users);
+  }
+}

@@ -5,18 +5,18 @@ import java.util.UUID;
 
 /** Represents an event with a title, place, and time. */
 public final class Event {
-    private String title;
-    private String place;
-    private LocalDateTime time;
-    private final String eventId;
+  private final String eventId;
+  private String title;
+  private String place;
+  private LocalDateTime time;
 
-    /**
-     * Creates a new event.
-     *
-     * @param eventId the event UUID as a string
-     * @param title the title of the event
-     * @param place the place where the event takes place
-     * @param time the date and time of the event
+  /**
+   * Creates a new event.
+   *
+   * @param eventId the event UUID as a string
+   * @param title the title of the event
+   * @param place the place where the event takes place
+   * @param time the date and time of the event
    * @throws IllegalArgumentException if the eventId, title or place is null or blank, or if the
    *     time is null
      */

@@ -1,7 +1,11 @@
 package persistence;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+import event.Event;
+import event.EventRepository;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -10,13 +14,6 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
-
-import event.Event;
-import event.EventRepository;
 
 /**
  * Manages the persistence of {@link Event} objects using a JSON file.

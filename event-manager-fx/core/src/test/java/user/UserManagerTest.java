@@ -9,52 +9,6 @@ import org.junit.jupiter.api.Test;
 
 public class UserManagerTest {
 
-    private static class FakeUserRepository implements UserRepository {
-
-        private final Map<String, User> users = new HashMap<>();
-
-        @Override
-        public boolean check_password(String username, String password) {
-            return users.containsKey(username) && users.get(username).getPassword().equals(password);
-        }
-
-        @Override
-        public boolean userExists(String username) {
-            return users.containsKey(username);
-        }
-
-        @Override
-        public void addUser(User user) {
-            users.put(user.getUsername(), user);
-        }
-
-        @Override
-        public User getUser(String username) {
-            return users.get(username);
-        }
-
-        @Override 
-        public void editUser(String username, User user) {
-            users.put(username, user);
-        }
-
-
-        @Override
-        public void removeEvent(String title) {
-            users.values().forEach(u -> {
-            if (u.isAttendingEvent(title)) {
-                u.removeEventId(title);
-            }
-        });
-        }
-
-        
-        @Override
-        public FakeUserRepository copy() {
-            return this;
-        }
-    }
-
     void isSameUser(User user1, User user2) {
         assertTrue(user1.getUsername().equals(user2.getUsername()));
         assertTrue(user1.getPassword().equals(user2.getPassword()));
@@ -102,6 +56,52 @@ public class UserManagerTest {
 
         UserManager manager = new UserManager(repository);
 
-        assertFalse(manager.register("existingUser", "newPassword"));
+    assertFalse(manager.register("existingUser", "newPassword"));
+  }
+
+  private static class FakeUserRepository implements UserRepository {
+
+    private final Map<String, User> users = new HashMap<>();
+
+    @Override
+    public boolean checkPassword(String username, String password) {
+      return users.containsKey(username) && users.get(username).getPassword().equals(password);
     }
+
+    @Override
+    public boolean userExists(String username) {
+      return users.containsKey(username);
+    }
+
+    @Override
+    public void addUser(User user) {
+      users.put(user.getUsername(), user);
+    }
+
+    @Override
+    public User getUser(String username) {
+      return users.get(username);
+    }
+
+    @Override
+    public void editUser(String username, User user) {
+      users.put(username, user);
+    }
+
+    @Override
+    public void removeEvent(String title) {
+      users
+          .values()
+          .forEach(u -> {
+            if (u.isAttendingEvent(title)) {
+              u.removeEventId(title);
+            }
+          });
+    }
+
+    @Override
+    public FakeUserRepository copy() {
+      return this;
+    }
+  }
 }

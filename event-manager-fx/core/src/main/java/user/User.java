@@ -1,4 +1,5 @@
 package user;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,16 +44,9 @@ public final class User {
     }
 
     /**
-     * 
-     * @return password of this User
-     */
-    public String getPassword(){
-      return this.password;
-    }
-
-    /**
-     * Sets username of this User 
-     * @param username 
+   * Sets username of this User.
+   *
+   * @param username - username to be set
      * @throws NullPointerException if username is null
      * @throws IllegalArgumentException if username is blank
      */
@@ -68,8 +62,18 @@ public final class User {
     }
 
     /**
-     * Sets password of this User
-     * @param password
+   * Gets password of this User object.
+   *
+   * @return password of this User
+   */
+  public String getPassword() {
+    return this.password;
+  }
+
+  /**
+   * Sets password of this User.
+   *
+   * @param password Password to be set
      * @throws NullPointerException if password is null
      * @throws IllegalArgumentException if password is blank
      */

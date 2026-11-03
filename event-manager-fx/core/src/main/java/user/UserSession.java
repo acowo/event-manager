@@ -5,20 +5,8 @@ public class UserSession {
     private static User user;
 
     /**
-     * Sets the current user
-     * @param user
-     * @throws NullPointerException if user is null
-     */
-    public static void setUser(User user) {
-        if (user == null) {
-            throw new NullPointerException("user cannot be null");
-        }
-
-        UserSession.user = new User(user);
-    }
-
-    /**
-     * Get the current user
+   * Get the current user.
+   *
      * @return A copy of the current user 
      * @throws NullPointerException if User was not set previously 
      */
@@ -30,8 +18,20 @@ public class UserSession {
     }
 
     /**
-     * Sets the current user to null
-     */
+   * Sets the current user.
+   *
+   * @param user User object to be set
+   * @throws NullPointerException if user is null
+   */
+  public static void setUser(User user) {
+    if (user == null) {
+      throw new NullPointerException("user cannot be null");
+    }
+
+    UserSession.user = new User(user);
+  }
+
+  /** Sets the current user to null. */
     public static void logout() {
         UserSession.user = null;
     }

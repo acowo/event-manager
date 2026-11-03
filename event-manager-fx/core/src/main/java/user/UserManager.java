@@ -1,6 +1,5 @@
 package user;
 
-
 /**
  * UserManager implements domain logic for managing user aspects.
  * 

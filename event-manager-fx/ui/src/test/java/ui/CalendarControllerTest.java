@@ -11,26 +11,20 @@ import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.Objects;
 import java.util.List;
-
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-import org.testfx.framework.junit5.ApplicationTest;
-import org.testfx.matcher.base.NodeMatchers;
-import org.testfx.service.query.EmptyNodeQueryException;
-
-import event.EventManager;
+import java.util.Objects;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.input.KeyCode;
 import javafx.scene.control.DatePicker;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.testfx.framework.junit5.ApplicationTest;
 import persistence.EventFileManager;
 import persistence.UserFileManager;
 import user.UserManager;
