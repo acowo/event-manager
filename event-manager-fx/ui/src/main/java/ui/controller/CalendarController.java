@@ -56,6 +56,15 @@ public class CalendarController {
     private User user;
     private UserFileManager userManager;
 
+    public CalendarController() {
+      this(new EventFileManager(), new UserFileManager());
+    }
+
+    public CalendarController(EventFileManager eventManager, UserFileManager userManager) {
+      this.manager = Objects.requireNonNull(eventManager);
+      this.userManager = Objects.requireNonNull(userManager);
+    }
+
     @FXML
     private GridPane calendar;
 
@@ -85,15 +94,11 @@ public class CalendarController {
 
     @FXML
     public void initialize() {
-
       this.today = LocalDate.now();
-      this.manager = new EventFileManager();
-      events = manager.getEvents();
-      user = UserSession.getUser();
-      userManager = new UserFileManager();
-
+      this.events = manager.getEvents();
+      this.user = UserSession.getUser();
+      
       setMonth(this.today);
-
       closeEventCreator();
       hideEvent();
     }

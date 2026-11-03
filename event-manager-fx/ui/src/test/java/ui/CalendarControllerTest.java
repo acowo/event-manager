@@ -12,7 +12,9 @@ import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Objects;
+import java.nio.file.Path;
 
+import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -20,6 +22,7 @@ import org.testfx.framework.junit5.ApplicationTest;
 import org.testfx.matcher.base.NodeMatchers;
 import org.testfx.service.query.EmptyNodeQueryException;
 
+import ui.controller.CalendarController;
 import event.EventManager;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -37,32 +40,47 @@ import user.UserSession;
 
 public class CalendarControllerTest extends ApplicationTest {
 
+    @TempDir 
+    Path tempDir;
+
     /**    (non-Javadoc)
      * Setup before each test. Clears the event and user files for the test event and sets user session with test user
      * @see org.testfx.framework.junit5.ApplicationTest#start(javafx.stage.Stage)
      */
     @Override
     public void start(Stage stage) throws IOException {
-        EventFileManager files = new EventFileManager();
-        if (files.eventExists("Testing")) {
-            files.removeEvent("Testing");
-        }
-        UserFileManager users = new UserFileManager();
-        users.removeEvent("Testing");
+        EventFileManager eventFiles = new EventFileManager(
+            tempDir.resolve("eventdata.json").toString()
+        );
 
-        UserManager manager = new UserManager(new UserFileManager());
-        manager.login("ola", "banan"); //Sets user to testuser so the application properly opens
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/ui/Calendar.fxml")));
+        UserFileManager userFiles = new UserFileManager(
+            tempDir.resolve("userdata.json").toString()
+        );
+
+        UserManager manager = new UserManager(userFiles);
+        manager.register("testuser", "testpassword");
+        manager.login("testuser", "testpassword");
+
+        FXMLLoader loader = new FXMLLoader(
+            CalendarController.class.getResource("/ui/Calendar.fxml")
+        );
+
+        loader.setControllerFactory(type -> {
+            if(type == CalendarController.class) {
+                return new CalendarController(eventFiles, userFiles);
+            }
+            throw new IllegalArgumentException("Unexpected controller: " + type);
+        });
+
+        Parent root = loader.load();
         stage.setScene(new Scene(root));
         stage.show();
+
     }
 
     @AfterEach
     void cleanUp() {
-        EventFileManager files = new EventFileManager();
-        if (files.eventExists("Testing")) {
-            files.removeEvent("Testing");
-        }
+        UserSession.logout();
     }
 
     /**
