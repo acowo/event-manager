@@ -17,20 +17,14 @@ public class EventManagerApp extends Application {
     launch(args);
   }
 
-    @Override
-    public void start(Stage stage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(
-                EventManagerApp.class.getResource("/ui/loginPage.fxml")
-        );
+  @Override
+  public void start(Stage stage) throws Exception {
+    FXMLLoader loader = new FXMLLoader(EventManagerApp.class.getResource("/ui/loginPage.fxml"));
 
-        Scene scene = new Scene(loader.load());
+    Scene scene = new Scene(loader.load());
 
-        stage.setTitle("Event Manager");
-        stage.setScene(scene);
-        stage.show();
-    }
-
-    public static void main(String[] args) {
-        launch(args);
-    }
+    stage.setTitle("Event Manager");
+    stage.setScene(scene);
+    stage.show();
+  }
 }

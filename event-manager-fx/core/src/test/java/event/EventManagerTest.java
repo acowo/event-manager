@@ -21,96 +21,82 @@ public class EventManagerTest {
   private EventManager eventManager;
   private Event event;
 
-    @BeforeEach
-    void setUp() {
-        EventRepository repository = new FakeEventRepository();
-        eventManager = new EventManager(repository);
+  @BeforeEach
+  void setUp() {
+    EventRepository repository = new FakeEventRepository();
+    eventManager = new EventManager(repository);
 
-        event = new Event(
-            "Test Event",
-            "Trondheim",
-            LocalDateTime.of(2026, 10, 1, 18, 0)
-        );
-    }
+    event = new Event("Test Event", "Trondheim", LocalDateTime.of(2026, 10, 1, 18, 0));
+  }
 
-    @Test
-    void testAddEvent() {
-        assertTrue(eventManager.addEvent(event));
-        assertFalse(eventManager.addEvent(event));
-    }
+  @Test
+  void testAddEvent() {
+    assertTrue(eventManager.addEvent(event));
+    assertFalse(eventManager.addEvent(event));
+  }
 
-    @Test
-    void allowsSameTitleAndReplacesEventAtExistingKey() {
-        Event other = new Event(event.getTitle(), "Bergen", event.getTime());
-        assertTrue(eventManager.addEvent(event));
-        assertTrue(eventManager.addEvent(other));
-        assertEquals(2, eventManager.getEvents().size());
-        Event replacement = new Event(event.getEventId(), "Renamed", "Oslo", event.getTime());
-        assertTrue(eventManager.editEvent(event.getEventId(), replacement));
-        assertEquals(replacement, eventManager.getEvent(event.getEventId()));
-        assertEquals(event.getEventId(), eventManager.getEvent(event.getEventId()).getEventId());
-        assertEquals(2, eventManager.getEvents().size());
-        assertEquals("Bergen", eventManager.getEvent(other.getEventId()).getPlace());
-        assertTrue(eventManager.removeEvent(event.getEventId()));
-        assertEquals(other.getEventId(), eventManager.getEvent(other.getEventId()).getEventId());
-    }
+  @Test
+  void allowsSameTitleAndReplacesEventAtExistingKey() {
+    Event other = new Event(event.getTitle(), "Bergen", event.getTime());
+    assertTrue(eventManager.addEvent(event));
+    assertTrue(eventManager.addEvent(other));
+    assertEquals(2, eventManager.getEvents().size());
+    Event replacement = new Event(event.getEventId(), "Renamed", "Oslo", event.getTime());
+    assertTrue(eventManager.editEvent(event.getEventId(), replacement));
+    assertEquals(replacement, eventManager.getEvent(event.getEventId()));
+    assertEquals(event.getEventId(), eventManager.getEvent(event.getEventId()).getEventId());
+    assertEquals(2, eventManager.getEvents().size());
+    assertEquals("Bergen", eventManager.getEvent(other.getEventId()).getPlace());
+    assertTrue(eventManager.removeEvent(event.getEventId()));
+    assertEquals(other.getEventId(), eventManager.getEvent(other.getEventId()).getEventId());
+  }
 
-    @Test 
-    void testRemoveEvent() {
-        eventManager.addEvent(event);
+  @Test
+  void testRemoveEvent() {
+    eventManager.addEvent(event);
 
-        assertTrue(eventManager.removeEvent(event.getEventId()));
-        assertFalse(eventManager.removeEvent(event.getEventId()));
-    }
+    assertTrue(eventManager.removeEvent(event.getEventId()));
+    assertFalse(eventManager.removeEvent(event.getEventId()));
+  }
 
-    @Test
-    void testEditEvent() {
-        eventManager.addEvent(event);
+  @Test
+  void testEditEvent() {
+    eventManager.addEvent(event);
 
-        Event editedEvent = new Event(event.getEventId(),
-                "Test Event",
-                "Oslo",
-                LocalDateTime.of(2026, 11, 1, 20, 0)
-        );
+    Event editedEvent =
+        new Event(event.getEventId(), "Test Event", "Oslo", LocalDateTime.of(2026, 11, 1, 20, 0));
 
-        assertTrue(eventManager.editEvent(event.getEventId(), editedEvent));
+    assertTrue(eventManager.editEvent(event.getEventId(), editedEvent));
 
-        Event result = eventManager.getEvent(event.getEventId());
+    Event result = eventManager.getEvent(event.getEventId());
 
-        assertEquals("Oslo", result.getPlace());
-        assertEquals(
-            LocalDateTime.of(2026, 11, 1, 20, 0),
-            result.getTime()
-        );
-    }
+    assertEquals("Oslo", result.getPlace());
+    assertEquals(LocalDateTime.of(2026, 11, 1, 20, 0), result.getTime());
+  }
 
-    @Test
-    void testEditNonexistentEvent() {
-        Event editedEvent = new Event(event.getEventId(),
-                "Does Not Exist",
-                "Oslo",
-                LocalDateTime.of(2026, 11, 1, 20, 0)
-        );
+  @Test
+  void testEditNonexistentEvent() {
+    Event editedEvent =
+        new Event(
+            event.getEventId(), "Does Not Exist", "Oslo", LocalDateTime.of(2026, 11, 1, 20, 0));
 
-        assertFalse(
-                eventManager.editEvent(UUID.randomUUID().toString(), editedEvent)
-        );
-    }
+    assertFalse(eventManager.editEvent(UUID.randomUUID().toString(), editedEvent));
+  }
 
-    @Test
-    void testGetEvent() {
-        eventManager.addEvent(event);
+  @Test
+  void testGetEvent() {
+    eventManager.addEvent(event);
 
-        Event result = eventManager.getEvent(event.getEventId());
+    Event result = eventManager.getEvent(event.getEventId());
 
-        assertEquals("Test Event", result.getTitle());
-    }
+    assertEquals("Test Event", result.getTitle());
+  }
 
-    @Test
-    void testGetEvents() {
-        eventManager.addEvent(event);
+  @Test
+  void testGetEvents() {
+    eventManager.addEvent(event);
 
-        Map<String, Event> result = eventManager.getEvents();
+    Map<String, Event> result = eventManager.getEvents();
 
     assertTrue(result.containsKey(event.getEventId()));
   }

@@ -15,106 +15,100 @@ import javafx.stage.Window;
 import persistence.UserFileManager;
 import user.UserManager;
 
+/** Controller for the login and registration page. */
 public class LoginPageController {
-    @FXML
-    private TextField loginPage_usernameField;
+  @FXML private TextField loginPageUsernameField;
 
-    @FXML
-    private TextField loginPage_passwordField;
+  @FXML private TextField loginPagePasswordField;
 
-    @FXML
-    private Button loginPage_registerButton;
+  @FXML private Button loginPageRegisterButton;
 
-    @FXML
-    private Button loginPage_loginButton;
+  @FXML private Button loginPageLoginButton;
 
-    @FXML
-    private Text loginPage_infotextField;
+  @FXML private Text loginPageInfotextField;
 
-    private UserManager manager = new UserManager(new UserFileManager());
+  private UserManager manager = new UserManager(new UserFileManager());
 
-    /**
+  /**
    * Handles the controller logic needed when a user presses the login button. Uses imports from the
    * Core and persistence modules. This function does not return a value.
-     */
-    @FXML
-    private void handleLogin() throws Exception {
-        String username = loginPage_usernameField.getText();
-        String password = loginPage_passwordField.getText();
+   */
+  @FXML
+  public void handleLogin() throws IOException {
+    String username = loginPageUsernameField.getText();
+    String password = loginPagePasswordField.getText();
 
-        if (isNotEmpty(username, password)) {
-            if (manager.login(username, password)) {
-                changeScene();
-            } else {
-                loginPage_infotextField.setText("An error has occured");
-                loginPage_infotextField.setFill(Color.RED);
-            }
-        }
+    if (isNotEmpty(username, password)) {
+      if (manager.login(username, password)) {
+        changeScene();
+      } else {
+        loginPageInfotextField.setText("An error has occured");
+        loginPageInfotextField.setFill(Color.RED);
+      }
     }
+  }
 
-    /**
+  /**
    * Handles the controller logic needed when a user presses the register button. Uses imports from
    * the Core and persistence modules. This function does not return a value.
-     */
-    @FXML
-    private void handleRegistration() throws Exception {
-        String username = loginPage_usernameField.getText();
-        String password = loginPage_passwordField.getText();
+   */
+  @FXML
+  public void handleRegistration() throws IOException {
+    String username = loginPageUsernameField.getText();
+    String password = loginPagePasswordField.getText();
 
-        if (isNotEmpty(username, password)) {
-            if (manager.register(username, password)) {
-                changeScene();
-            } else {
-                loginPage_infotextField.setText("A user by that name already exists");
-                loginPage_infotextField.setFill(Color.RED);
-            }
-        }
+    if (isNotEmpty(username, password)) {
+      if (manager.register(username, password)) {
+        changeScene();
+      } else {
+        loginPageInfotextField.setText("A user by that name already exists");
+        loginPageInfotextField.setFill(Color.RED);
+      }
     }
+  }
 
-
-    /**
+  /**
    * Handles the controller logic needed when a user successfully creates a session through a valid
    * account. Switches the scene away from the login page to the calendar view, can be changed in
    * the future. This function does not return a value.
-     */
-    @FXML
-    private void changeScene() throws IOException {
-        try {
-            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/ui/Calendar.fxml")));
-            Stage stage = (Stage) loginPage_registerButton.getScene().getWindow();
-            stage.getScene().setRoot(root);
-
-        } catch (Exception e) {
-            System.err.println(e);
-        }
-
-
+   */
+  @FXML
+  private void changeScene() throws IOException {
+    URL resource = LoginPageController.class.getResource("/ui/Calendar.fxml");
+    Parent root = FXMLLoader.load(Objects.requireNonNull(resource));
+    Window window = loginPageRegisterButton.getScene().getWindow();
+    if (window instanceof Stage) {
+      Stage stage = (Stage) window;
+      stage.getScene().setRoot(root);
+      return;
     }
 
-    /**
-     * Handles the controller logic needed to check whether a user has populated the required fields.
+    throw new IOException("Window is not a Stage");
+  }
+
+  /**
+   * Handles the controller logic needed to check whether a user has populated the required fields.
    * Mainly used to save resources by preventing unnecessary calls to heavier functions when not
    * needed.
    *
-     * @param username The string in the username field.
-     * @param password The string in the password field.
-     * @return True if fields are populated, false otherwise.
-     */
-    @FXML
-    private boolean isNotEmpty(String username, String password) {
-        if (username.length() < 1) {
-            loginPage_infotextField.setText("Please enter a username");
-            loginPage_infotextField.setFill(Color.RED);
-            return false;
-        }
-
-        if (password.length() < 1) {
-            loginPage_infotextField.setText("Please enter a password");
-            loginPage_infotextField.setFill(Color.RED);
-            return false;
-        }
-
-        return true;
+   * @param username The string in the username field.
+   * @param password The string in the password field.
+   * @return True if fields are populated, false otherwise.
+   */
+  @FXML
+  private boolean isNotEmpty(String username, String password) {
+    if (username.length() < 1) {
+      loginPageInfotextField.setText("Please enter a username");
+      loginPageInfotextField.setFill(Color.RED);
+      return false;
     }
 
+    if (password.length() < 1) {
+      loginPageInfotextField.setText("Please enter a password");
+      loginPageInfotextField.setFill(Color.RED);
+      return false;
+    }
+
+    return true;
+  }
 }
