@@ -53,6 +53,7 @@ public class CalendarController {
     private LocalDate today;
     private Map<String,Event> events;
     private EventManager manager;
+    private String selectedEventId;
     private User user;
     private UserManager userManager;
 
@@ -149,7 +150,7 @@ public class CalendarController {
         LocalTime time = LocalTime.of(Integer.parseInt(setEventTime.getText(0,2)), Integer.parseInt(setEventTime.getText(3,5)));
         Event event = new Event(setEventTitle.getText(), setEventLocation.getText(), LocalDateTime.of(date, time));
         if (this.manager.addEvent(event)) {
-          this.events.put(event.getTitle(), event);
+          this.events.put(event.getEventId(), event);
           setMonth(LocalDate.of(this.year,this.month,1));
           closeEventCreator();
         } else {
@@ -162,17 +163,19 @@ public class CalendarController {
 
     @FXML 
     public void deleteEvent() {
-      events.remove(eventTitle.getText());
-      manager.removeEvent(eventTitle.getText());
-      userManager.removeEvent(eventTitle.getText());
+      if (selectedEventId == null) {return;}
+      userManager.removeEvent(selectedEventId);
+      manager.removeEvent(selectedEventId);
+      events.remove(selectedEventId);
       
-      if (user.isAttendingEvent(eventTitle.getText())) {user.removeEventId(eventTitle.getText());}
+      if (user.isAttendingEvent(selectedEventId)) {user.removeEventId(selectedEventId);}
       setMonth(LocalDate.of(this.year,this.month,1));
       hideEvent();
     }
 
 
     public void showEvent(Event event) {
+      selectedEventId = event.getEventId();
       eventPane.setOpacity(1);
       eventPane.setDisable(false);
       eventPane.setVisible(true);
@@ -182,7 +185,7 @@ public class CalendarController {
       eventDate.setText(event.getTime().toLocalDate().toString());
       eventTime.setText(event.getTime().toLocalTime().toString());
 
-      if (user.isAttendingEvent(event.getTitle())) {
+      if (user.isAttendingEvent(event.getEventId())) {
         toggleEventButton.setText("Leave event");
         toggleEventButton.setSelected(true);
       } else {
@@ -193,20 +196,22 @@ public class CalendarController {
 
     @FXML 
     public void toggleEvent() {
-      Event event = events.get(eventTitle.getText());
+      if (selectedEventId == null) {return;}
+      Event event = events.get(selectedEventId);
       
       if (toggleEventButton.getText().equals("Leave event")) {
               toggleEventButton.setText("Join event");
-              user.removeEventId(event.getTitle());
+              user.removeEventId(event.getEventId());
             } else {
               toggleEventButton.setText("Leave event");
-              user.addEventId(event.getTitle());
+              user.addEventId(event.getEventId());
             }
             userManager.editUser(user.getUsername(), user);
     }
     
     @FXML 
     public void hideEvent() {
+      selectedEventId = null;
       eventPane.setOpacity(0);
       eventPane.setDisable(true);
       eventPane.setVisible(false);
