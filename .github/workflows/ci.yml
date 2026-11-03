@@ -1,0 +1,27 @@
+name: CI
+
+on:
+	push:
+		branches:
+			- main
+			- master
+	pull_request:
+
+jobs:
+	build:
+		runs-on: ntnu-runners
+
+		steps:
+			- name: Checkout repository
+				uses: actions/checkout@v4
+
+			- name: Set up JDK 17
+				uses: actions/setup-java@v4
+				with:
+					distribution: temurin
+					java-version: '17'
+					cache: maven
+
+			- name: Build and test with Maven
+				working-directory: event-manager-fx
+				run: mvn -B verify
