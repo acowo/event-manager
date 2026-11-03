@@ -33,4 +33,4 @@ jobs:
 
       - name: Build and verify with Maven
         working-directory: event-manager-fx
-        run: mvn --batch-mode --no-transfer-progress clean verify
+        run: ./mvnw --batch-mode --no-transfer-progress clean verify
