@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import event.Event;
 import java.nio.file.Path;
+import java.io.IOException;
 import java.nio.file.Files;
 import org.junit.jupiter.api.io.TempDir;
 import java.time.LocalDateTime;
@@ -34,11 +35,6 @@ public class EventFileManagerTest {
                 "Trondheim",
                 LocalDateTime.of(2026, 10, 1, 18, 0)
         );
-
-        // Make sure tests start with no test event.
-        if (eventFileManager.eventExists("Test Event")) {
-            eventFileManager.removeEvent("Test Event");
-        }
     }
 
     @Test
@@ -204,9 +200,10 @@ public class EventFileManagerTest {
     }
 
     @Test
-    void testDefaultConstructor() {
-        EventFileManager manager = new EventFileManager();
-        assertTrue(manager.getEvents() != null);
+    void testNewManagerStartsEmpty() {
+        Path file = tempDir.resolve("new-events.json");
+        EventFileManager manager = new EventFileManager(file.toString());
+        assertTrue(manager.getEvents().isEmpty());
     }
 
     @Test
@@ -220,4 +217,19 @@ public class EventFileManagerTest {
         assertEquals(event.getTime(), copiedEvent.getTime());
         assertEquals(eventFileManager.getEvents().keySet(), copy.getEvents().keySet());
     }
+
+    @Test
+    void testLoadFromDirectoryReturnsEmptyMap() {
+        EventFileManager manager = new EventFileManager(tempDir.toString());
+        assertTrue(manager.getEvents().isEmpty());
+    }
+
+    @Test
+    void testConstructorUsesEmptyMapWhenLoadingFails() throws IOException {
+        Path file = tempDir.resolve("invalid.json");
+        Files.writeString(file, "{invalid json");
+        EventFileManager manager = new EventFileManager(file.toString());
+        assertTrue(manager.getEvents().isEmpty());
+    }
+
 }
