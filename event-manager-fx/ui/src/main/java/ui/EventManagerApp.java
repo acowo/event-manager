@@ -5,22 +5,26 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+/** JavaFX entry point for the UI module. */
 public class EventManagerApp extends Application {
 
-    @Override
-    public void start(Stage stage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(
-                EventManagerApp.class.getResource("/ui/loginPage.fxml")
-        );
+  /**
+   * Launches the JavaFX application.
+   *
+   * @param args command-line arguments
+   */
+  public static void main(String[] args) {
+    launch(args);
+  }
 
-        Scene scene = new Scene(loader.load());
+  @Override
+  public void start(Stage stage) throws Exception {
+    FXMLLoader loader = new FXMLLoader(EventManagerApp.class.getResource("/ui/loginPage.fxml"));
 
-        stage.setTitle("Event Manager");
-        stage.setScene(scene);
-        stage.show();
-    }
+    Scene scene = new Scene(loader.load());
 
-    public static void main(String[] args) {
-        launch(args);
-    }
+    stage.setTitle("Event Manager");
+    stage.setScene(scene);
+    stage.show();
+  }
 }

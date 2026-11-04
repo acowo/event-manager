@@ -1,3 +1,4 @@
+
 package ui.controller;
 
 import event.Event;
@@ -8,6 +9,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
 import java.time.temporal.ChronoField;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -25,7 +27,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import persistence.EventFileManager;
@@ -34,11 +35,7 @@ import user.User;
 import user.UserManager;
 import user.UserSession;
 
-
-/**
- * Controller for {@code /ui/CalendarApp.fxml}.
- */
-
+/** Controller for {@code /ui/CalendarApp.fxml}. */
 public class CalendarController {
   private final EventManager eventManager;
   private final UserManager userManager;
@@ -48,24 +45,34 @@ public class CalendarController {
   private Map<String, Event> events;
   private String selectedEventId;
   private User user;
-  @FXML
-  private GridPane calendar;
-  @FXML
-  private Label monthLabel, yearLabel, eventTitle, eventDate, eventTime, eventLocation, eventError;
-  @FXML
-  private ScrollPane eventCreator, eventPane;
-  @FXML
-  private TextField setEventTitle, setEventLocation, setEventTime;
-  @FXML
-  private DatePicker setEventDate;
-  @FXML
-  private ToggleButton toggleEventButton;
-  @FXML
-  private Button deleteEventButton, closeEventButton;
-  @FXML
-  private HBox eventButtons;
-  @FXML
-  private Pane resourcePane;
+
+  @FXML private GridPane calendar;
+
+  @FXML private Label monthLabel;
+  @FXML private Label yearLabel;
+  @FXML private Label time;
+  @FXML private Label eventTitle;
+  @FXML private Label eventDate;
+  @FXML private Label eventTime;
+  @FXML private Label eventLocation;
+  @FXML private Label eventError;
+
+  @FXML private ScrollPane eventCreator;
+  @FXML private ScrollPane eventPane;
+  @FXML private TextField setEventTitle;
+  @FXML private TextField setEventLocation;
+  @FXML private TextField setEventTime;
+
+  @FXML private DatePicker setEventDate;
+
+  @FXML private ToggleButton toggleEventButton;
+
+  @FXML private Button deleteEventButton;
+  @FXML private Button closeEventButton;
+
+  @FXML private HBox eventButtons;
+
+
 
   /**
    * Default constructor, creates a default eventFileManager and userFileManager.
@@ -88,11 +95,11 @@ public class CalendarController {
   /**
    * Default method automatically called when opening the Calendar.fxml file.
    *
-   * <p>Sets the view to show the current month and shows all events for the month</p>
+   * <p>Sets the view to show the current month and shows all events for the month.
    */
-
   @FXML
   public void initialize() {
+
     this.today = LocalDate.now();
     user = UserSession.getUser();
     this.events = this.eventManager.getEvents();
@@ -106,12 +113,10 @@ public class CalendarController {
 
   /**
    * Changes {@link #month month} to one month before. <br>
-   * Updates the display to fit the new month with
-   * {@link #setMonth setMonth()}
+   * Updates the display to fit the new month with {@link #setMonth setMonth()}
    *
    * @see #nextMonth nextMonth
    */
-
   @FXML
   public void prevMonth() {
     if (this.month.equals(Month.JANUARY)) {
@@ -127,7 +132,6 @@ public class CalendarController {
    *
    * @see #prevMonth prevMonth
    */
-
   @FXML
   public void nextMonth() {
     this.month = this.month.plus(1);
@@ -138,7 +142,7 @@ public class CalendarController {
   }
 
   /**
-   * Shows a window with fields for the user to create a new event.
+   * Opens the event creator pane.
    */
   @FXML
   public void openEventCreator() {
@@ -147,7 +151,7 @@ public class CalendarController {
   }
 
   /**
-   * Closes the window that the user can create an event with.
+   * Closes the event creator pane and clears its input fields.
    */
   @FXML
   public void closeEventCreator() {
@@ -160,7 +164,7 @@ public class CalendarController {
   }
 
   /**
-   * Creates an event based on the userinput.
+   * Creates an event based on the user input and adds it to the manager.
    * Shows error message if the event cannot be created.
    */
   @FXML
@@ -193,9 +197,7 @@ public class CalendarController {
     }
   }
 
-  /**
-   * Deletes an event of the event currently being shown in the event pane.
-   */
+  /** Deletes the currently selected event from the repository and calendar view. */
   @FXML
   public void deleteEvent() {
     if (selectedEventId == null) {
@@ -404,5 +406,3 @@ public class CalendarController {
 
 
 }
-
-

@@ -15,6 +15,7 @@ import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -33,8 +34,6 @@ import persistence.UserFileManager;
 import ui.controller.CalendarController;
 import user.UserManager;
 import user.UserSession;
-
-
 
 /**
  * Test class for CalendarController, verifying UI behavior and user interactions.
@@ -160,7 +159,7 @@ public class CalendarControllerTest extends ApplicationTest {
     clickOn("#logout");
 
     //Verifying that the scene changed by checking that a node from the login view is present
-    verifyThat("#loginPage_usernameField", isVisible());
+    verifyThat("#loginPageUsernameField", isVisible());
     assertThrows(NullPointerException.class, UserSession::getUser);
   }
 
