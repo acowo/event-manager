@@ -2,13 +2,27 @@ package ui.controller;
 
 import event.Event;
 import event.EventManager;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.Month;
+import java.time.temporal.ChronoField;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -20,15 +34,6 @@ import user.User;
 import user.UserManager;
 import user.UserSession;
 
-import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.Month;
-import java.time.temporal.ChronoField;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 /**
  * Controller for {@code /ui/CalendarApp.fxml}.
@@ -46,7 +51,7 @@ public class CalendarController {
   @FXML
   private GridPane calendar;
   @FXML
-  private Label monthLabel, yearLabel, time, eventTitle, eventDate, eventTime, eventLocation, eventError;
+  private Label monthLabel, yearLabel, eventTitle, eventDate, eventTime, eventLocation, eventError;
   @FXML
   private ScrollPane eventCreator, eventPane;
   @FXML
@@ -62,10 +67,19 @@ public class CalendarController {
   @FXML
   private Pane resourcePane;
 
+  /**
+   * Default constructor, creates a default eventFileManager and userFileManager.
+   */
   public CalendarController() {
     this(new EventFileManager(), new UserFileManager());
   }
 
+  /**
+   * Constructor for the calendarController that can use specific fileManager.
+   *
+   * @param eventManager the eventFileManager with the desired filepath
+   * @param userManager the userFileManager with the desired filepath
+   */
   public CalendarController(EventFileManager eventManager, UserFileManager userManager) {
     this.eventManager = new EventManager(Objects.requireNonNull(eventManager));
     this.userManager = new UserManager(Objects.requireNonNull(userManager));
@@ -91,7 +105,8 @@ public class CalendarController {
   }
 
   /**
-   * Changes {@link #month month} to one month before. <br> Updates the display to fit the new month with
+   * Changes {@link #month month} to one month before. <br>
+   * Updates the display to fit the new month with
    * {@link #setMonth setMonth()}
    *
    * @see #nextMonth nextMonth
@@ -107,8 +122,8 @@ public class CalendarController {
   }
 
   /**
-   * <p>Changes {@link #month month} to one month after <br>
-   * Updates the display to fit the new month with {@link #setMonth setMonth()} </p>
+   * Changes {@link #month month} to one month after. <br>
+   * Updates the display to fit the new month with {@link #setMonth setMonth()}
    *
    * @see #prevMonth prevMonth
    */
@@ -122,17 +137,21 @@ public class CalendarController {
     setMonth(this.month, this.year);
   }
 
+  /**
+   * Shows a window with fields for the user to create a new event.
+   */
   @FXML
   public void openEventCreator() {
     eventCreator.disableProperty().set(false);
     eventCreator.setVisible(true);
-    eventCreator.opacityProperty().set(1);
   }
 
+  /**
+   * Closes the window that the user can create an event with.
+   */
   @FXML
   public void closeEventCreator() {
     eventCreator.disableProperty().set(true);
-    eventCreator.opacityProperty().set(0);
     eventCreator.setVisible(false);
     eventError.setText("");
     setEventTime.setText("");
@@ -140,14 +159,24 @@ public class CalendarController {
     setEventLocation.setText("");
   }
 
+  /**
+   * Creates an event based on the userinput.
+   * Shows error message if the event cannot be created.
+   */
   @FXML
   public void createEvent() {
 
     try {
       LocalDate date = setEventDate.getValue();
       LocalTime time =
-          LocalTime.of(Integer.parseInt(setEventTime.getText(0, 2)), Integer.parseInt(setEventTime.getText(3, 5)));
-      Event event = new Event(setEventTitle.getText(), setEventLocation.getText(), LocalDateTime.of(date, time));
+          LocalTime.of(
+              Integer.parseInt(setEventTime.getText(0, 2)),
+              Integer.parseInt(setEventTime.getText(3, 5)));
+      Event event = new Event(
+          setEventTitle.getText(),
+          setEventLocation.getText(),
+          LocalDateTime.of(date, time)
+      );
       if (this.eventManager.addEvent(event)) {
         this.events.put(event.getEventId(), event);
         setMonth(LocalDate.of(this.year, this.month, 1));
@@ -155,13 +184,18 @@ public class CalendarController {
         userManager.editUser(user.getUsername(), user);
         closeEventCreator();
       } else {
-        eventError.setText("Something went wrong. \nCheck that you have filled all fields properly");
+        eventError.setText("Something went wrong. \n"
+            + "Check that you have filled all fields properly");
       }
     } catch (Exception e) {
-      eventError.setText("Something went wrong. \nCheck that you have filled all fields properly");
+      eventError.setText("Something went wrong. "
+          + "\nCheck that you have filled all fields properly");
     }
   }
 
+  /**
+   * Deletes an event of the event currently being shown in the event pane.
+   */
   @FXML
   public void deleteEvent() {
     if (selectedEventId == null) {
@@ -178,7 +212,13 @@ public class CalendarController {
     hideEvent();
   }
 
-
+  /**
+   * Shows an event and its info in the event pane.
+   * Shows the togglebutton if user is not admin of the event.
+   * Shows a delete button if user is admin of the event.
+   *
+   * @param event the {@link Event} to be shown
+   */
   public void showEvent(Event event) {
     selectedEventId = event.getEventId();
 
@@ -209,6 +249,9 @@ public class CalendarController {
     }
   }
 
+  /**
+   * Opts user in or out from event and changes the button view.
+   */
   @FXML
   public void toggleEvent() {
     if (selectedEventId == null) {
@@ -226,6 +269,10 @@ public class CalendarController {
     userManager.editUser(user.getUsername(), user);
   }
 
+
+  /**
+   * Hides the event pane.
+   */
   @FXML
   public void hideEvent() {
     selectedEventId = null;
@@ -235,10 +282,10 @@ public class CalendarController {
 
 
   /**
-   * Ends the current user session and changes back to the login page
+   * Ends the current user session and changes back to the login page.
    *
    * @param event the FXML event
-   * @throws IOException
+   * @throws IOException if an error occurs while loading the file
    */
   @FXML
   public void handleLogout(javafx.event.Event event) throws IOException {
@@ -248,7 +295,7 @@ public class CalendarController {
   }
 
   /**
-   * Displays a month in the UI based on a specific date
+   * Displays a month in the UI based on a specific date.
    *
    * @param date the date of the month to be shown
    * @throws IllegalArgumentException if date is null
@@ -289,7 +336,7 @@ public class CalendarController {
 
 
   /**
-   * Displays a month in the UI based on a specific month in a year
+   * Displays a month in the UI based on a specific month in a year.
    *
    * @param month the month to be shown
    * @param year  the year of the month to be shown
@@ -304,7 +351,7 @@ public class CalendarController {
   }
 
   /**
-   * Displays all events of the current month showing
+   * Displays all events of the current month showing.
    *
    * @throws IllegalStateException if this.month is null
    */
@@ -315,10 +362,9 @@ public class CalendarController {
     }
     if (this.events != null) {
       List<Event> eventsInMonth = this.events.values().stream()
-          .filter(e -> e.getTime().getMonth() == this.month && e.getTime().getYear() == this.year).toList();
+          .filter(e -> e.getTime().getMonth() == this.month
+              && e.getTime().getYear() == this.year).toList();
       for (Event event : eventsInMonth) {
-        int dayOfMonth = event.getTime().getDayOfMonth();
-        VBox pane = (VBox) calendar.getChildren().get(dayOfMonth);
         HBox eventPane = new HBox();
 
         //TODO: Fix the styling of new events
@@ -333,6 +379,8 @@ public class CalendarController {
         eventPane.getChildren().add(button);
         HBox.setMargin(button, new Insets(0, 0, 0, 2));
 
+        int dayOfMonth = event.getTime().getDayOfMonth();
+        VBox pane = (VBox) calendar.getChildren().get(dayOfMonth);
         pane.getChildren().add(eventPane);
       }
     }
@@ -340,11 +388,11 @@ public class CalendarController {
 
 
   /**
-   * Changes the FXML to a different view
+   * Changes the FXML to a different view.
    *
    * @param event    the FXML event that caused the function to run
    * @param filepath the filepath of the new view
-   * @throws IOException
+   * @throws IOException if an error occurs during loading of the file
    */
   private void changeScene(javafx.event.Event event, String filepath) throws IOException {
     Parent root = FXMLLoader.load(getClass().getResource(filepath));
