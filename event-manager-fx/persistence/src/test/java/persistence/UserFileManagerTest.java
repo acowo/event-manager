@@ -1,292 +1,250 @@
 package persistence;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
-import java.nio.file.Path;
 import java.nio.file.Files;
-
+import java.nio.file.Path;
+import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-
 import user.User;
 
-import static org.junit.jupiter.api.Assertions.*;
-
+/** Tests for {@link UserFileManager}. */
 public class UserFileManagerTest {
 
-    private User user1;
-    private User user2;
-    private User user3;
-    private String username1 = "test username1";
-    private String username2 = "test username2";
-    private String username3 = "test username3";
-    private String password1 = "test password1";
-    private String password2 = "test password2";
-    private String password3 = "test password3";
+  @TempDir Path tempDir;
+  private User user1;
+  private User user2;
+  private User user3;
+  private String username1 = "test username1";
+  private String username2 = "test username2";
+  private String username3 = "test username3";
+  private String password1 = "test password1";
+  private String password2 = "test password2";
+  private String password3 = "test password3";
+  private UserFileManager userFileManager;
 
-    @TempDir
-    Path tempDir;
+  @BeforeEach
+  void setUp() {
 
-    private UserFileManager userFileManager;
+    userFileManager = new UserFileManager(tempDir.resolve("userdata.json").toString());
 
-    @BeforeEach
-    void setUp() {
+    user1 = new User(username1, password1);
+    user2 = new User(username2, password2);
+    user3 = new User(username3, password3);
+  }
 
-        userFileManager = new UserFileManager(
-            tempDir.resolve("userdata.json").toString()
-        );
+  @Test
+  void testGetUser() {
+    userFileManager.addUser(user1);
 
-        user1 = new User(username1, password1);
-        user2 = new User(username2, password2);
-        user3 = new User(username3, password3);
-    }
+    User userResult = userFileManager.getUser(username1);
 
+    assertEquals(userResult.getUsername(), username1);
+    assertEquals(userResult.getPassword(), password1);
+  }
 
-    @Test
-    void testGetUser() {
-        userFileManager.addUser(user1);
+  @Test
+  void testUserExists() {
+    assertFalse(userFileManager.userExists(username2));
 
-        User userResult = userFileManager.getUser(username1);
+    userFileManager.addUser(user2);
 
-        assertEquals(userResult.getUsername(), username1);
-        assertEquals(userResult.getPassword(), password1);
-    }
+    assertTrue(userFileManager.userExists(username2));
+  }
 
-    @Test
-    void testUserExists() {
-        assertFalse(userFileManager.userExists(username2));
+  @Test
+  void testDuplicateUserThrowsException() {
+    userFileManager.addUser(user3);
 
-        userFileManager.addUser(user2);
+    assertThrows(IllegalArgumentException.class, () -> userFileManager.addUser(user3));
+  }
 
-        assertTrue(userFileManager.userExists(username2));
-    }
+  @Test
+  void testRemoveUser() {
+    userFileManager.addUser(user1);
 
-    @Test
-    void testDuplicateUserThrowsException() {
-        userFileManager.addUser(user3);
+    userFileManager.removeUser(username1);
 
-        assertThrows(IllegalArgumentException.class, () -> userFileManager.addUser(user3));
-    }
+    assertFalse(userFileManager.userExists(username1));
+  }
 
-    @Test
-    void testRemoveUser() {
-        userFileManager.addUser(user1);
+  @Test
+  void testRemoveNonexistentUserThrowsException() {
+    assertThrows(IllegalArgumentException.class, () -> userFileManager.removeUser(username3));
+  }
 
-        userFileManager.removeUser(username1);
+  @Test
+  void testEditUser() {
+    userFileManager.addUser(user1);
 
-        assertFalse(userFileManager.userExists(username1));
-    }
+    User updatedUser = new User(username1, "new password");
+    userFileManager.editUser(username1, updatedUser);
 
-    @Test
-    void testRemoveNonexistentUserThrowsException() {
-        assertThrows(IllegalArgumentException.class, () -> userFileManager.removeUser(username3));
-    }
+    User userResult = userFileManager.getUser(username1);
 
-    @Test
-    void testEditUser() {
-        userFileManager.addUser(user1);
+    assertEquals(userResult.getUsername(), username1);
+    assertEquals(userResult.getPassword(), "new password");
+  }
 
-        User updatedUser = new User(username1, "new password");
-        userFileManager.editUser(username1, updatedUser);
+  @Test
+  void testGetNonexistentUserThrowsException() {
+    assertThrows(IllegalArgumentException.class, () -> userFileManager.getUser("Does Not Exist"));
+  }
 
-        User userResult = userFileManager.getUser(username1);
+  @Test
+  void testEditNonexistentUserThrowsException() {
+    User updatedUser = new User("Does Not Exist", "password");
 
-        assertEquals(userResult.getUsername(), username1);
-        assertEquals(userResult.getPassword(), "new password");
-    }
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> userFileManager.editUser("Does Not Exist", updatedUser));
+  }
 
-    @Test
-    void testGetNonexistentUserThrowsException() {
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> userFileManager.getUser("Does Not Exist")
-        );
-    }
+  @Test
+  void testCheckPasswordReturnsTrueForCorrectPassword() {
+    userFileManager.addUser(user1);
 
-    @Test
-    void testEditNonexistentUserThrowsException() {
-        User updatedUser = new User(
-                "Does Not Exist",
-                "password"
-        );
+    assertTrue(userFileManager.checkPassword(username1, password1));
+  }
 
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> userFileManager.editUser(
-                        "Does Not Exist",
-                        updatedUser
-                )
-        );
-    }
+  @Test
+  void testCheckPasswordReturnsFalseForWrongPassword() {
+    userFileManager.addUser(user1);
 
-    @Test
-    void testCheckPasswordReturnsTrueForCorrectPassword() {
-        userFileManager.addUser(user1);
+    assertFalse(userFileManager.checkPassword(username1, "wrong password"));
+  }
 
-        assertTrue(
-                userFileManager.check_password(
-                        username1,
-                        password1
-                )
-        );
-    }
+  @Test
+  void testCheckPasswordReturnsFalseForNonexistentUser() {
+    assertFalse(userFileManager.checkPassword("Does Not Exist", "password"));
+  }
 
-    @Test
-    void testCheckPasswordReturnsFalseForWrongPassword() {
-        userFileManager.addUser(user1);
+  @Test
+  void testNullPasswordThrowsException() {
+    assertThrows(
+        IllegalArgumentException.class, () -> userFileManager.checkPassword(username1, null));
+  }
 
-        assertFalse(
-                userFileManager.check_password(
-                        username1,
-                        "wrong password"
-                )
-        );
-    }
+  @Test
+  void testUserPersistsToFile() {
+    userFileManager.addUser(user1);
 
-    @Test
-    void testCheckPasswordReturnsFalseForNonexistentUser() {
-        assertFalse(
-                userFileManager.check_password(
-                        "Does Not Exist",
-                        "password"
-                )
-        );
-    }
+    UserFileManager reloadedManager =
+        new UserFileManager(tempDir.resolve("userdata.json").toString());
 
-    @Test
-    void testNullPasswordThrowsException() {
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> userFileManager.check_password(
-                        username1,
-                        null
-                )
-        );
-    }
+    assertTrue(reloadedManager.userExists(username1));
 
-    @Test
-    void testUserPersistsToFile() {
-        userFileManager.addUser(user1);
+    User reloadedUser = reloadedManager.getUser(username1);
 
-        UserFileManager reloadedManager = new UserFileManager(
-                tempDir.resolve("userdata.json").toString()
-        );
+    assertEquals(username1, reloadedUser.getUsername());
+    assertEquals(password1, reloadedUser.getPassword());
+  }
 
-        assertTrue(reloadedManager.userExists(username1));
+  @Test
+  void testFileCreation() {
+    Path file = tempDir.resolve("users.json");
+    UserFileManager manager = new UserFileManager(file.toString());
 
-        User reloadedUser = reloadedManager.getUser(username1);
+    assertTrue(manager.getUsers().isEmpty());
+    assertTrue(Files.exists(file));
+  }
 
-        assertEquals(username1, reloadedUser.getUsername());
-        assertEquals(password1, reloadedUser.getPassword());
-    }
+  @Test
+  void testFileCreationFailsWhenParentDirectoryIsMissing() {
+    Path file = tempDir.resolve("missing-folder/users.json");
+    UserFileManager manager = new UserFileManager(file.toString());
 
-    @Test
-    void testFileCreation() {
-        Path file = tempDir.resolve("users.json");
-        UserFileManager manager = new UserFileManager(file.toString());
+    RuntimeException exception = assertThrows(RuntimeException.class, manager::getUsers);
 
-        assertTrue(manager.getUsers().isEmpty());
-        assertTrue(Files.exists(file));
-    }
+    assertEquals("Could not create user file", exception.getMessage());
+    assertInstanceOf(IOException.class, exception.getCause());
+  }
 
-    @Test
-    void testFileCreationFailsWhenParentDirectoryIsMissing() {
-        Path file = tempDir.resolve("missing-folder/users.json");
-        UserFileManager manager = new UserFileManager(file.toString());
+  @Test
+  void testSaveUsersIfNull() {
+    assertThrows(NullPointerException.class, () -> userFileManager.saveUsers(null));
+  }
 
-        RuntimeException exception = assertThrows(
-                RuntimeException.class,
-                manager::getUsers
-        );
+  @Test
+  void testSuccesfullCopy() {
+    userFileManager.addUser(user1);
+    UserFileManager copy = userFileManager.copy();
 
-        assertEquals("Could not create user file", exception.getMessage());
-        assertInstanceOf(IOException.class, exception.getCause());
-    }
+    assertEquals(username1, copy.getUser(username1).getUsername());
+    assertEquals(password1, copy.getUser(username1).getPassword());
+    assertEquals(userFileManager.getUsers().keySet(), copy.getUsers().keySet());
+  }
 
-    @Test
-    void testSaveUsersIfNull() {
-        assertThrows(NullPointerException.class, () -> userFileManager.saveUsers(null));
-    }
+  @Test
+  void testConstructorWithDefaultFilePath() {
+    assertDoesNotThrow(() -> new UserFileManager());
+  }
 
-    @Test
-    void testSuccesfullCopy() {
-        userFileManager.addUser(user1);
-        UserFileManager copy = userFileManager.copy();
+  @Test
+  void testRemoveEvent() {
 
-        assertEquals(username1, copy.getUser(username1).getUsername());
-        assertEquals(password1, copy.getUser(username1).getPassword());
-        assertEquals(userFileManager.getUsers().keySet(), copy.getUsers().keySet());
-    }
+    user1.addEventId("test Event");
+    user2.addEventId("test Event");
 
-    @Test
-    void testConstructorWithDefaultFilePath() {
-        assertDoesNotThrow(() -> new UserFileManager());
-    }
+    userFileManager.addUser(user1);
+    userFileManager.addUser(user2);
 
-    @Test
+    userFileManager.removeEvent("test Event");
+    assertFalse(userFileManager.getUser(username1).isAttendingEvent("test Event"));
+    assertFalse(userFileManager.getUser(username2).isAttendingEvent("test Event"));
+    assertEquals(2, userFileManager.getUsers().size());
+  }
 
-    void testRemoveEvent() {
+  @Test
+  void testSaveUsersCreatesFile() {
+    Path file = tempDir.resolve("new-users.json");
+    UserFileManager manager = new UserFileManager(file.toString());
 
-        user1.addEventId("test Event");
-        user2.addEventId("test Event");
+    manager.saveUsers(Map.of(username1, user1));
 
-        userFileManager.addUser(user1);
-        userFileManager.addUser(user2);
+    assertTrue(Files.exists(file));
+    assertEquals(password1, manager.getUser(username1).getPassword());
+  }
 
-        userFileManager.removeEvent("test Event");
-        assertFalse(userFileManager.getUser(username1).isAttendingEvent("test Event"));
-        assertFalse(userFileManager.getUser(username2).isAttendingEvent("test Event"));
-        assertEquals(2, userFileManager.getUsers().size());
-    }
+  @Test
+  void testSaveUsersThrowsWhenPathIsDirectory() {
+    UserFileManager manager = new UserFileManager(tempDir.toString());
 
-    @Test
-    void testSaveUsersCreatesFile() {
-        Path file = tempDir.resolve("new-users.json");
-        UserFileManager manager = new UserFileManager(file.toString());
+    RuntimeException exception =
+        assertThrows(RuntimeException.class, () -> manager.saveUsers(Map.of()));
 
-        manager.saveUsers(Map.of(username1, user1));
+    assertEquals("Could not write to file", exception.getMessage());
+    assertInstanceOf(IOException.class, exception.getCause());
+  }
 
-        assertTrue(Files.exists(file));
-        assertEquals(password1, manager.getUser(username1).getPassword());
-    }
+  @Test
+  void testGetUsersThrowsWhenPathIsDirectory() {
+    UserFileManager manager = new UserFileManager(tempDir.toString());
 
-    @Test
-    void testSaveUsersThrowsWhenPathIsDirectory() {
-        UserFileManager manager =
-                new UserFileManager(tempDir.toString());
+    RuntimeException exception = assertThrows(RuntimeException.class, manager::getUsers);
 
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> manager.saveUsers(Map.of()));
+    assertEquals("An error has occurred", exception.getMessage());
+  }
 
-        assertEquals("Could not write to file", exception.getMessage());
-        assertInstanceOf(IOException.class, exception.getCause());
-    }
+  @Test
+  void testLoadFromDirectoryReturnsEmptyMap() {
+    EventFileManager manager = new EventFileManager(tempDir.toString());
+    assertTrue(manager.getEvents().isEmpty());
+  }
 
-    @Test
-    void testGetUsersThrowsWhenPathIsDirectory() {
-        UserFileManager manager = new UserFileManager(tempDir.toString());
-
-        RuntimeException exception = assertThrows(RuntimeException.class,manager::getUsers);
-
-        assertEquals("An error has occurred", exception.getMessage());
-    }
-
-    @Test
-    void testLoadFromDirectoryReturnsEmptyMap() {
-        EventFileManager manager = new EventFileManager(tempDir.toString());
-        assertTrue(manager.getEvents().isEmpty());
-    }
-
-    @Test
-    void testConstructorUsesEmptyMapWhenLoadingFails() throws IOException {
-        Path file = tempDir.resolve("invalid.json");
-        Files.writeString(file, "{invalid json");
-        EventFileManager manager = new EventFileManager(file.toString());
-        assertTrue(manager.getEvents().isEmpty());
-    }
-
-
-    
+  @Test
+  void testConstructorUsesEmptyMapWhenLoadingFails() throws IOException {
+    Path file = tempDir.resolve("invalid.json");
+    Files.writeString(file, "{invalid json");
+    EventFileManager manager = new EventFileManager(file.toString());
+    assertTrue(manager.getEvents().isEmpty());
+  }
 }

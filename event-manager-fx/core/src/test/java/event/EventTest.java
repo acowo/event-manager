@@ -23,10 +23,10 @@ class EventTest {
   @Test
   void testInvalidIdThrowsException() {
     LocalDateTime time = LocalDateTime.of(2026, 9, 20, 18, 0);
-    Assertions.assertThrows(IllegalArgumentException.class,
-        () -> new Event(null, "Game Night", "Gløshaugen", time));
-    Assertions.assertThrows(IllegalArgumentException.class,
-        () -> new Event(" ", "Game Night", "Gløshaugen", time));
+    Assertions.assertThrows(
+        IllegalArgumentException.class, () -> new Event(null, "Game Night", "Gløshaugen", time));
+    Assertions.assertThrows(
+        IllegalArgumentException.class, () -> new Event(" ", "Game Night", "Gløshaugen", time));
   }
 
   @Test
@@ -34,9 +34,7 @@ class EventTest {
     LocalDateTime time = LocalDateTime.of(2026, 9, 20, 18, 0);
 
     Assertions.assertThrows(
-        IllegalArgumentException.class,
-        () -> new Event(null, "Gløshaugen", time)
-    );
+        IllegalArgumentException.class, () -> new Event(null, "Gløshaugen", time));
   }
 
   @Test
@@ -44,9 +42,7 @@ class EventTest {
     LocalDateTime time = LocalDateTime.of(2026, 9, 20, 18, 0);
 
     Assertions.assertThrows(
-        IllegalArgumentException.class,
-        () -> new Event(" ", "Gløshaugen", time)
-    );
+        IllegalArgumentException.class, () -> new Event(" ", "Gløshaugen", time));
   }
 
   @Test
@@ -54,9 +50,7 @@ class EventTest {
     LocalDateTime time = LocalDateTime.of(2026, 9, 20, 18, 0);
 
     Assertions.assertThrows(
-        IllegalArgumentException.class,
-        () -> new Event("Game Night", null, time)
-    );
+        IllegalArgumentException.class, () -> new Event("Game Night", null, time));
   }
 
   @Test
@@ -64,17 +58,12 @@ class EventTest {
     LocalDateTime time = LocalDateTime.of(2026, 9, 20, 18, 0);
 
     Assertions.assertThrows(
-        IllegalArgumentException.class,
-        () -> new Event("Game Night", " ", time)
-    );
+        IllegalArgumentException.class, () -> new Event("Game Night", " ", time));
   }
 
   @Test
   void testNullTimeThrowsException() {
     Assertions.assertThrows(
-        IllegalArgumentException.class,
-        () -> new Event("Game Night", "Gløshaugen", null)
-    );
+        IllegalArgumentException.class, () -> new Event("Game Night", "Gløshaugen", null));
   }
-
 }
