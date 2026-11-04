@@ -12,7 +12,6 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-
 import org.junit.jupiter.api.io.TempDir;
 import org.testfx.framework.junit5.ApplicationTest;
 import persistence.EventFileManager;
@@ -33,9 +32,6 @@ import static org.testfx.util.NodeQueryUtils.hasText;
 import static org.testfx.util.NodeQueryUtils.isVisible;
 import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
 
-/**
- * Test class for CalendarController, verifying UI behavior and user interactions.
- */
 public class CalendarControllerTest extends ApplicationTest {
   @TempDir
   Path tempDir;
@@ -256,4 +252,6 @@ public class CalendarControllerTest extends ApplicationTest {
     clickOn("#createEvent");
     waitForFxEvents();
   }
+
+
 }
