@@ -1,6 +1,20 @@
 package ui;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.testfx.api.FxAssert.verifyThat;
+import static org.testfx.util.NodeQueryUtils.hasText;
+import static org.testfx.util.NodeQueryUtils.isVisible;
+import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
+
 import event.Event;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -20,18 +34,11 @@ import ui.controller.CalendarController;
 import user.UserManager;
 import user.UserSession;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.testfx.api.FxAssert.verifyThat;
-import static org.testfx.util.NodeQueryUtils.hasText;
-import static org.testfx.util.NodeQueryUtils.isVisible;
-import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
 
+/**
+ * Test class for CalendarController, verifying UI behavior and user interactions.
+ */
 public class CalendarControllerTest extends ApplicationTest {
   @TempDir
   Path tempDir;
@@ -39,13 +46,15 @@ public class CalendarControllerTest extends ApplicationTest {
   private UserFileManager userFiles;
 
   private List<Event> savedEvents(String title) {
-    return new EventFileManager(tempDir.resolve("eventdata.json").toString()).getEvents().values().stream()
+    return new EventFileManager(tempDir.resolve("eventdata.json").toString())
+        .getEvents().values().stream()
         .filter(e -> e.getTitle().equals(title)).toList();
   }
 
   /**
-   * (non-Javadoc) Setup before each test. Clears the event and user files for the test event and sets user session with
-   * test user
+   * (non-Javadoc) Setup before each test.
+   * Clears the event and user files for the test event
+   * and sets user session with test user.
    *
    * @see org.testfx.framework.junit5.ApplicationTest#start(javafx.stage.Stage)
    */
@@ -81,7 +90,7 @@ public class CalendarControllerTest extends ApplicationTest {
   }
 
   /**
-   * Tests that the calendar opens properly with the month and year of today
+   * Tests that the calendar opens properly with the month and year of today.
    */
   @Test
   void testWindowLoads() {
@@ -91,7 +100,7 @@ public class CalendarControllerTest extends ApplicationTest {
   }
 
   /**
-   * Tests that the months change properly when using the arrows to traverse months
+   * Tests that the months change properly when using the arrows to traverse months.
    */
   @Test
   void testMonthChange() {
@@ -106,15 +115,17 @@ public class CalendarControllerTest extends ApplicationTest {
   }
 
   /**
-   * Tests that the create event button opens the eventcreator window and that the window closes upon pressing the
-   * cancel button
+   * Tests that the create event button opens the event creator window
+   * and that the window closes upon pressing the cancel button.
    */
   @Test
   void showEventCreator() {
-    verifyThat("#eventCreator", isVisible().negate()); //Checks that the eventcreator is invisible to begin with
+    //Checks that the eventcreator is invisible to begin with
+    verifyThat("#eventCreator", isVisible().negate());
 
     verifyThat("#openEventCreator", hasText("Create event"));
-    clickOn("#openEventCreator"); //Checks that the eventcreator is visible after pressing create event button
+    //Checks that the eventcreator is visible after pressing create event button
+    clickOn("#openEventCreator");
     verifyThat("#eventCreator", isVisible());
     verifyThat("#closeEventCreator", isVisible());
 
@@ -123,7 +134,8 @@ public class CalendarControllerTest extends ApplicationTest {
   }
 
   /**
-   * Tests that the eventcreator manages to create an event, but allows duplicate names and rejects incomplete fields.
+   * Tests that the event creator manages to create an event,
+   * but allows duplicate names and rejects incomplete fields.
    */
   @Test
   void testEventCreator() {
@@ -136,12 +148,12 @@ public class CalendarControllerTest extends ApplicationTest {
 
     clickOn("#openEventCreator");
     clickOn("#createEvent");
-    verifyThat("#eventError", hasText("Something went wrong. \nCheck that you have filled all fields properly"));
+    verifyThat("#eventError",
+        hasText("Something went wrong. \nCheck that you have filled all fields properly"));
   }
 
   /**
-   * tests that the logout button opens the loginPage and that the user in session is removed
-   *
+   * tests that the logout button opens the loginPage and that the user in session is removed.
    */
   @Test
   public void testValidLogout() {
@@ -154,7 +166,7 @@ public class CalendarControllerTest extends ApplicationTest {
 
 
   /**
-   * Tests that the event pane for an event shows properly
+   * Tests that the event pane for an event shows properly.
    */
   @Test
   public void testEventPane() {
@@ -178,14 +190,15 @@ public class CalendarControllerTest extends ApplicationTest {
   }
 
   /**
-   * Tests that the events have independent attendance and deletion
+   * Tests that the events have independent attendance and deletion.
    */
   @Test
   void sameNamedEventsHaveIndependentDeletion() {
     createEvent();
     createEvent();
     List<Button> buttons =
-        lookup(hasText("Testing")).queryAll().stream().filter(node -> node.getParent() instanceof HBox)
+        lookup(hasText("Testing")).queryAll().stream()
+            .filter(node -> node.getParent() instanceof HBox)
             .map(node -> (Button) ((HBox) node.getParent()).getChildren().get(1)).toList();
     assertEquals(2, buttons.size());
     clickOn(buttons.get(0));
@@ -207,8 +220,6 @@ public class CalendarControllerTest extends ApplicationTest {
 
   @Test
   void canJoinAndLeaveNonAdministrativeEvents() {
-    Event nonAdmin = eventFiles.getEvents().values().stream().findFirst().orElseThrow(IllegalStateException::new);
-
     Node label = lookup(hasText("Not Admin")).query();
     HBox eventPane = (HBox) label.getParent();
     Button button = (Button) eventPane.getChildren().get(1);
@@ -217,6 +228,8 @@ public class CalendarControllerTest extends ApplicationTest {
     verifyThat("#eventPane", isVisible());
     verifyThat("#toggleEventButton", isVisible());
     verifyThat("#toggleEventButton", hasText("Join event"));
+    Event nonAdmin = eventFiles.getEvents().values()
+        .stream().findFirst().orElseThrow(IllegalStateException::new);
     assertFalse(UserSession.getUser().isAttendingEvent(nonAdmin.getEventId()));
 
     clickOn("#toggleEventButton");
@@ -234,7 +247,7 @@ public class CalendarControllerTest extends ApplicationTest {
   }
 
   /**
-   * Help function to create test event
+   * Help function to create test event.
    */
   private void createEvent() {
     clickOn("#openEventCreator");
