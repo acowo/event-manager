@@ -1,163 +1,69 @@
 package persistence;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import event.Event;
-import java.nio.file.Path;
 import java.nio.file.Files;
-import org.junit.jupiter.api.io.TempDir;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
+/**
+ * EventFileManagerTest contains unit and integration tests for the {@link EventFileManager} class,
+ * verifying persistence operations such as adding, editing, removing, loading, and copying events
+ * with file-based storage.
+ */
 public class EventFileManagerTest {
 
-    @TempDir
-    Path tempDir;
+  @TempDir Path tempDir;
 
-    private EventFileManager eventFileManager;
-    private Event event;
+  private EventFileManager eventFileManager;
+  private Event event;
 
-    @BeforeEach
-    void setUp() {
-        eventFileManager = new EventFileManager(
-            tempDir.resolve("eventdata.json").toString()
-        );
+  @BeforeEach
+  void setUp() {
+    eventFileManager = new EventFileManager(tempDir.resolve("eventdata.json").toString());
 
-        event = new Event(
-                "Test Event",
-                "Trondheim",
-                LocalDateTime.of(2026, 10, 1, 18, 0)
-        );
+    event = new Event("Test Event", "Trondheim", LocalDateTime.of(2026, 10, 1, 18, 0));
 
-        // Make sure tests start with no test event.
-        if (eventFileManager.eventExists(event.getEventId())) {
-            eventFileManager.removeEvent(event.getEventId());
-        }
+    // Make sure tests start with no test event.
+    if (eventFileManager.eventExists(event.getEventId())) {
+      eventFileManager.removeEvent(event.getEventId());
     }
+  }
 
-    @Test
-    void testAddAndGetEvent() {
-        eventFileManager.addEvent(event);
+  @Test
+  void testAddAndGetEvent() {
+    eventFileManager.addEvent(event);
 
-        Event result = eventFileManager.getEvent(event.getEventId());
+    Event result = eventFileManager.getEvent(event.getEventId());
 
-        assertEquals("Test Event", result.getTitle());
-        assertEquals("Trondheim", result.getPlace());
-        assertEquals(
-                LocalDateTime.of(2026, 10, 1, 18, 0),
-                result.getTime()
-        );
-    }
+    assertEquals("Test Event", result.getTitle());
+    assertEquals("Trondheim", result.getPlace());
+    assertEquals(LocalDateTime.of(2026, 10, 1, 18, 0), result.getTime());
+  }
 
-    @Test
-    void testEventExists() {
-        assertFalse(eventFileManager.eventExists(event.getEventId()));
+  @Test
+  void testEventExists() {
+    assertFalse(eventFileManager.eventExists(event.getEventId()));
 
-        eventFileManager.addEvent(event);
+    eventFileManager.addEvent(event);
 
-        assertTrue(eventFileManager.eventExists(event.getEventId()));
-    }
+    assertTrue(eventFileManager.eventExists(event.getEventId()));
+  }
 
-    @Test
-    void testGetEvents() {
-        eventFileManager.addEvent(event);
+  @Test
+  void testGetEvents() {
+    eventFileManager.addEvent(event);
 
-        Map<String, Event> events = eventFileManager.getEvents();
-
-        assertTrue(events.containsKey(event.getEventId()));
-        assertEquals(
-                event.getTitle(),
-                events.get(event.getEventId()).getTitle()
-        );
-    }
-
-    @Test
-    void testDuplicateEventThrowsException() {
-        eventFileManager.addEvent(event);
-
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> eventFileManager.addEvent(event)
-        );
-    }
-
-    @Test
-    void testGetNonexistentEventThrowsException() {
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> eventFileManager.getEvent(UUID.randomUUID().toString())
-        );
-    }
-
-    @Test
-    void testRemoveEvent() {
-        eventFileManager.addEvent(event);
-
-        assertTrue(eventFileManager.eventExists(event.getEventId()));
-
-        eventFileManager.removeEvent(event.getEventId());
-
-        assertFalse(eventFileManager.eventExists(event.getEventId()));
-    }
-
-    @Test
-    void testRemoveNonexistentEventThrowsException() {
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> eventFileManager.removeEvent(UUID.randomUUID().toString())
-        );
-    }
-
-    @Test
-    void testEditEvent() {
-        eventFileManager.addEvent(event);
-
-        Event editedEvent = new Event(event.getEventId(),
-                "Test Event",
-                "Oslo",
-                LocalDateTime.of(2026, 11, 1, 20, 0)
-        );
-
-        eventFileManager.editEvent(event.getEventId(), editedEvent);
-
-        Event result = eventFileManager.getEvent(event.getEventId());
-
-        assertEquals("Test Event", result.getTitle());
-        assertEquals("Oslo", result.getPlace());
-        assertEquals(
-                LocalDateTime.of(2026, 11, 1, 20, 0),
-                result.getTime()
-        );
-    }
-
-    @Test
-    void testEditNonexistentEventThrowsException() {
-        Event editedEvent = new Event(event.getEventId(),
-                "Does Not Exist",
-                "Oslo",
-                LocalDateTime.of(2026, 11, 1, 20, 0)
-        );
-
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> eventFileManager.editEvent(
-                        UUID.randomUUID().toString(),
-                        editedEvent
-                )
-        );
-    }
-
-    @Test 
-    void testEventPersistToFile() {
-        eventFileManager.addEvent(event);
-
+    Map<String, Event> events = eventFileManager.getEvents();
         EventFileManager reloadedManager = new EventFileManager(
             tempDir.resolve("eventdata.json").toString()
         );

@@ -1,7 +1,11 @@
 package persistence;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+import event.Event;
+import event.EventRepository;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -11,224 +15,190 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
-
-import event.Event;
-import event.EventRepository;
-
 /**
  * Manages the persistence of {@link Event} objects using a JSON file.
  *
- * <p>Events are stored in memory in a map and synchronized with the
- * {@code eventdata.json} file whenever an event is added, edited, or removed.
- * Gson is used to serialize and deserialize the event data.
+ * <p>Events are stored in memory in a map and synchronized with the {@code eventdata.json} file
+ * whenever an event is added, edited, or removed. Gson is used to serialize and deserialize the
+ * event data.
  */
 public class EventFileManager implements EventRepository {
 
-    /**
-     * Gson instance configured with an adapter for {@link LocalDateTime}.
-     */
-    private static final Gson gson = new GsonBuilder()
-            .registerTypeAdapter(
-                    LocalDateTime.class,
-                    new LocalDateTimeAdapter()
-            )
-            .create();
+  /** Gson instance configured with an adapter for {@link LocalDateTime}. */
+  private static final Gson gson =
+      new GsonBuilder()
+          .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+          .create();
 
-    /**
-     * Path to the JSON file containing the event data.
-     */
-    private final String filePath;
+  /** Path to the JSON file containing the event data. */
+  private final String filePath;
 
-    /**
-     * Map containing all currently stored events, indexed by their UUID.
-     */
-    private Map<String, Event> events;
+  /** Map containing all currently stored events, indexed by their UUID. */
+  private Map<String, Event> events;
 
-    /**
-     *  creates an EventFilemanager using the default event data file.
-     */
-    public EventFileManager() {
-        this("../data/eventdata.json");
+  /** Creates an EventFileManager using the default event data file. */
+  public EventFileManager() {
+    this("../data/eventdata.json");
+  }
+
+  /**
+   * Creates an EventFileManager using the specified file.
+   *
+   * @param filePath the path to the event data file
+   */
+  public EventFileManager(String filePath) {
+    this.filePath = filePath;
+    try {
+      this.events = loadEvents();
+    } catch (Exception e) {
+      this.events = new HashMap<>();
+    }
+  }
+
+  /**
+   * Loads events from the JSON data file.
+   *
+   * <p>If the file does not exist or is empty, an empty map is returned.
+   *
+   * @return a map containing the events loaded from the file
+   * @throws RuntimeException if the event data file cannot be found
+   */
+  private Map<String, Event> loadEvents() {
+    File file = new File(filePath);
+
+    if (!file.exists()) {
+      return new HashMap<>();
     }
 
-    /**
-     * Creates an EventFileManager using the specified file.
-     *
-     * @param filePath the path to the event data file
-     */
-    public EventFileManager(String filePath) {
-        this.filePath = filePath;
-        try {
-            this.events = loadEvents();
-        } catch (Exception e) {
-           this.events = new HashMap<>();
-        }
+    try (Scanner scanner = new Scanner(file, StandardCharsets.UTF_8)) {
+      StringBuilder json = new StringBuilder();
 
+      while (scanner.hasNextLine()) {
+        json.append(scanner.nextLine());
+      }
+
+      if (json.isEmpty()) {
+        return new HashMap<>();
+      }
+
+      Type type = new TypeToken<Map<String, Event>>() {}.getType();
+      Map<String, Event> loadedEvents = gson.fromJson(json.toString(), type);
+
+      return loadedEvents != null ? loadedEvents : new HashMap<>();
+
+    } catch (IOException e) {
+      throw new RuntimeException("An error has occurred while trying to read file.", e);
     }
-    
+  }
 
-    /**
-     * Loads events from the JSON data file.
-     *
-     * <p>If the file does not exist or is empty, an empty map is returned.
-     *
-     * @return a map containing the events loaded from the file
-     * @throws RuntimeException if the event data file cannot be found
-     */
-    private Map<String, Event> loadEvents() {
-        File file = new File(filePath);
-
-        if (!file.exists()) {
-            return new HashMap<>();
-        }
-
-        try (Scanner scanner = new Scanner(file, StandardCharsets.UTF_8)) {
-            StringBuilder json = new StringBuilder();
-
-            while (scanner.hasNextLine()) {
-                json.append(scanner.nextLine());
-            }
-
-            if (json.isEmpty()) {
-                return new HashMap<>();
-            }
-
-            Type type = new TypeToken<Map<String, Event>>() {}.getType();
-            Map<String, Event> loadedEvents = gson.fromJson(json.toString(), type);
-
-            return loadedEvents != null ? loadedEvents : new HashMap<>();
-
-        } catch (IOException e) {
-            throw new RuntimeException("An error has occured while trying to read file.", e);
-        }
+  /**
+   * Finds and returns an event with a specific UUID.
+   *
+   * @param eventId The UUID of the event
+   * @return The event with the UUID if found.
+   * @throws IllegalArgumentException if the event does not exist.
+   */
+  @Override
+  public Event getEvent(String eventId) {
+    if (!eventExists(eventId)) {
+      throw new IllegalArgumentException("Event does not exist: " + eventId);
     }
 
+    return events.get(eventId);
+  }
 
+  /**
+   * Checks whether an event with the specified UUID exists.
+   *
+   * @param eventId The UUID of the event.
+   * @return True if event exists, otherwise false.
+   */
+  @Override
+  public boolean eventExists(String eventId) {
+    return events.containsKey(eventId);
+  }
 
-    /**
-     * Finds and returns an event with a specific UUID.
-     * @param eventId The UUID of the event
-     * @return The event with the UUID if found.
-     * @throws IllegalArgumentException if the event does not exist.
-     */
-    @Override 
-    public Event getEvent(String eventId) {
-        if (!eventExists(eventId)) {
-            throw new IllegalArgumentException(
-                    "Event does not exist: " + eventId
-            );
-        }
-
-        return events.get(eventId);
+  /**
+   * Adds an event to the stored events.
+   *
+   * @param event The event object to be added.
+   * @throws IllegalArgumentException If an event by the same UUID already exists.
+   */
+  @Override
+  public void addEvent(Event event) {
+    if (eventExists(event.getEventId())) {
+      throw new IllegalArgumentException(
+          "An event with this UUID already exists: " + event.getEventId());
     }
 
+    events.put(event.getEventId(), event);
+    saveEvents();
+  }
 
-
-    /**
-     * Checks whether an event with the specified UUID exists.
-     * @param eventId The UUID of the event.
-     * @return True if event exists, otherwise false.
-     */
-    @Override
-    public boolean eventExists(String eventId) {
-        return events.containsKey(eventId);
+  /**
+   * Removes an event with the specified UUID.
+   *
+   * <p>The updated event collection is saved to the JSON file after removal.
+   */
+  @Override
+  public void removeEvent(String eventId) {
+    if (!eventExists(eventId)) {
+      throw new IllegalArgumentException("Event does not exist: " + eventId);
     }
 
-    
+    events.remove(eventId);
+    saveEvents();
+  }
 
-    /**
-     * Adds an event to the stored events.
-     * @param event The event object to be added.
-     * @throws IllegalArgumentException If an event by the same UUID already exists.
-     */
-    @Override
-    public void addEvent(Event event) {
-        if (eventExists(event.getEventId())) {
-            throw new IllegalArgumentException(
-                    "An event with this UUID already exists: "
-                            + event.getEventId()
-            );
-        }
-
-        events.put(event.getEventId(), event);
-        saveEvents();
+  /**
+   * Replaces an existing event with a new event.
+   *
+   * <p>The updated event collection is saved to the JSON file after editing.
+   */
+  @Override
+  public void editEvent(String eventId, Event event) {
+    if (!eventExists(eventId)) {
+      throw new IllegalArgumentException("Event does not exist: " + eventId);
     }
 
-    /**
-     * Removes an event with the specified UUID.
-     *
-     * <p>The updated event collection is saved to the JSON file after removal.
-     */
-    @Override
-    public void removeEvent(String eventId) {
-        if (!eventExists(eventId)) {
-            throw new IllegalArgumentException(
-                    "Event does not exist: " + eventId
-            );
-        }
-
-        events.remove(eventId);
-        saveEvents();
+    if (!eventId.equals(event.getEventId())) {
+      throw new IllegalArgumentException("Updated event must keep its original ID");
     }
+    events.put(eventId, event);
+    saveEvents();
+  }
 
-    /**
-     * Replaces an existing event with a new event.
-     *
-     * <p>The updated event collection is saved to the JSON file after editing.
-     */
-    @Override
-    public void editEvent(String eventId, Event event) {
-        if (!eventExists(eventId)) {
-            throw new IllegalArgumentException(
-                    "Event does not exist: " + eventId
-            );
-        }
+  /**
+   * Retrieves all stored events.
+   *
+   * <p>A copy of the internal map is returned so that callers cannot directly modify the stored
+   * collection.
+   */
+  @Override
+  public Map<String, Event> getEvents() {
+    return new HashMap<>(events);
+  }
 
-        if (!eventId.equals(event.getEventId())) {
-            throw new IllegalArgumentException("Updated event must keep its original ID");
-        }
-        events.put(eventId, event);
-        saveEvents();
+  /**
+   * Saves all currently stored events to the JSON data file.
+   *
+   * @throws RuntimeException if the event data cannot be written to the file
+   */
+  private void saveEvents() {
+    try (FileWriter writer = new FileWriter(filePath, StandardCharsets.UTF_8)) {
+      gson.toJson(events, writer);
+    } catch (IOException e) {
+      throw new RuntimeException("Could not save event data.", e);
     }
+  }
 
-    /**
-     * Retrieves all stored events.
-     *
-     * <p>A copy of the internal map is returned so that callers cannot
-     * directly modify the stored collection.
-     */
-    @Override
-    public Map<String, Event> getEvents() {
-        return new HashMap<>(events);
-    }
-
-    /**
-     * Saves all currently stored events to the JSON data file.
-     *
-     * @throws RuntimeException if the event data cannot be written to the file
-     */
-    private void saveEvents() {
-        try (FileWriter writer = new FileWriter(filePath, StandardCharsets.UTF_8)) {
-            gson.toJson(events, writer);
-        } catch (IOException e) {
-            throw new RuntimeException(
-                    "Could not save event data.",
-                    e
-            );
-        }
-    }
-
-    
-    /**
-     * Copies this class
-     *
-     * @return a EventRepository that is a copy
-     */
-    @Override
-    public EventFileManager copy() {
-        return new EventFileManager(filePath);
-    }
+  /**
+   * Copies this class.
+   *
+   * @return a EventRepository that is a copy
+   */
+  @Override
+  public EventFileManager copy() {
+    return new EventFileManager(filePath);
+  }
 }

@@ -2,6 +2,15 @@ package ui.controller;
 
 import event.Event;
 import event.EventManager;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.Month;
+import java.time.temporal.ChronoField;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Map;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -84,6 +93,7 @@ public class CalendarController {
     this.events = this.eventManager.getEvents();
     this.user = UserSession.getUser();
 
+
     setMonth(this.today);
 
     closeEventCreator();
@@ -107,8 +117,8 @@ public class CalendarController {
   }
 
   /**
-   * <p>Changes {@link #month month} to one month after <br>
-   * Updates the display to fit the new month with {@link #setMonth setMonth()} </p>
+   * Changes {@link #month month} to one month after. <br>
+   * Updates the display to fit the new month with {@link #setMonth setMonth()}
    *
    * @see #prevMonth prevMonth
    */
@@ -222,23 +232,27 @@ public class CalendarController {
     } else {
       toggleEventButton.setText("Leave event");
       user.addEventId(event.getEventId(), false);
+
     }
     userManager.editUser(user.getUsername(), user);
   }
 
+
   @FXML
   public void hideEvent() {
     selectedEventId = null;
+
     eventPane.setDisable(true);
     eventPane.setVisible(false);
   }
 
 
   /**
-   * Ends the current user session and changes back to the login page
+   * Ends the current user session and changes back to the login page.
    *
    * @param event the FXML event
-   * @throws IOException
+   * @throws IOException if FXML cannot be found
+
    */
   @FXML
   public void handleLogout(javafx.event.Event event) throws IOException {
@@ -248,19 +262,16 @@ public class CalendarController {
   }
 
   /**
-   * Displays a month in the UI based on a specific date
+   * Displays a month in the UI based on a specific date.
    *
    * @param date the date of the month to be shown
    * @throws IllegalArgumentException if date is null
    */
-
   private void setMonth(LocalDate date) {
     if (date == null) {
       throw new IllegalArgumentException();
     }
     calendar.getChildren().subList(1, calendar.getChildren().size()).clear();
-
-
     this.month = date.getMonth();
     this.year = date.getYear();
     int dateNumber = date.getDayOfMonth();
@@ -287,15 +298,13 @@ public class CalendarController {
     addEvents();
   }
 
-
   /**
-   * Displays a month in the UI based on a specific month in a year
+   * Displays a month in the UI based on a specific month in a year.
    *
    * @param month the month to be shown
-   * @param year  the year of the month to be shown
+   * @param year the year of the month to be shown
    * @throws IllegalArgumentException if month or year before 1970
    */
-
   private void setMonth(Month month, int year) {
     if (month == null || year < 1970) {
       throw new IllegalArgumentException();
@@ -304,11 +313,10 @@ public class CalendarController {
   }
 
   /**
-   * Displays all events of the current month showing
+   * Displays all events of the current month showing.
    *
    * @throws IllegalStateException if this.month is null
    */
-
   private void addEvents() {
     if (this.month == null) {
       throw new IllegalStateException();
@@ -326,25 +334,27 @@ public class CalendarController {
         eventPane.getChildren().add(new Label(event.getTitle()));
 
         Button button = new Button("...");
-        button.setOnAction(e -> {
-          showEvent(event);
-        });
+        button.setOnAction(
+            e -> {
+              showEvent(event);
+            });
 
         eventPane.getChildren().add(button);
         HBox.setMargin(button, new Insets(0, 0, 0, 2));
 
+        int dayOfMonth = event.getTime().getDayOfMonth();
+        VBox pane = (VBox) calendar.getChildren().get(dayOfMonth);
         pane.getChildren().add(eventPane);
       }
     }
   }
 
-
   /**
-   * Changes the FXML to a different view
+   * Changes the FXML to a different view.
    *
-   * @param event    the FXML event that caused the function to run
+   * @param event the FXML event that caused the function to run
    * @param filepath the filepath of the new view
-   * @throws IOException
+   * @throws IOException if FXML cannot be found
    */
   private void changeScene(javafx.event.Event event, String filepath) throws IOException {
     Parent root = FXMLLoader.load(getClass().getResource(filepath));
@@ -353,8 +363,4 @@ public class CalendarController {
     stage.setScene(scene);
     stage.show();
   }
-
-
 }
-
-
