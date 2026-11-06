@@ -67,6 +67,7 @@ public class CalendarController {
 
   @FXML private Button deleteEventButton;
   @FXML private Button closeEventButton;
+  @FXML private Button deleteUser;
 
   @FXML private HBox eventButtons;
 
@@ -200,6 +201,13 @@ public class CalendarController {
           + "Please try again later.");
     }
 
+  }
+
+  /**
+   * Deleted the currently logged in User and all of its data
+   */
+  public void handleDeleteUser(){
+    this.userManager.deleteUser(this.user.getUsername(), eventManager);
   }
 
   /**
