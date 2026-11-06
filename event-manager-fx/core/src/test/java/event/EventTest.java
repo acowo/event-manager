@@ -1,6 +1,7 @@
 package event;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -10,7 +11,9 @@ class EventTest {
   void testCreateEvent() {
     LocalDateTime time = LocalDateTime.of(2026, 9, 20, 18, 0);
 
-    Event event = new Event("Game Night", "Gløshaugen", time);
+    String eventId = UUID.randomUUID().toString();
+    Event event = new Event(eventId, "Game Night", "Gløshaugen", time);
+    Assertions.assertEquals(eventId, event.getEventId());
 
     Assertions.assertEquals("Game Night", event.getTitle());
     Assertions.assertEquals("Gløshaugen", event.getPlace());
@@ -18,13 +21,20 @@ class EventTest {
   }
 
   @Test
+  void testInvalidIdThrowsException() {
+    LocalDateTime time = LocalDateTime.of(2026, 9, 20, 18, 0);
+    Assertions.assertThrows(
+        IllegalArgumentException.class, () -> new Event(null, "Game Night", "Gløshaugen", time));
+    Assertions.assertThrows(
+        IllegalArgumentException.class, () -> new Event(" ", "Game Night", "Gløshaugen", time));
+  }
+
+  @Test
   void testNullTitleThrowsException() {
     LocalDateTime time = LocalDateTime.of(2026, 9, 20, 18, 0);
 
     Assertions.assertThrows(
-        IllegalArgumentException.class,
-        () -> new Event(null, "Gløshaugen", time)
-    );
+        IllegalArgumentException.class, () -> new Event(null, "Gløshaugen", time));
   }
 
   @Test
@@ -32,9 +42,7 @@ class EventTest {
     LocalDateTime time = LocalDateTime.of(2026, 9, 20, 18, 0);
 
     Assertions.assertThrows(
-        IllegalArgumentException.class,
-        () -> new Event(" ", "Gløshaugen", time)
-    );
+        IllegalArgumentException.class, () -> new Event(" ", "Gløshaugen", time));
   }
 
   @Test
@@ -42,9 +50,7 @@ class EventTest {
     LocalDateTime time = LocalDateTime.of(2026, 9, 20, 18, 0);
 
     Assertions.assertThrows(
-        IllegalArgumentException.class,
-        () -> new Event("Game Night", null, time)
-    );
+        IllegalArgumentException.class, () -> new Event("Game Night", null, time));
   }
 
   @Test
@@ -52,17 +58,12 @@ class EventTest {
     LocalDateTime time = LocalDateTime.of(2026, 9, 20, 18, 0);
 
     Assertions.assertThrows(
-        IllegalArgumentException.class,
-        () -> new Event("Game Night", " ", time)
-    );
+        IllegalArgumentException.class, () -> new Event("Game Night", " ", time));
   }
 
   @Test
   void testNullTimeThrowsException() {
     Assertions.assertThrows(
-        IllegalArgumentException.class,
-        () -> new Event("Game Night", "Gløshaugen", null)
-    );
+        IllegalArgumentException.class, () -> new Event("Game Night", "Gløshaugen", null));
   }
-
 }

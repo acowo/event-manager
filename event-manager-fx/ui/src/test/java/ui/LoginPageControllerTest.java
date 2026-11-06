@@ -1,130 +1,107 @@
 
 package ui;
 
+import static org.testfx.api.FxAssert.verifyThat;
+import static org.testfx.util.NodeQueryUtils.hasText;
+import static org.testfx.util.NodeQueryUtils.isVisible;
+
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Objects;
-
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.testfx.framework.junit5.ApplicationTest;
 import org.testfx.matcher.base.NodeMatchers;
-
 import persistence.UserFileManager;
 import ui.controller.LoginPageController;
 import user.UserManager;
 import user.UserSession;
 
-import static org.testfx.api.FxAssert.verifyThat;
-import static org.testfx.util.NodeQueryUtils.hasText;
-import static org.testfx.util.NodeQueryUtils.isVisible;
-
-
+/** UI tests for {@link LoginPageController}. */
 public class LoginPageControllerTest extends ApplicationTest {
-    /**
-     * Starts the stage so the tests can take place.
-     * @param stage
-     * @throws IOException
-     */
 
-    @TempDir 
-    static Path tempDir;
+  @TempDir
+  static Path tempDir;
 
-    @Override 
-    public void start(Stage stage) throws IOException {
-        Path userFile = tempDir.resolve(
-            "userdata-" + java.util.UUID.randomUUID() + ".json"
-        );
+  /**
+   * Starts the login page using a temporary user file.
+   *
+   * @param stage the JavaFX stage used for rendering
+   * @throws IOException if the FXML file cannot be loaded
+   */
+  @Override
+  public void start(Stage stage) throws IOException {
+    Path userFile =
+        tempDir.resolve("userdata-" + java.util.UUID.randomUUID() + ".json");
 
-        UserFileManager repository = new UserFileManager(
-            userFile.toString()
-        );
+    UserFileManager repository = new UserFileManager(userFile.toString());
+    UserManager manager = new UserManager(repository);
 
-        UserManager manager = new UserManager(repository);
+    manager.register("ola", "banan");
 
-        manager.register("ola", "banan");
+    FXMLLoader loader =
+        new FXMLLoader(
+            Objects.requireNonNull(getClass().getResource("/ui/loginPage.fxml")));
 
-        FXMLLoader loader = new FXMLLoader(
-            Objects.requireNonNull(getClass().getResource("/ui/loginPage.fxml"))
+    Parent root = loader.load();
 
-        );
+    LoginPageController controller = loader.getController();
+    controller.setUserManager(manager);
+    controller.setCalendarView("/ui/TestCalendar.fxml");
 
-        Parent root = loader.load();
+    stage.setScene(new Scene(root));
+    stage.show();
+  }
 
-        LoginPageController controller = loader.getController();
-        controller.setUserManager(manager);
-        controller.setCalendarView("/ui/TestCalendar.fxml");
+  /** Tests that the login page loads correctly. */
+  @Test
+  void testWindowLoads() {
+    verifyThat("#loginPageUsernameField", NodeMatchers.isVisible());
+  }
 
-        stage.setScene(new Scene(root));
-        stage.show();
-    }
+  /** Tests that invalid login credentials display an error message. */
+  @Test
+  public void testInvalidUserLogin() {
+    clickOn("#loginPageUsernameField").write("invalid");
+    clickOn("#loginPagePasswordField").write("invalid");
 
-    /**
-     * Tests that the login page window loads by checking if an element is present.
-     */
-    @Test
-    void testWindowLoads() {
-        // Simple test to check if the scene initialized properly
-        verifyThat("#loginPage_usernameField", NodeMatchers.isVisible());
-    }
+    clickOn("#loginPageLoginButton");
 
-    /**
-     * Tests that the login page shows an error message when invalid credentials are used to try to log in.
-     */
-    @Test
-    public void testInvalidUserLogin() {
-        clickOn("#loginPage_usernameField");
-        write("ola");
+    verifyThat("#loginPageInfotextField", hasText("An error has occured"));
+  }
 
-        clickOn("#loginPage_passwordField");
-        write("123");
+  /** Tests that registering an existing username displays an error message. */
+  @Test
+  public void testInvalidUserRegistration() {
+    clickOn("#loginPageUsernameField").write("ola");
+    clickOn("#loginPagePasswordField").write("123");
 
-        verifyThat("#loginPage_usernameField", hasText("ola"));
-        verifyThat("#loginPage_passwordField", hasText("123"));
+    clickOn("#loginPageRegisterButton");
 
-        clickOn("#loginPage_registerButton");
+    verifyThat(
+        "#loginPageInfotextField",
+        hasText("A user by that name already exists"));
+  }
 
-        verifyThat(
-            "#loginPage_infotextField",
-            hasText("A user by that name already exists")
-        );
-    }
+  /** Tests that a successful login switches to the calendar view. */
+  @Test
+  public void testValidLogin() {
+    clickOn("#loginPageUsernameField").write("ola");
+    clickOn("#loginPagePasswordField").write("banan");
 
-    /**
-     * Tests that the login page shows an error message when a user tries registering with a username that has already been used.
-     */
-    @Test
-    public void testInvalidUserRegistration() {
-        clickOn("#loginPage_usernameField").write("ola");
-        clickOn("#loginPage_passwordField").write("123");
+    clickOn("#loginPageLoginButton");
 
-        clickOn("#loginPage_registerButton");
-        verifyThat("#loginPage_infotextField", hasText("A user by that name already exists"));
-    }
+    verifyThat("#yearLabel", isVisible());
+  }
 
-    /**
-     * Tests that the controller correctly switches to the calendar page after a successful login.
-     */
-    @Test
-    public void testValidLogin() throws InterruptedException {
-        clickOn("#loginPage_usernameField").write("ola");
-        clickOn("#loginPage_passwordField").write("banan");
-
-        clickOn("#loginPage_loginButton");
-
-        //Verifying that the scene changed by checking that a node from the calendar view is present
-        verifyThat("#yearLabel", isVisible());
-    }
-
-    @AfterEach
-    void cleanUp() {
-        UserSession.logout();
-    }
-
+  /** Clears the user session after each test. */
+  @AfterEach
+  void cleanUp() {
+    UserSession.logout();
+  }
 }
