@@ -22,4 +22,29 @@ public class EventManagerService {
         this.userManager = userManager;
     }
 
+    // ==================== EVENT LOGIC ====================
+    public Optional<EventDto> get(String eventId) {
+        return Optional.ofNullable(eventManager.getEvents().get(eventId)).map(EventDto::from);
+    }
+
+    public boolean create(EventDto dto) {
+        return eventManager.addEvent(dto.toEvent());
+    }
+
+    public boolean update(String eventId, EventDto dto) {
+        return eventManager.editEvent(eventId, dto.toEvent());
+    }
+
+    public boolean delete(String eventId) {
+        if (!eventManager.removeEvent(eventId)) {
+            return false;
+        }
+        userManager.removeEvent(eventId);
+        return true;
+    }
+
+
+    // ==================== USER LOGIC ====================
+
+
 }
