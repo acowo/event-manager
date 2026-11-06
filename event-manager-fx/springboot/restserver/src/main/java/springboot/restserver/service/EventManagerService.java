@@ -23,6 +23,14 @@ public class EventManagerService {
     }
 
     // ==================== EVENT LOGIC ====================
+
+    public synchronized List<EventDto> getAll() {
+        return eventManager.getEvents().values().stream()
+                .sorted(Comparator.comparing(Event::getTime))
+                .map(EventDto::from)
+                .toList();
+    }
+
     public Optional<EventDto> get(String eventId) {
         return Optional.ofNullable(eventManager.getEvents().get(eventId)).map(EventDto::from);
     }
