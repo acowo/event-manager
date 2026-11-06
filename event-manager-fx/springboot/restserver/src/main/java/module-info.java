@@ -1,12 +1,10 @@
-module eventmanager.ui {
-  requires javafx.controls;
-  requires javafx.fxml;
-
+module eventmanager.springboot.restserver {
   requires eventmanager.core;
-  requires eventmanager.persistence;
+    requires spring.web;
+    requires spring.context;
+    requires spring.beans;
+    requires spring.boot;
+    requires spring.boot.autoconfigure;
 
-
-
-  opens ui.controller to javafx.graphics, javafx.fxml;
-  exports ui;
+    exports springboot.restserver;
 }

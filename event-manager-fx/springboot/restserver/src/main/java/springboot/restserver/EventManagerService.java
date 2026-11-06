@@ -1,2 +1,10 @@
-package springboot.restserver;public class EventManagerService {
+package springboot.restserver;
+
+import org.springframework.stereotype.Service;
+
+
+@Service
+public class EventManagerService {
+
+
 }
