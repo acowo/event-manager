@@ -7,4 +7,6 @@ module eventmanager.springboot.restserver {
     requires spring.boot.autoconfigure;
 
     exports springboot.restserver;
+  exports springboot.restserver.controller;
+  exports springboot.restserver.service;
 }
