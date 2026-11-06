@@ -21,8 +21,6 @@ public class EventManagerEventController {
 
     // ==================== GET MAPPINGS ====================
 
-
-
     // ==================== POST MAPPING ====================
 
     // ==================== PUT MAPPING (UPDATE) ====================
