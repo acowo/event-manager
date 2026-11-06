@@ -191,8 +191,8 @@ public class UserFileManagerTest {
   @Test
   void testRemoveEvent() {
 
-    user1.addEventId("test Event");
-    user2.addEventId("test Event");
+    user1.addEventId("test Event", true);
+    user2.addEventId("test Event", true);
 
     userFileManager.addUser(user1);
     userFileManager.addUser(user2);

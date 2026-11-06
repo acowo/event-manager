@@ -73,6 +73,9 @@ public class UserManager {
       return false;
     }
     users.editUser(username, user);
+    if (UserSession.getUser().getUsername().equals(username)) {
+      UserSession.setUser(user);
+    }
     return true;
   }
 

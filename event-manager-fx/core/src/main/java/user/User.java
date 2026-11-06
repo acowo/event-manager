@@ -1,13 +1,16 @@
 package user;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /** A data class that represents a user within the system. */
 public final class User {
-  /** List of all identifiers for Events this User is attending. */
-  private List<String> eventIdList = new ArrayList<>();
-
+  /**
+   * List of all identifiers for Events this User is attending.
+   */
+  private Map<String, Boolean> eventIds = new HashMap<>();
   private String username;
   private String password;
 
@@ -32,7 +35,7 @@ public final class User {
   public User(User user) {
     setUsername(user.getUsername());
     setPassword(user.getPassword());
-    this.eventIdList = new ArrayList<>(user.getEventIdList());
+    this.eventIds = new HashMap<>(user.getEventIds());
   }
 
   /**
@@ -89,6 +92,7 @@ public final class User {
     this.password = password;
   }
 
+
   /**
    * Adds event to this users attending events using event identifier.
    *
@@ -96,14 +100,14 @@ public final class User {
    * @throws NullPointerException if eventId is null
    * @throws IllegalArgumentException if eventId is blank
    */
-  public void addEventId(String eventId) {
+  public void addEventId(String eventId, Boolean admin) {
     if (eventId == null) {
       throw new NullPointerException("eventId cannot be null");
     }
     if (eventId.isBlank()) {
       throw new IllegalArgumentException("eventId cannot be blank");
     }
-    this.eventIdList.add(eventId);
+    this.eventIds.put(eventId, admin);
   }
 
   /**
@@ -122,17 +126,18 @@ public final class User {
       throw new IllegalArgumentException("eventId cannot be blank");
     }
 
-    if (!this.eventIdList.contains(eventId)) {
-      throw new IllegalStateException("eventId was not in eventIdList");
+    if (this.eventIds == null || !this.eventIds.containsKey(eventId)) {
+      throw new IllegalStateException("eventId was not in eventIds");
     }
-    this.eventIdList.remove(eventId);
+    this.eventIds.remove(eventId);
   }
 
   /**
    * Checks if user is attending event using event identifier.
    *
    * @param eventId identifier of event to check
-   * @return {@code true} if user is attending event; {@code false} if user is not attending event
+   * @return {@code true} if user is attending event;
+   *      {@code false} if user is not attending event
    * @throws NullPointerException if eventId is null
    * @throws IllegalArgumentException if eventId is blank
    */
@@ -143,16 +148,44 @@ public final class User {
     if (eventId.isBlank()) {
       throw new IllegalArgumentException("eventId cannot be blank");
     }
+    if (this.eventIds == null) {
+      return false;
+    }
+    return this.eventIds.containsKey(eventId);
+  }
 
-    return this.eventIdList.contains(eventId);
+  /**
+   * Checks if user is administrating event using event identifier.
+   *
+   * @param eventId identifier of event to check
+   * @return {@code true} if user is administrating event;
+   *      {@code false} if user isn't attending event or is attending but isn't administrating
+   * @throws NullPointerException if eventId is null
+   * @throws IllegalArgumentException if eventId is blank
+   */
+  public boolean isAdministratingEvent(String eventId) {
+    if (eventId == null) {
+      throw new NullPointerException("eventId cannot be null");
+    }
+    if (eventId.isBlank()) {
+      throw new IllegalArgumentException("eventId cannot be blank");
+    }
+    if (!isAttendingEvent(eventId)) {
+      return false;
+    }
+
+    return this.eventIds.get(eventId);
   }
 
   /**
    * Gets all events user is attending.
    *
-   * @return unmodifiable list of identifiers of all events user is attending
+   * @return unmodifiable map of identifiers of all events user is attending
    */
-  public List<String> getEventIdList() {
-    return List.copyOf(this.eventIdList);
+  public Map<String, Boolean> getEventIds() {
+    if (this.eventIds == null) {
+      return Map.of();
+    }
+    return Map.copyOf(this.eventIds);
   }
 }

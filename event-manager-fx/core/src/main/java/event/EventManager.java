@@ -20,14 +20,13 @@ public class EventManager {
    * Adds an event to the EventRepository.
    *
    * @param event Event to be added
-   * @return {@code true} if event was successfully added; {@code false} if the event had already
-   *     been added previously
+   * @return {@code true} if event was successfully added;
+   *      {@code false} if the event had already been added previously
    */
   public boolean addEvent(Event event) {
     if (events.eventExists(event.getEventId())) {
       return false;
     }
-
     events.addEvent(event);
     return true;
   }
