@@ -11,7 +11,7 @@ public class EventManager {
     private final EventRepository events;
 
     /**
-     * Creates an new EventManager
+     * Creates a new EventManager
      * @param events A place where events are stored, must implement EventRepository interface
      */
     public EventManager(EventRepository events) {

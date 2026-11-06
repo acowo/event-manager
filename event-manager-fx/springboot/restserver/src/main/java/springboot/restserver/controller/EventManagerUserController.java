@@ -2,20 +2,20 @@ package springboot.restserver.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import springboot.restserver.service.EventManagerEventService;
+import springboot.restserver.service.EventManagerService;
 
 @RestController
 @RequestMapping("/api/users")
 public class EventManagerUserController {
 
-    private final EventManagerEventService eventManagerEventService;
+    private final EventManagerService eventManagerService;
 
     /**
      * Sets the service for this controller.
-     * @param eventManagerEventService
+     * @param eventManagerService
      */
-    public EventManagerUserController(EventManagerEventService eventManagerEventService) {
-        this.eventManagerEventService = eventManagerEventService;
+    public EventManagerUserController(EventManagerService eventManagerService) {
+        this.eventManagerService = eventManagerService;
     }
 
 
