@@ -54,5 +54,14 @@ public class EventManagerService {
 
     // ==================== USER LOGIC ====================
 
+    public boolean login(String username, String password){
+        return userManager.login(username, password);
+    }
+
+    public boolean register(String username, String password){
+        return userManager.register(username, password);
+    }
+
+
 
 }

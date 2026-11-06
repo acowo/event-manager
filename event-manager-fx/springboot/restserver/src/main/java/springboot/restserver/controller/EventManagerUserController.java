@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import springboot.restserver.dto.EventDto.LoginRequestDTO;
+import springboot.restserver.dto.LoginRegisterRequestDTO;
 import springboot.restserver.service.EventManagerService;
 
 @RestController
@@ -24,13 +24,23 @@ public class EventManagerUserController {
     }
 
 
-   /*  @PostMapping("/login")
-    public ResponseEntity<?> handleLogin(
-            @RequestBody LoginRequestDTO loginRequest){
-        
-        
-    } */
+   @PostMapping("/login")
+    public ResponseEntity<Boolean> handleLoginRequest(
+            @RequestBody LoginRegisterRequestDTO loginRequest){
+            boolean success = this.eventManagerService.login(loginRequest.username(), loginRequest.password());
+            if (success){
+                return ResponseEntity.ok(true);
+            }
+            return ResponseEntity.status(401).body(false);
+    }
 
-
-
+    @PostMapping("/register")
+    public ResponseEntity<Boolean> handleRegisterRequest(
+            @RequestBody LoginRegisterRequestDTO loginRequest){
+        boolean success = this.eventManagerService.register(loginRequest.username(), loginRequest.password());
+        if (success){
+            return ResponseEntity.ok(true);
+        }
+        return ResponseEntity.status(401).body(false);
+    }
 }
