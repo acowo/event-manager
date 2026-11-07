@@ -1,4 +1,4 @@
-package springboot.restserver.dto;
+package dto;
 
 import event.Event;
 import java.time.LocalDateTime;

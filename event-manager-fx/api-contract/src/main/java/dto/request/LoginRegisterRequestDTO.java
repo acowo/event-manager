@@ -1,3 +1,3 @@
-package springboot.restserver.dto.request;
+package dto.request;
 
 public record LoginRegisterRequestDTO(String username, String password){}

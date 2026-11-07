@@ -4,6 +4,7 @@ module eventmanager.ui {
 
   requires eventmanager.core;
   requires eventmanager.persistence;
+  requires api.contract;
 
   requires java.net.http;
   requires com.google.gson;

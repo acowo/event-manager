@@ -1,8 +1,17 @@
 package ui.controller;
 
 import java.io.IOException;
+import java.net.URI;
 import java.net.URL;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.time.LocalDateTime;
 import java.util.Objects;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -12,8 +21,11 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+import persistence.LocalDateTimeAdapter;
 import persistence.UserFileManager;
 import user.UserManager;
+import com.google.gson.JsonParser;
+
 
 /** Controller for the login and registration page. */
 public class LoginPageController {
@@ -34,10 +46,28 @@ public class LoginPageController {
    * Core and persistence modules. This function does not return a value.
    */
   @FXML
-  public void handleLogin() throws IOException {
+  public void handleLogin() throws IOException, InterruptedException {
     String username = loginPageUsernameField.getText();
     String password = loginPagePasswordField.getText();
 
+    /**
+    HttpClient client = HttpClient.newHttpClient();
+    HttpRequest request = HttpRequest.newBuilder()
+            .uri(URI.create("http://localhost:8080/api/events/test-1"))
+            .GET()
+            .build();
+
+    HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+    if (response.statusCode() == 404) {
+      System.out.println("DIDNT WORK");
+    } else {
+      String json = response.body();
+      System.out.println("STATUS: " + response.statusCode());
+      System.out.println("BODY: " + response.body());
+      System.out.println(JsonParser.parseString(json).getAsJsonObject().get("eventId").getAsString());
+    }
+    **/
     if (isNotEmpty(username, password)) {
       if (manager.login(username, password)) {
         changeScene();
@@ -53,9 +83,37 @@ public class LoginPageController {
    * the Core and persistence modules. This function does not return a value.
    */
   @FXML
-  public void handleRegistration() throws IOException {
+  public void handleRegistration() throws IOException, InterruptedException {
     String username = loginPageUsernameField.getText();
     String password = loginPagePasswordField.getText();
+
+    Gson gson = new GsonBuilder()
+            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+            .create();
+
+// This constructor generates the UUID for you
+    Event newEvent = new Event("Party", "Oslo", LocalDateTime.of(2026, 12, 1, 12, 0));
+
+    String json = gson.toJson(newEvent);
+// {"eventId":"<uuid>","title":"Party","place":"Oslo","time":"2026-12-01T12:00"}
+
+    HttpRequest request = HttpRequest.newBuilder()
+            .uri(URI.create("http://localhost:8080/api/events"))
+            .header("Content-Type", "application/json")
+            .POST(HttpRequest.BodyPublishers.ofString(json))
+            .build();
+
+    HttpClient client = HttpClient.newHttpClient();
+    HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+    switch (response.statusCode()) {
+      case 201 -> {
+        Event created = gson.fromJson(response.body(), Event.class);
+        System.out.println("Created: " + created.getTitle());
+      }
+      case 409 -> System.out.println("An event with that id already exists");
+      default -> System.out.println("Failed: " + response.statusCode() + " " + response.body());
+    }
 
     if (isNotEmpty(username, password)) {
       if (manager.register(username, password)) {
