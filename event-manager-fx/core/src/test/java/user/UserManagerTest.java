@@ -1,3 +1,4 @@
+
 package user;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -6,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -62,6 +64,11 @@ public class UserManagerTest {
     UserManager manager = new UserManager(repository);
 
     assertFalse(manager.register("existingUser", "newPassword"));
+  }
+
+  @AfterEach
+  void tearDown() {
+    UserSession.logout();
   }
 
   private static class FakeUserRepository implements UserRepository {

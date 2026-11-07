@@ -189,6 +189,13 @@ public class UserFileManagerTest {
   }
 
   @Test
+  void testConstructorWithTemporaryFilePath() {
+    Path file = tempDir.resolve("constructor-user.json");
+
+    assertDoesNotThrow(() -> new UserFileManager(file.toString()));
+  }
+
+  @Test
   void testRemoveEvent() {
 
     user1.addEventId("test Event", true);

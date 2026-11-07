@@ -1,3 +1,4 @@
+
 package ui;
 
 import static org.testfx.api.FxAssert.verifyThat;
@@ -5,73 +6,102 @@ import static org.testfx.util.NodeQueryUtils.hasText;
 import static org.testfx.util.NodeQueryUtils.isVisible;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Objects;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.testfx.framework.junit5.ApplicationTest;
 import org.testfx.matcher.base.NodeMatchers;
+import persistence.UserFileManager;
+import ui.controller.LoginPageController;
+import user.UserManager;
+import user.UserSession;
 
-/** UI tests for {@link ui.controller.LoginPageController}. */
+/** UI tests for {@link LoginPageController}. */
 public class LoginPageControllerTest extends ApplicationTest {
+
+  @TempDir
+  static Path tempDir;
+
   /**
-   * Starts the stage so the tests can take place.
+   * Starts the login page using a temporary user file.
    *
    * @param stage the JavaFX stage used for rendering
    * @throws IOException if the FXML file cannot be loaded
    */
   @Override
   public void start(Stage stage) throws IOException {
-    Parent root =
-        FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/ui/loginPage.fxml")));
+    Path userFile =
+        tempDir.resolve("userdata-" + java.util.UUID.randomUUID() + ".json");
+
+    UserFileManager repository = new UserFileManager(userFile.toString());
+    UserManager manager = new UserManager(repository);
+
+    manager.register("ola", "banan");
+
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/loginPage.fxml"));
+    loader.setControllerFactory(type -> {
+      if (type == LoginPageController.class) {
+        return new LoginPageController(repository, "/ui/TestCalendar.fxml");
+      }
+      throw new IllegalArgumentException("Unexpected controller: " + type);
+    });
+    
+    Parent root = loader.load();
+
     stage.setScene(new Scene(root));
     stage.show();
   }
 
-  /** Tests that the login page window loads by checking if an element is present. */
+  /** Tests that the login page loads correctly. */
   @Test
   void testWindowLoads() {
-    // Simple test to check if the scene initialized properly
     verifyThat("#loginPageUsernameField", NodeMatchers.isVisible());
   }
 
-  /**
-   * Tests that the login page shows an error message when invalid credentials are used to try to
-   * log in.
-   */
+  /** Tests that invalid login credentials display an error message. */
   @Test
   public void testInvalidUserLogin() {
     clickOn("#loginPageUsernameField").write("invalid");
     clickOn("#loginPagePasswordField").write("invalid");
 
     clickOn("#loginPageLoginButton");
+
     verifyThat("#loginPageInfotextField", hasText("An error has occured"));
   }
 
-  /**
-   * Tests that the login page shows an error message when a user tries registering with a username
-   * that has already been used.
-   */
+  /** Tests that registering an existing username displays an error message. */
   @Test
   public void testInvalidUserRegistration() {
     clickOn("#loginPageUsernameField").write("ola");
     clickOn("#loginPagePasswordField").write("123");
 
     clickOn("#loginPageRegisterButton");
-    verifyThat("#loginPageInfotextField", hasText("A user by that name already exists"));
+
+    verifyThat(
+        "#loginPageInfotextField",
+        hasText("A user by that name already exists"));
   }
 
-  /** Tests that the controller correctly switches to the calendar page after a successful login. */
+  /** Tests that a successful login switches to the calendar view. */
   @Test
-  public void testValidLogin() throws InterruptedException {
+  public void testValidLogin() {
     clickOn("#loginPageUsernameField").write("ola");
     clickOn("#loginPagePasswordField").write("banan");
 
     clickOn("#loginPageLoginButton");
 
-    // Verifying that the scene changed by checking that a node from the calendar view is present
     verifyThat("#yearLabel", isVisible());
+  }
+
+  /** Clears the user session after each test. */
+  @AfterEach
+  void cleanUp() {
+    UserSession.logout();
   }
 }

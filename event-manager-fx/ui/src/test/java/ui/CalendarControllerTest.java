@@ -54,7 +54,10 @@ public class CalendarControllerTest extends ApplicationTest {
    * (non-Javadoc) Setup before each test.
    * Clears the event and user files for the test event
    * and sets user session with test user.
+   * Sets up the calendar using temporary files.
    *
+   * @param stage the primary stage
+   * @throws IOException if FXML loading fails
    * @see org.testfx.framework.junit5.ApplicationTest#start(javafx.stage.Stage)
    */
   @Override
@@ -143,7 +146,13 @@ public class CalendarControllerTest extends ApplicationTest {
 
     createEvent();
     verifyThat("#eventError", hasText(""));
-    assertEquals(2, savedEvents("Testing").size());
+
+    assertEquals(
+        2,
+        new EventFileManager(tempDir.resolve("eventdata.json").toString())
+            .getEvents().values().stream()
+            .filter(event -> event.getTitle().equals("Testing"))
+            .count());
 
     clickOn("#openEventCreator");
     clickOn("#createEvent");

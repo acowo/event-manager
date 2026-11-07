@@ -1,3 +1,4 @@
+
 package ui.controller;
 
 import java.io.IOException;
@@ -14,9 +15,11 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 import persistence.UserFileManager;
 import user.UserManager;
+import user.UserRepository;
 
 /** Controller for the login and registration page. */
 public class LoginPageController {
+
   @FXML private TextField loginPageUsernameField;
 
   @FXML private TextField loginPagePasswordField;
@@ -27,11 +30,37 @@ public class LoginPageController {
 
   @FXML private Text loginPageInfotextField;
 
-  private UserManager manager = new UserManager(new UserFileManager());
+  private final UserManager manager;
+
+  private final String calendarView;
+
 
   /**
-   * Handles the controller logic needed when a user presses the login button. Uses imports from the
-   * Core and persistence modules. This function does not return a value.
+   * Default constructor for LoginPageController,
+   * initializing with a new UserManager and default calendar view.
+   * The default calendar view is set to "/ui/Calendar.fxml".
+   */
+  public LoginPageController() {
+    this(new UserFileManager(), "/ui/Calendar.fxml");
+    
+  }
+
+  /**
+   * Constructor for LoginPageController with specified UserManager and calendar view.
+   *
+   * @param userRepository the user repository for managing user data
+   * @param calendarView path to the calendar FXML resource
+   */
+  public LoginPageController(UserRepository userRepository, String calendarView) {
+    this.manager = new UserManager(Objects.requireNonNull(userRepository));
+    this.calendarView = Objects.requireNonNull(calendarView);
+  }
+
+  /**
+   * Handles the controller logic needed when a user presses the login button.
+   * Uses imports from the Core and persistence modules.
+   *
+   * @throws IOException if the calendar view cannot be loaded
    */
   @FXML
   public void handleLogin() throws IOException {
@@ -49,8 +78,9 @@ public class LoginPageController {
   }
 
   /**
-   * Handles the controller logic needed when a user presses the register button. Uses imports from
-   * the Core and persistence modules. This function does not return a value.
+   * Handles the controller logic needed when a user presses the register button.
+   *
+   * @throws IOException if the calendar view cannot be loaded
    */
   @FXML
   public void handleRegistration() throws IOException {
@@ -68,15 +98,22 @@ public class LoginPageController {
   }
 
   /**
-   * Handles the controller logic needed when a user successfully creates a session through a valid
-   * account. Switches the scene away from the login page to the calendar view, can be changed in
-   * the future. This function does not return a value.
+   * Switches to the configured calendar view after successful authentication.
+   *
+   * @throws IOException if the view cannot be loaded or the window is invalid
    */
   @FXML
   private void changeScene() throws IOException {
-    URL resource = LoginPageController.class.getResource("/ui/Calendar.fxml");
-    Parent root = FXMLLoader.load(Objects.requireNonNull(resource));
+    URL resource = LoginPageController.class.getResource(calendarView);
+
+    if (resource == null) {
+      throw new IOException("Calendar view not found: " + calendarView);
+    }
+
+    Parent root = FXMLLoader.load(resource);
+
     Window window = loginPageRegisterButton.getScene().getWindow();
+
     if (window instanceof Stage) {
       Stage stage = (Stage) window;
       stage.getScene().setRoot(root);
@@ -87,13 +124,11 @@ public class LoginPageController {
   }
 
   /**
-   * Handles the controller logic needed to check whether a user has populated the required fields.
-   * Mainly used to save resources by preventing unnecessary calls to heavier functions when not
-   * needed.
+   * Checks whether the username and password fields are populated.
    *
-   * @param username The string in the username field.
-   * @param password The string in the password field.
-   * @return True if fields are populated, false otherwise.
+   * @param username the username entered
+   * @param password the password entered
+   * @return true if both fields are populated, false otherwise
    */
   @FXML
   private boolean isNotEmpty(String username, String password) {
