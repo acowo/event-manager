@@ -15,6 +15,7 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 import persistence.UserFileManager;
 import user.UserManager;
+import user.UserRepository;
 
 /** Controller for the login and registration page. */
 public class LoginPageController {
@@ -29,25 +30,29 @@ public class LoginPageController {
 
   @FXML private Text loginPageInfotextField;
 
-  private UserManager manager = new UserManager(new UserFileManager());
+  private final UserManager manager;
 
-  private String calendarView = "/ui/Calendar.fxml";
+  private final String calendarView;
+
 
   /**
-   * Sets the user manager used by this controller.
-   *
-   * @param manager the user manager to use
+   * Default constructor for LoginPageController,
+   * initializing with a new UserManager and default calendar view.
+   * The default calendar view is set to "/ui/Calendar.fxml".
    */
-  public void setUserManager(UserManager manager) {
-    this.manager = Objects.requireNonNull(manager);
+  public LoginPageController() {
+    this(new UserFileManager(), "/ui/Calendar.fxml");
+    
   }
 
   /**
-   * Sets the calendar view loaded after successful authentication.
+   * Constructor for LoginPageController with specified UserManager and calendar view.
    *
+   * @param userRepository the user repository for managing user data
    * @param calendarView path to the calendar FXML resource
    */
-  public void setCalendarView(String calendarView) {
+  public LoginPageController(UserRepository userRepository, String calendarView) {
+    this.manager = new UserManager(Objects.requireNonNull(userRepository));
     this.calendarView = Objects.requireNonNull(calendarView);
   }
 

@@ -55,6 +55,7 @@ public class CalendarControllerTest extends ApplicationTest {
    * Clears the event and user files for the test event
    * and sets user session with test user.
    * Sets up the calendar using temporary files.
+   *
    * @param stage the primary stage
    * @throws IOException if FXML loading fails
    * @see org.testfx.framework.junit5.ApplicationTest#start(javafx.stage.Stage)

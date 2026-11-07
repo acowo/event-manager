@@ -44,15 +44,15 @@ public class LoginPageControllerTest extends ApplicationTest {
 
     manager.register("ola", "banan");
 
-    FXMLLoader loader =
-        new FXMLLoader(
-            Objects.requireNonNull(getClass().getResource("/ui/loginPage.fxml")));
-
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/loginPage.fxml"));
+    loader.setControllerFactory(type -> {
+      if (type == LoginPageController.class) {
+        return new LoginPageController(repository, "/ui/TestCalendar.fxml");
+      }
+      throw new IllegalArgumentException("Unexpected controller: " + type);
+    });
+    
     Parent root = loader.load();
-
-    LoginPageController controller = loader.getController();
-    controller.setUserManager(manager);
-    controller.setCalendarView("/ui/TestCalendar.fxml");
 
     stage.setScene(new Scene(root));
     stage.show();

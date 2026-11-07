@@ -3,6 +3,7 @@ package ui.controller;
 
 import event.Event;
 import event.EventManager;
+import event.EventRepository;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -33,6 +34,7 @@ import persistence.EventFileManager;
 import persistence.UserFileManager;
 import user.User;
 import user.UserManager;
+import user.UserRepository;
 import user.UserSession;
 
 /** Controller for {@code /ui/CalendarApp.fxml}. */
@@ -84,10 +86,10 @@ public class CalendarController {
   /**
    * Constructor for the calendarController that can use specific fileManager.
    *
-   * @param eventManager the eventFileManager with the desired filepath
-   * @param userManager the userFileManager with the desired filepath
+   * @param eventManager the eventRepository with the desired filepath
+   * @param userManager the userRepository with the desired filepath
    */
-  public CalendarController(EventFileManager eventManager, UserFileManager userManager) {
+  public CalendarController(EventRepository eventManager, UserRepository userManager) {
     this.eventManager = new EventManager(Objects.requireNonNull(eventManager));
     this.userManager = new UserManager(Objects.requireNonNull(userManager));
   }
