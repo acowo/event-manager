@@ -1,6 +1,7 @@
 
 package user;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -15,10 +16,11 @@ import org.junit.jupiter.api.Test;
  */
 public class UserManagerTest {
 
+
   void isSameUser(User user1, User user2) {
-    assertTrue(user1.getUsername().equals(user2.getUsername()));
-    assertTrue(user1.getPassword().equals(user2.getPassword()));
-    assertTrue(user1.getEventIdList().equals(user2.getEventIdList()));
+    assertEquals(user1.getUsername(), user2.getUsername());
+    assertEquals(user1.getPassword(), user2.getPassword());
+    assertEquals(user1.getEventIds(), user2.getEventIds());
   }
 
   @Test
@@ -70,7 +72,6 @@ public class UserManagerTest {
   }
 
   private static class FakeUserRepository implements UserRepository {
-
     private final Map<String, User> users = new HashMap<>();
 
     @Override

@@ -1,4 +1,3 @@
-
 package persistence;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -21,22 +20,20 @@ import user.User;
 public class UserFileManagerTest {
 
   @TempDir Path tempDir;
-
   private User user1;
   private User user2;
   private User user3;
-
   private String username1 = "test username1";
   private String username2 = "test username2";
   private String username3 = "test username3";
   private String password1 = "test password1";
   private String password2 = "test password2";
   private String password3 = "test password3";
-
   private UserFileManager userFileManager;
 
   @BeforeEach
   void setUp() {
+
     userFileManager = new UserFileManager(tempDir.resolve("userdata.json").toString());
 
     user1 = new User(username1, password1);
@@ -50,8 +47,8 @@ public class UserFileManagerTest {
 
     User userResult = userFileManager.getUser(username1);
 
-    assertEquals(username1, userResult.getUsername());
-    assertEquals(password1, userResult.getPassword());
+    assertEquals(userResult.getUsername(), username1);
+    assertEquals(userResult.getPassword(), password1);
   }
 
   @Test
@@ -93,8 +90,8 @@ public class UserFileManagerTest {
 
     User userResult = userFileManager.getUser(username1);
 
-    assertEquals(username1, userResult.getUsername());
-    assertEquals("new password", userResult.getPassword());
+    assertEquals(userResult.getUsername(), username1);
+    assertEquals(userResult.getPassword(), "new password");
   }
 
   @Test
@@ -200,14 +197,14 @@ public class UserFileManagerTest {
 
   @Test
   void testRemoveEvent() {
-    user1.addEventId("test Event");
-    user2.addEventId("test Event");
+
+    user1.addEventId("test Event", true);
+    user2.addEventId("test Event", true);
 
     userFileManager.addUser(user1);
     userFileManager.addUser(user2);
 
     userFileManager.removeEvent("test Event");
-
     assertFalse(userFileManager.getUser(username1).isAttendingEvent("test Event"));
     assertFalse(userFileManager.getUser(username2).isAttendingEvent("test Event"));
     assertEquals(2, userFileManager.getUsers().size());
@@ -247,7 +244,6 @@ public class UserFileManagerTest {
   @Test
   void testLoadFromDirectoryReturnsEmptyMap() {
     EventFileManager manager = new EventFileManager(tempDir.toString());
-
     assertTrue(manager.getEvents().isEmpty());
   }
 
@@ -255,9 +251,7 @@ public class UserFileManagerTest {
   void testConstructorUsesEmptyMapWhenLoadingFails() throws IOException {
     Path file = tempDir.resolve("invalid.json");
     Files.writeString(file, "{invalid json");
-
     EventFileManager manager = new EventFileManager(file.toString());
-
     assertTrue(manager.getEvents().isEmpty());
   }
 }
