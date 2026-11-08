@@ -75,33 +75,6 @@ public class LoginPageController {
     String username = loginPageUsernameField.getText();
     String password = loginPagePasswordField.getText();
 
-    Gson gson = new GsonBuilder()
-            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
-            .create();
-
-// This constructor generates the UUID for you
-    Event newEvent = new Event("Party", "Oslo", LocalDateTime.of(2026, 12, 1, 12, 0));
-
-    String json = gson.toJson(newEvent);
-// {"eventId":"<uuid>","title":"Party","place":"Oslo","time":"2026-12-01T12:00"}
-
-    HttpRequest request = HttpRequest.newBuilder()
-            .uri(URI.create("http://localhost:8080/api/events"))
-            .header("Content-Type", "application/json")
-            .POST(HttpRequest.BodyPublishers.ofString(json))
-            .build();
-
-    HttpClient client = HttpClient.newHttpClient();
-    HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-    switch (response.statusCode()) {
-      case 201 -> {
-        Event created = gson.fromJson(response.body(), Event.class);
-        System.out.println("Created: " + created.getTitle());
-      }
-      case 409 -> System.out.println("An event with that id already exists");
-      default -> System.out.println("Failed: " + response.statusCode() + " " + response.body());
-    }
 
     if (isNotEmpty(username, password)) {
       if (manager.register(username, password)) {
