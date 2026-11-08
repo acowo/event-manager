@@ -11,6 +11,7 @@ import java.util.Objects;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import dto.response.LoginRegisterResponseDTO;
 import event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -23,8 +24,9 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 import persistence.LocalDateTimeAdapter;
 import persistence.UserFileManager;
+import ui.auth.ClientSession;
+import ui.client.RestAPIClient;
 import user.UserManager;
-import com.google.gson.JsonParser;
 
 
 /** Controller for the login and registration page. */
@@ -41,6 +43,8 @@ public class LoginPageController {
 
   private UserManager manager = new UserManager(new UserFileManager());
 
+  private final RestAPIClient apiClient = new RestAPIClient();
+
   /**
    * Handles the controller logic needed when a user presses the login button. Uses imports from the
    * Core and persistence modules. This function does not return a value.
@@ -50,26 +54,10 @@ public class LoginPageController {
     String username = loginPageUsernameField.getText();
     String password = loginPagePasswordField.getText();
 
-    /**
-    HttpClient client = HttpClient.newHttpClient();
-    HttpRequest request = HttpRequest.newBuilder()
-            .uri(URI.create("http://localhost:8080/api/events/test-1"))
-            .GET()
-            .build();
-
-    HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-    if (response.statusCode() == 404) {
-      System.out.println("DIDNT WORK");
-    } else {
-      String json = response.body();
-      System.out.println("STATUS: " + response.statusCode());
-      System.out.println("BODY: " + response.body());
-      System.out.println(JsonParser.parseString(json).getAsJsonObject().get("eventId").getAsString());
-    }
-    **/
     if (isNotEmpty(username, password)) {
-      if (manager.login(username, password)) {
+      LoginRegisterResponseDTO loginResponse = apiClient.login(username, password);
+      if (loginResponse.success()) {
+        ClientSession.setAuthToken(loginResponse.id());
         changeScene();
       } else {
         loginPageInfotextField.setText("An error has occured");
@@ -149,14 +137,14 @@ public class LoginPageController {
    * Mainly used to save resources by preventing unnecessary calls to heavier functions when not
    * needed.
    *
-   * @param username The string in the username field.
+   * @param username The string in the id field.
    * @param password The string in the password field.
    * @return True if fields are populated, false otherwise.
    */
   @FXML
   private boolean isNotEmpty(String username, String password) {
     if (username.length() < 1) {
-      loginPageInfotextField.setText("Please enter a username");
+      loginPageInfotextField.setText("Please enter a id");
       loginPageInfotextField.setFill(Color.RED);
       return false;
     }

@@ -1,6 +1,6 @@
 package springboot.restserver.controller;
 
-import org.springframework.http.ResponseEntity;
+import dto.response.LoginRegisterResponseDTO;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,22 +23,15 @@ public class EventManagerUserController {
     this.eventManagerService = eventManagerService;
   }
 
-
   @PostMapping("/login")
-  public ResponseEntity<Boolean> handleLoginRequest(@RequestBody LoginRegisterRequestDTO loginRequest) {
+  public LoginRegisterResponseDTO handleLoginRequest(@RequestBody LoginRegisterRequestDTO loginRequest){
     boolean success = this.eventManagerService.login(loginRequest.username(), loginRequest.password());
-    if (success) {
-      return ResponseEntity.ok(true);
-    }
-    return ResponseEntity.status(401).body(false);
+    return new LoginRegisterResponseDTO(loginRequest.username(), success);
   }
 
   @PostMapping("/register")
-  public ResponseEntity<Boolean> handleRegisterRequest(@RequestBody LoginRegisterRequestDTO loginRequest) {
-    boolean success = this.eventManagerService.register(loginRequest.username(), loginRequest.password());
-    if (success) {
-      return ResponseEntity.ok(true);
-    }
-    return ResponseEntity.status(401).body(false);
+  public LoginRegisterResponseDTO handleRegisterRequest(@RequestBody LoginRegisterRequestDTO registerRequest){
+    boolean success = this.eventManagerService.register(registerRequest.username(), registerRequest.password());
+    return new LoginRegisterResponseDTO(registerRequest.username(), success);
   }
 }

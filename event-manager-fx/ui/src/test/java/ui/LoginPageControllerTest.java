@@ -51,7 +51,7 @@ public class LoginPageControllerTest extends ApplicationTest {
   }
 
   /**
-   * Tests that the login page shows an error message when a user tries registering with a username
+   * Tests that the login page shows an error message when a user tries registering with a id
    * that has already been used.
    */
   @Test

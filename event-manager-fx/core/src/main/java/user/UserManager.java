@@ -30,13 +30,7 @@ public class UserManager {
    * @return {@code true} if login was successful; {@code false} if credentials were incorrect
    */
   public boolean login(String username, String password) {
-
-    if (!users.checkPassword(username, password)) {
-      return false;
-    }
-
-    UserSession.setUser(users.getUser(username));
-    return true;
+    return (users.checkPassword(username, password));
   }
 
   /**

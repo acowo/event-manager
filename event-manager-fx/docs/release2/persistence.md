@@ -20,7 +20,7 @@ This can, and probably will be improved upon in further releases, changing (perh
 User data [(userdata.json)](../../data/userdata.json) is stored in much the same way, with the username as the key, and the user object stored as the value.
 
 ```json
-{"<username>":{"eventIdList":[],"username":"<username>","password":"<password>"}}
+{"<username>":{"eventIdList":[],"username":"<id>","password":"<password>"}}
 ```
 
 Passwords are stored in plaintext. This can, and again probably will, be remedied in a further release, likely by hashing.

@@ -6,4 +6,5 @@ module api.contract {
 
     opens dto;
     opens dto.request;
+  exports dto.response;
 }

@@ -155,6 +155,8 @@ public class UserFileManager implements user.UserRepository {
   public Map<String, User> getUsers() {
     File file = new File(filePath);
 
+    if (!file.exists()){file = new File("gr2607/event-manager-fx/data/userdata.json");}
+
     StringBuilder jsonString = new StringBuilder();
 
     if (!file.exists()) {
