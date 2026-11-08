@@ -1,18 +1,6 @@
 package ui.controller;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.URL;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.time.LocalDateTime;
-import java.util.Objects;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import dto.response.LoginRegisterResponseDTO;
-import event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -22,11 +10,14 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.Window;
-import persistence.LocalDateTimeAdapter;
 import persistence.UserFileManager;
 import ui.auth.ClientSession;
 import ui.client.RestAPIClient;
 import user.UserManager;
+
+import java.io.IOException;
+import java.net.URL;
+import java.util.Objects;
 
 
 /** Controller for the login and registration page. */
@@ -75,9 +66,10 @@ public class LoginPageController {
     String username = loginPageUsernameField.getText();
     String password = loginPagePasswordField.getText();
 
-
     if (isNotEmpty(username, password)) {
-      if (manager.register(username, password)) {
+      LoginRegisterResponseDTO registerResponse = apiClient.register(username, password);
+      if (registerResponse.success()) {
+        ClientSession.setAuthToken(registerResponse.id());
         changeScene();
       } else {
         loginPageInfotextField.setText("A user by that name already exists");

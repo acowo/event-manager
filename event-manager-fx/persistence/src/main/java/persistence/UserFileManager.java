@@ -21,13 +21,14 @@ public class UserFileManager implements user.UserRepository {
 
   private final Gson gson = new Gson();
 
-  private final String filePath;
+  private String filePath;
 
   /**
    * Constructs a new UserFileManager with the default file path.
    */
   public UserFileManager() {
     this("../data/userdata.json");
+    checkPath();
   }
 
   /**
@@ -37,8 +38,14 @@ public class UserFileManager implements user.UserRepository {
    */
   public UserFileManager(String filePath) {
     this.filePath = filePath;
+    checkPath();
   }
 
+  private void checkPath(){
+    if (!new File(filePath).exists()){
+      this.filePath = "gr2607/event-manager-fx/data/userdata.json";
+    }
+  }
   /**
    * Checks if a user by the given username exists.
    *
@@ -153,10 +160,8 @@ public class UserFileManager implements user.UserRepository {
    * @return the map of all user objects with their usernames
    */
   public Map<String, User> getUsers() {
+
     File file = new File(filePath);
-
-    if (!file.exists()){file = new File("gr2607/event-manager-fx/data/userdata.json");}
-
     StringBuilder jsonString = new StringBuilder();
 
     if (!file.exists()) {

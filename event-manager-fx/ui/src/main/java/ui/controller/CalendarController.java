@@ -3,28 +3,13 @@ package ui.controller;
 
 import event.Event;
 import event.EventManager;
-import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.Month;
-import java.time.temporal.ChronoField;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleButton;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -34,6 +19,16 @@ import persistence.UserFileManager;
 import user.User;
 import user.UserManager;
 import user.UserSession;
+
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.Month;
+import java.time.temporal.ChronoField;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /** Controller for {@code /ui/CalendarApp.fxml}. */
 public class CalendarController {
@@ -101,9 +96,10 @@ public class CalendarController {
   public void initialize() {
 
     this.today = LocalDate.now();
-    user = UserSession.getUser();
+    //user = UserSession.getUser();
     this.events = this.eventManager.getEvents();
-    this.user = UserSession.getUser();
+    //this.user = UserSession.getUser();
+    this.user = new User("placeholder", "placeholder");
 
     setMonth(this.today);
 
