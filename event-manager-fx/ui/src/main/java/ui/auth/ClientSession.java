@@ -10,4 +10,6 @@ public class ClientSession {
     public static void setAuthToken(String authToken) {
         ClientSession.authToken = authToken;
     }
+
+    public static void clearAuthToken(){authToken = "";}
 }

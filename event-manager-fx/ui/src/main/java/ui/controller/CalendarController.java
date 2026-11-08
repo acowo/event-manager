@@ -16,6 +16,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import persistence.EventFileManager;
 import persistence.UserFileManager;
+import ui.auth.ClientSession;
 import user.User;
 import user.UserManager;
 import user.UserSession;
@@ -287,7 +288,7 @@ public class CalendarController {
    */
   @FXML
   public void handleLogout(javafx.event.Event event) throws IOException {
-    UserSession.logout();
+    ClientSession.clearAuthToken();
     changeScene(event, "/ui/loginPage.fxml");
 
   }

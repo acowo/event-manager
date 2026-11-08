@@ -50,7 +50,6 @@ public class UserManager {
 
     User user = new User(username, password);
     users.addUser(user);
-    UserSession.setUser(user);
     return true;
   }
 
@@ -67,9 +66,11 @@ public class UserManager {
       return false;
     }
     users.editUser(username, user);
-    if (UserSession.getUser().getUsername().equals(username)) {
-      UserSession.setUser(user);
-    }
+    //UserSession is no longer in use, but i keep it here in case something breaks
+//    if (UserSession.getUser().getUsername().equals(username)) {
+//      UserSession.setUser(user);
+//    }
+
     return true;
   }
 
@@ -80,5 +81,34 @@ public class UserManager {
    */
   public void removeEvent(String eventId) {
     users.removeEvent(eventId);
+  }
+
+  /**
+   *
+   * @param username the username of the user.
+   * @return User object with the matching username
+   */
+  public User getUser(String username){
+    return this.users.getUser(username);
+  }
+
+  public boolean optIn(String eventId, String username){
+    User user = getUser(username);
+    if (user.isAttendingEvent(eventId)){
+      return false;
+    }
+    user.addEventId(eventId, false);
+    users.editUser(username, user);
+    return true;
+  }
+
+  public boolean optOut(String eventId, String username){
+    User user = getUser(username);
+    if (!user.isAttendingEvent(eventId)){
+      return false;
+    }
+    user.removeEventId(eventId);
+    users.editUser(username, user);
+    return true;
   }
 }

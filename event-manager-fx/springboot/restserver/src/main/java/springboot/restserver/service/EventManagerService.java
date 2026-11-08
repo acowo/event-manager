@@ -51,6 +51,20 @@ public class EventManagerService {
 
 
   // ==================== USER LOGIC ====================
+  /**
+   * Resolves a username from the given authentication token.
+   * <p>
+   * <b>Note:</b> authToken is currently the same as username.
+   * Better authentication and proper token validation may be added later, and this method
+   * encapsulates the behavior so it's easy to do so.
+   * Better security is not within the scope of this project.
+   *
+   * @param authToken the authentication token to process
+   * @return the corresponding username
+   */
+  private String resolveUsername(String authToken) {
+    return authToken;
+  }
 
   public boolean login(String username, String password) {
     return userManager.login(username, password);
@@ -60,6 +74,22 @@ public class EventManagerService {
     return userManager.register(username, password);
   }
 
+//  public boolean editUser(String newUsername, String authToken) {
+//    User user = userManager.getUser(authToken);
+//    return userManager.editUser(newUsername, user);
+//  }
 
+  /**
+   *
+   * @param eventId
+   * @param authToken
+   * @return false if user was already opted in the event; true otherwise
+   */
+  public boolean optIn(String eventId, String authToken){
+    return userManager.optIn(eventId, resolveUsername(authToken));
+  }
 
+  public boolean optOut(String eventId, String authToken){
+    return userManager.optOut(eventId, resolveUsername(authToken));
+  }
 }
