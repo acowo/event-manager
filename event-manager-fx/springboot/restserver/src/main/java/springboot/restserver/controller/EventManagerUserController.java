@@ -66,7 +66,7 @@ public class EventManagerUserController {
    */
   @PutMapping("/me/events/{eventId}")
   @ResponseStatus(HttpStatus.NO_CONTENT) //Added synchronized because apparently simultaneous writes can overwrite each other!
-  public synchronized void optIn(@RequestHeader("Authorization") String token, @PathVariable String eventId) {
+  public synchronized void optIn(@RequestHeader("Authorization") String token, @PathVariable("eventId") String eventId) {
     if (eventManagerService.get(eventId).isEmpty()) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND);
       // Event doesnt exist, just for extra safety
@@ -89,7 +89,7 @@ public class EventManagerUserController {
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public synchronized void optOut(
       @RequestHeader("Authorization") String token,
-      @PathVariable String eventId) {
+      @PathVariable("eventId") String eventId) {
     if (eventManagerService.get(eventId).isEmpty()) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND);
       // Event doesnt exist, just for safety
