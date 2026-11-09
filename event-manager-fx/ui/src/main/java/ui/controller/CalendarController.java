@@ -3,13 +3,27 @@ package ui.controller;
 
 import event.Event;
 import event.EventManager;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.Month;
+import java.time.temporal.ChronoField;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -20,16 +34,6 @@ import ui.auth.ClientSession;
 import user.User;
 import user.UserManager;
 import user.UserSession;
-
-import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.Month;
-import java.time.temporal.ChronoField;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 /** Controller for {@code /ui/CalendarApp.fxml}. */
 public class CalendarController {
@@ -68,8 +72,6 @@ public class CalendarController {
 
   @FXML private HBox eventButtons;
 
-
-
   /**
    * Default constructor, creates a default eventFileManager and userFileManager.
    */
@@ -97,9 +99,9 @@ public class CalendarController {
   public void initialize() {
 
     this.today = LocalDate.now();
-    //user = UserSession.getUser();
+    // user = UserSession.getUser();
     this.events = this.eventManager.getEvents();
-    //this.user = UserSession.getUser();
+    // this.user = UserSession.getUser();
     this.user = new User("placeholder", "placeholder");
 
     setMonth(this.today);
@@ -290,7 +292,6 @@ public class CalendarController {
   public void handleLogout(javafx.event.Event event) throws IOException {
     ClientSession.clearAuthToken();
     changeScene(event, "/ui/loginPage.fxml");
-
   }
 
   /**
@@ -299,14 +300,11 @@ public class CalendarController {
    * @param date the date of the month to be shown
    * @throws IllegalArgumentException if date is null
    */
-
   private void setMonth(LocalDate date) {
     if (date == null) {
       throw new IllegalArgumentException();
     }
     calendar.getChildren().subList(1, calendar.getChildren().size()).clear();
-
-
     this.month = date.getMonth();
     this.year = date.getYear();
     int dateNumber = date.getDayOfMonth();
@@ -333,7 +331,6 @@ public class CalendarController {
     addEvents();
   }
 
-
   /**
    * Displays a month in the UI based on a specific month in a year.
    *
@@ -341,7 +338,6 @@ public class CalendarController {
    * @param year  the year of the month to be shown
    * @throws IllegalArgumentException if month or year before 1970
    */
-
   private void setMonth(Month month, int year) {
     if (month == null || year < 1970) {
       throw new IllegalArgumentException();
@@ -354,7 +350,6 @@ public class CalendarController {
    *
    * @throws IllegalStateException if this.month is null
    */
-
   private void addEvents() {
     if (this.month == null) {
       throw new IllegalStateException();
@@ -366,7 +361,7 @@ public class CalendarController {
       for (Event event : eventsInMonth) {
         HBox eventPane = new HBox();
 
-        //TODO: Fix the styling of new events
+        // TODO: Fix the styling of new events
         eventPane.setStyle("-fx-background-color: #cc76fb; -fx-background-radius:5px;");
         eventPane.getChildren().add(new Label(event.getTitle()));
 
@@ -385,7 +380,6 @@ public class CalendarController {
     }
   }
 
-
   /**
    * Changes the FXML to a different view.
    *
@@ -400,6 +394,4 @@ public class CalendarController {
     stage.setScene(scene);
     stage.show();
   }
-
-
 }
