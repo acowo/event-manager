@@ -2,6 +2,7 @@ package springboot.restserver.controller;
 
 
 import dto.response.LoginRegisterResponseDTO;
+import dto.response.UserGetEventsResponseDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import dto.request.LoginRegisterRequestDTO;
@@ -35,7 +36,7 @@ public class EventManagerUserController {
     return new LoginRegisterResponseDTO(registerRequest.username(), success);
   }
 
-  @PutMapping("/optIn/{eventId}")
+  @PutMapping("/me/events/{eventId}")
   @ResponseStatus(HttpStatus.NO_CONTENT) //Added synchronized because apparently simultaneous writes can overwrite each other!
   public synchronized void optIn(@RequestHeader("Authorization") String token, @PathVariable String eventId) {
     if (eventManagerService.get(eventId).isEmpty()) {
@@ -46,7 +47,7 @@ public class EventManagerUserController {
     }
   }
 
-  @PutMapping("/optOut/{eventId}")
+  @DeleteMapping("/me/events/{eventId}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public synchronized void optOut(@RequestHeader("Authorization") String token, @PathVariable String eventId) {
     if (eventManagerService.get(eventId).isEmpty()) {
@@ -55,6 +56,17 @@ public class EventManagerUserController {
     if (!eventManagerService.optOut(eventId, token)) {
       throw new ResponseStatusException(HttpStatus.CONFLICT);    //User didnt attend to begin with...
     }
+  }
+
+  @GetMapping("/me/events")
+  @ResponseStatus(HttpStatus.OK)
+  public UserGetEventsResponseDTO getUserEvents(@RequestHeader("Authorization") String token){
+    try {
+      return new UserGetEventsResponseDTO(eventManagerService.getUserEvents(token));
+    } catch (IllegalArgumentException e) {
+      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+    }
+
   }
 
 }

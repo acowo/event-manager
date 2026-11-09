@@ -4,10 +4,12 @@ import dto.EventDto;
 import event.Event;
 import event.EventManager;
 import org.springframework.stereotype.Service;
+import user.User;
 import user.UserManager;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 
@@ -91,5 +93,9 @@ public class EventManagerService {
 
   public boolean optOut(String eventId, String authToken){
     return userManager.optOut(eventId, resolveUsername(authToken));
+  }
+
+  public Map<String, Boolean> getUserEvents(String authToken){
+    return userManager.getUser(resolveUsername(authToken)).getEventIds();
   }
 }

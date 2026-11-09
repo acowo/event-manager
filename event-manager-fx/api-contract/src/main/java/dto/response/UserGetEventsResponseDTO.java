@@ -1,4 +1,6 @@
 package dto.response;
 
-public record UserGetEventsResponseDTO() {
+import java.util.Map;
+
+public record UserGetEventsResponseDTO(Map<String, Boolean> events) {
 }
