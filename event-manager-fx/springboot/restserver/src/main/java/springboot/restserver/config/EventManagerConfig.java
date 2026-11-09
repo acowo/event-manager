@@ -9,9 +9,11 @@ import persistence.UserFileManager;
 import user.UserManager;
 
 /**
- * Creates the EventManager and UserManager that will be used by the server. This will be used by all API requests, and
- * is automatically managed by Spring to let the Service use it. The file paths used are received from the
- * application.properties file, so they can easily be changed if needed.
+ * Creates the EventManager and UserManager that will be used by the server.
+ * This will be used by all API requests,
+ * and is automatically managed by Spring to let the Service use it.
+ * The file paths used are received from the application.properties file,
+ * so they can easily be changed if needed.
  */
 
 @Configuration

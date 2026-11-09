@@ -9,6 +9,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class EventManagerApplication {
 
+  /**
+   * Starts the Spring Boot application.
+   *
+   * @param args the command-line arguments
+   */
   public static void main(String[] args) {
     SpringApplication.run(EventManagerApplication.class, args);
   }

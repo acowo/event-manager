@@ -1,6 +1,9 @@
 package ui.controller;
 
-import dto.response.LoginRegisterResponseDTO;
+import dto.response.LoginRegisterResponseDto;
+import java.io.IOException;
+import java.net.URL;
+import java.util.Objects;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -12,13 +15,8 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 import persistence.UserFileManager;
 import ui.auth.ClientSession;
-import ui.client.RestAPIClient;
+import ui.client.UserRestApiClient;
 import user.UserManager;
-
-import java.io.IOException;
-import java.net.URL;
-import java.util.Objects;
-
 
 /** Controller for the login and registration page. */
 public class LoginPageController {
@@ -34,8 +32,7 @@ public class LoginPageController {
 
   private UserManager manager = new UserManager(new UserFileManager());
 
-  private final RestAPIClient apiClient = new RestAPIClient();
-
+  private final UserRestApiClient apiClient = new UserRestApiClient();
   /**
    * Handles the controller logic needed when a user presses the login button. Uses imports from the
    * Core and persistence modules. This function does not return a value.
@@ -46,7 +43,7 @@ public class LoginPageController {
     String password = loginPagePasswordField.getText();
 
     if (isNotEmpty(username, password)) {
-      LoginRegisterResponseDTO loginResponse = apiClient.login(username, password);
+      LoginRegisterResponseDto loginResponse = apiClient.login(username, password);
       if (loginResponse.success()) {
         ClientSession.setAuthToken(loginResponse.id());
         changeScene();
@@ -67,7 +64,7 @@ public class LoginPageController {
     String password = loginPagePasswordField.getText();
 
     if (isNotEmpty(username, password)) {
-      LoginRegisterResponseDTO registerResponse = apiClient.register(username, password);
+      LoginRegisterResponseDto registerResponse = apiClient.register(username, password);
       if (registerResponse.success()) {
         ClientSession.setAuthToken(registerResponse.id());
         changeScene();
@@ -119,7 +116,6 @@ public class LoginPageController {
       loginPageInfotextField.setFill(Color.RED);
       return false;
     }
-
     return true;
   }
 }

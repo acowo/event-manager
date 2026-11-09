@@ -8,27 +8,24 @@ import java.net.http.HttpResponse;
 import java.util.Map;
 
 import com.google.gson.Gson;
-import dto.request.EditUserRequestDTO;
-import dto.request.LoginRegisterRequestDTO;
-import dto.response.EditUserResponseDTO;
-import dto.response.LoginRegisterResponseDTO;
-import dto.response.UserGetEventsResponseDTO;
-import event.Event;
+import dto.request.LoginRegisterRequestDto;
+import dto.response.LoginRegisterResponseDto;
+import dto.response.UserGetEventsResponseDto;
 import ui.auth.ClientSession;
 
-public class RestAPIClient {
+public class UserRestApiClient {
 
   private final HttpClient httpClient;
   private final Gson gson;
   private final String baseUrl = "http://localhost:8080/api/users";
 
-  public RestAPIClient() {
+  public UserRestApiClient() {
     this.httpClient = HttpClient.newHttpClient();
     this.gson = new Gson();
   }
 
-  public LoginRegisterResponseDTO login(String username, String password) throws IOException, InterruptedException {
-    LoginRegisterRequestDTO loginRequestDTO = new LoginRegisterRequestDTO(username, password);
+  public LoginRegisterResponseDto login(String username, String password) throws IOException, InterruptedException {
+    LoginRegisterRequestDto loginRequestDTO = new LoginRegisterRequestDto(username, password);
     String json = gson.toJson(loginRequestDTO);
     HttpRequest request = HttpRequest.newBuilder()
         .uri(URI.create(baseUrl + "/login"))
@@ -37,11 +34,11 @@ public class RestAPIClient {
         .build();
 
     HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-    return gson.fromJson(response.body(), LoginRegisterResponseDTO.class);
+    return gson.fromJson(response.body(), LoginRegisterResponseDto.class);
   }
 
-  public LoginRegisterResponseDTO register(String username, String password) throws IOException, InterruptedException {
-    LoginRegisterRequestDTO registerRequestDTO = new LoginRegisterRequestDTO(username, password);
+  public LoginRegisterResponseDto register(String username, String password) throws IOException, InterruptedException {
+    LoginRegisterRequestDto registerRequestDTO = new LoginRegisterRequestDto(username, password);
     String json = gson.toJson(registerRequestDTO);
     HttpRequest request = HttpRequest.newBuilder()
         .uri(URI.create(baseUrl + "/register"))
@@ -50,20 +47,7 @@ public class RestAPIClient {
         .build();
 
     HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-    return gson.fromJson(response.body(), LoginRegisterResponseDTO.class);
-  }
-
-  //TODO: Add edit user functionality :O
-  public boolean updateUserRequest(String authToken) throws IOException, InterruptedException {
-    EditUserRequestDTO editUserRequestDTO = new EditUserRequestDTO(authToken);
-    String json = gson.toJson(editUserRequestDTO);
-    HttpRequest request = HttpRequest.newBuilder()
-        .uri(URI.create(baseUrl + "/edit"))
-        .header("Content-Type", "application/json")
-        .PUT(HttpRequest.BodyPublishers.ofString(json))
-        .build();
-    HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-    return gson.fromJson(response.body(), EditUserResponseDTO.class).success();
+    return gson.fromJson(response.body(), LoginRegisterResponseDto.class);
   }
 
   /**
@@ -89,7 +73,7 @@ public class RestAPIClient {
     HttpRequest request = HttpRequest.newBuilder()
         .uri(URI.create(baseUrl + "/me/events/" + eventId))
         .header("Authorization", ClientSession.getAuthToken())
-        .DELETE()
+        .PUT(HttpRequest.BodyPublishers.noBody())
         .build();
     HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
     return response.statusCode() == 204;
@@ -102,10 +86,11 @@ public class RestAPIClient {
         .GET()
         .build();
     HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-    UserGetEventsResponseDTO dto = gson.fromJson(response.body(), UserGetEventsResponseDTO.class);
+    UserGetEventsResponseDto dto = gson.fromJson(response.body(), UserGetEventsResponseDto.class);
     if (response.statusCode() != 200){
       return Map.of(); //Maybe add a check later on for unauthorized error code?
     }
     return dto.events();
   }
+
 }
