@@ -8,22 +8,15 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
 import java.time.temporal.ChronoField;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleButton;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -190,6 +183,11 @@ public class CalendarController {
     if (selectedEventId == null) {
       return;
     }
+    if (!createConfirmationPopup("Delete event?",
+        "Are you sure you want to delete this event? All users attending will no longer attend this event.")){
+      return;
+    }
+
     // TODO: Update the local registry of events
     events.remove(selectedEventId);
     try {
@@ -207,6 +205,10 @@ public class CalendarController {
    * Deleted the currently logged in User and all of its data
    */
   public void handleDeleteUser(javafx.event.Event event) throws IOException {
+    if (!createConfirmationPopup("Delete User?",
+        "Are you sure you want to delete your user? All event data will be gone!")){
+      return;
+    }
     userRestApiClient.deleteUser();
     ClientSession.clearAuthToken();
     changeScene(event, "/ui/loginPage.fxml");
@@ -411,5 +413,15 @@ public class CalendarController {
     Map<String, EventDto> map = new HashMap<>();
     events.forEach(e -> map.put(e.eventId(), e));
     return map;
+  }
+
+  private boolean createConfirmationPopup(String title, String message){
+    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+    alert.setTitle(title);
+    alert.setHeaderText(null);
+    alert.setContentText(message);
+
+    Optional<ButtonType> result = alert.showAndWait();
+    return result.isPresent() && result.get() == ButtonType.OK;
   }
 }
