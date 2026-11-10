@@ -1,5 +1,9 @@
 # Team member contributions
 
+## Attribution disclaimer
+
+The git commits will be slightly misattributed when running for example `git log`, as some commits were made under multiple names or email addresses. In particular, Sander's contributions are split between `sandergao5439@gmail.com` and `sandergk@stud.ntnu.no`; Angelica's between `angeliys@stud.ntnu.no` and `angelica@skarsaune.net`; Oskar's between `oskarehe@stud.ntnu.no` and `oskar@oskheb.no`; and Sana's appear under `sanak@stud.ntnu.no` and different display names
+
 ## Don Vo <donv@stud.ntnu.no>
 
 Don Vo contributed primarily to the user management system and the login interface. He implemented the `User` and `UserSession` classes, including their supporting methods, and developed the `UserManager` responsible for user-related operations. He also worked on resolving architectural issues between the core and persistence modules, including a circular dependency. In addition, he contributed to the visual design of the login interface and added test data for the user system. His documentation contributions included sequence and module diagrams, updates to existing diagrams and Javadoc for user- and event-related classes. He also worked on the Maven configuration to ensure that test coverage reporting functioned correctly for the UI module.
