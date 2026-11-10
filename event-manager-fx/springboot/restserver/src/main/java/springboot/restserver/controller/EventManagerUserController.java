@@ -130,12 +130,8 @@ public class EventManagerUserController {
 
 
 @DeleteMapping("/me")
-@ResponseStatus(HttpStatus.OK)
+@ResponseStatus(HttpStatus.NO_CONTENT)
 public void deleteUser(@RequestHeader("Authorization") String token) {
-  try {
-    eventManagerService.deleteUser(token);
-  } catch (IllegalArgumentException e) {
+  if(!eventManagerService.deleteUser(token)){
     throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-  }
-}
-}
+}}}
