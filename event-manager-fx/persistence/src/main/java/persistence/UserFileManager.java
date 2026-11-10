@@ -239,7 +239,7 @@ public class UserFileManager implements user.UserRepository {
   }
 
   /**
-   * Removes a user from the user map and the JSON
+   * Removes a user from the user map and the JSON.
    *
    * @param username the user to be removed from the user map
    * @throws IllegalArgumentException if the user does not exist within the map
