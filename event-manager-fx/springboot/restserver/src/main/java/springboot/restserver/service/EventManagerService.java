@@ -3,6 +3,7 @@ package springboot.restserver.service;
 import dto.EventDto;
 import event.Event;
 import event.EventManager;
+import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -183,7 +184,8 @@ public class EventManagerService {
   }
 
   /**
-   * Deletes a user.
+   * Delete the given user, and deletes all events
+   * that the user has made.
    *
    * @param authToken the user to delete.
    * @return {@code true} if the user is successfully deleted;

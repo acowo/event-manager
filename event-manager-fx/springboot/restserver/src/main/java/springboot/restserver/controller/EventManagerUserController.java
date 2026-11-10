@@ -75,7 +75,7 @@ public class EventManagerUserController {
    */
   @PutMapping("/me/events/{eventId}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
-  //Added synchronized because apparently simultaneous writes can overwrite each other!
+  // Added synchronized because apparently simultaneous writes can overwrite each other!
   public synchronized void optIn(
       @RequestHeader("Authorization") String token,
       @PathVariable("eventId") String eventId) {
@@ -128,14 +128,18 @@ public class EventManagerUserController {
     }
   }
 
-
-@DeleteMapping("/me")
-@ResponseStatus(HttpStatus.OK)
-public void deleteUser(@RequestHeader("Authorization") String token) {
-  try {
-    eventManagerService.deleteUser(token);
-  } catch (IllegalArgumentException e) {
-    throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+  /**
+   * Delete the given user, and deletes all events
+   * that the user has made.
+   *
+   * @param token the Authorization header identifying the user
+   * @throws ResponseStatusException 404 if user doesn't exist.
+   */
+  @DeleteMapping("/me")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void deleteUser(@RequestHeader("Authorization") String token) {
+    if (!eventManagerService.deleteUser(token)) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+    }
   }
-}
 }
