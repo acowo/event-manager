@@ -19,7 +19,6 @@ import persistence.UserFileManager;
 import ui.auth.ClientSession;
 import user.User;
 import user.UserManager;
-import user.UserSession;
 
 import java.io.IOException;
 import java.time.LocalDate;

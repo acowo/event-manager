@@ -30,7 +30,6 @@ public class UserManagerTest {
     UserManager manager = new UserManager(repository);
 
     assertTrue(manager.login("testUser", "password"));
-    isSameUser(user, UserSession.getUser());
   }
 
   @Test
@@ -51,7 +50,7 @@ public class UserManagerTest {
     assertTrue(manager.register("newUser", "password"));
 
     assertTrue(repository.userExists("newUser"));
-    isSameUser(repository.getUser("newUser"), UserSession.getUser());
+    isSameUser(new User("newUser", "password"), repository.getUser("newUser"));
   }
 
   @Test
