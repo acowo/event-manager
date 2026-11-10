@@ -47,7 +47,7 @@ public class LoginPageControllerTest extends ApplicationTest {
     clickOn("#loginPagePasswordField").write("invalid");
 
     clickOn("#loginPageLoginButton");
-    verifyThat("#loginPageInfotextField", hasText("An error has occured"));
+    verifyThat("#loginPageInfotextField", hasText("An error has occurred"));
   }
 
   /**

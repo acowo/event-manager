@@ -45,7 +45,7 @@ public class LoginPageController {
         ClientSession.setAuthToken(loginResponse.id());
         changeScene();
       } else {
-        loginPageInfotextField.setText("An error has occured");
+        loginPageInfotextField.setText("An error has occurred");
         loginPageInfotextField.setFill(Color.RED);
       }
     }
@@ -82,8 +82,7 @@ public class LoginPageController {
     URL resource = LoginPageController.class.getResource("/ui/Calendar.fxml");
     Parent root = FXMLLoader.load(Objects.requireNonNull(resource));
     Window window = loginPageRegisterButton.getScene().getWindow();
-    if (window instanceof Stage) {
-      Stage stage = (Stage) window;
+    if (window instanceof Stage stage) {
       stage.getScene().setRoot(root);
       return;
     }
@@ -102,13 +101,13 @@ public class LoginPageController {
    */
   @FXML
   private boolean isNotEmpty(String username, String password) {
-    if (username.length() < 1) {
+    if (username.isEmpty()) {
       loginPageInfotextField.setText("Please enter a id");
       loginPageInfotextField.setFill(Color.RED);
       return false;
     }
 
-    if (password.length() < 1) {
+    if (password.isEmpty()) {
       loginPageInfotextField.setText("Please enter a password");
       loginPageInfotextField.setFill(Color.RED);
       return false;
