@@ -90,6 +90,7 @@ public class UserRestApiClient {
         .PUT(HttpRequest.BodyPublishers.noBody())
         .build();
     HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+    System.out.println("optIn -> " + response.statusCode() + " " + response.body());
     return response.statusCode() == 204;
   }
 
