@@ -3,12 +3,14 @@ package springboot.restserver.service;
 import dto.EventDto;
 import event.Event;
 import event.EventManager;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import user.UserManager;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import org.springframework.stereotype.Service;
-import user.UserManager;
+
 
 
 
@@ -27,6 +29,7 @@ public class EventManagerService {
    * @param eventManager the manager that stores and retrieves events
    * @param userManager  the manager that stores and retrieves users
    */
+  @Autowired
   public EventManagerService(EventManager eventManager, UserManager userManager) {
     this.eventManager = new EventManager(eventManager);
     this.userManager = new UserManager(userManager);
