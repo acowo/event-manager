@@ -18,6 +18,7 @@ import ui.client.UserRestApiClient;
 
 /** Controller for the login and registration page. */
 public class LoginPageController {
+
   @FXML private TextField loginPageUsernameField;
 
   @FXML private TextField loginPagePasswordField;
@@ -52,8 +53,9 @@ public class LoginPageController {
   }
 
   /**
-   * Handles the controller logic needed when a user presses the register button. Uses imports from
-   * the Core and persistence modules. This function does not return a value.
+   * Handles the controller logic needed when a user presses the register button.
+   *
+   * @throws IOException if the calendar view cannot be loaded
    */
   @FXML
   public void handleRegistration() throws IOException, InterruptedException {
@@ -73,9 +75,9 @@ public class LoginPageController {
   }
 
   /**
-   * Handles the controller logic needed when a user successfully creates a session through a valid
-   * account. Switches the scene away from the login page to the calendar view, can be changed in
-   * the future. This function does not return a value.
+   * Switches to the configured calendar view after successful authentication.
+   *
+   * @throws IOException if the view cannot be loaded or the window is invalid
    */
   @FXML
   private void changeScene() throws IOException {

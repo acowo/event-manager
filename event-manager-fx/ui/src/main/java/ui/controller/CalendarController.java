@@ -381,7 +381,7 @@ public class CalendarController {
   }
 
   /**
-   * Changes the sFXML to a different view.
+   * Changes the FXML to a different view.
    *
    * @param event    the FXML event that caused the function to run
    * @param filepath the filepath of the new view
