@@ -17,6 +17,15 @@ public class EventManager {
     }
 
     /**
+     * Creates a copy of the given eventManager.
+     *
+     * @param eventManager a already initialized EventManager
+     */
+    public EventManager(EventManager eventManager) {
+        this.events = eventManager.events.copy();
+    }
+
+    /**
      * Adds an event to the EventRepository.
      *
      * @param event Event to be added

@@ -23,6 +23,15 @@ public class UserManager {
   }
 
   /**
+   * Creates a copy of the given UserManager.
+   *
+   * @param userManager a already initialized UserManager
+   */
+  public UserManager(UserManager userManager) {
+    this.users = userManager.users.copy();
+  }
+
+  /**
    * Logs in using user credentials.
    *
    * @param username the user's username credential
