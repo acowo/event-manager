@@ -31,8 +31,18 @@ public class EventManagerService {
    * @param userManager  the manager that stores and retrieves users
    */
   public EventManagerService(EventManager eventManager, UserManager userManager) {
-    this.eventManager = eventManager;
-    this.userManager = userManager;
+    this.eventManager = new EventManager(eventManager);
+    this.userManager = new UserManager(userManager);
+  }
+
+  /**
+   * Creates a service backed copy by given EventManagerService.
+   *
+   * @param eventManagerService a already initialized EventManagerService.
+   */
+  public EventManagerService(EventManagerService  eventManagerService) {
+    this.eventManager = new EventManager(eventManagerService.eventManager);
+    this.userManager = new UserManager(eventManagerService.userManager);
   }
 
   // ==================== EVENT LOGIC ====================
