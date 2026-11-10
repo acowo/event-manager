@@ -206,8 +206,12 @@ public class CalendarController {
   /**
    * Deleted the currently logged in User and all of its data
    */
-  public void handleDeleteUser(){
-    this.userManager.deleteUser(this.user.getUsername(), eventManager);
+  public void handleDeleteUser(javafx.event.Event event) throws IOException {
+    userRestApiClient.deleteUser();
+    ClientSession.clearAuthToken();
+    changeScene(event, "/ui/loginPage.fxml");
+
+
   }
 
   /**

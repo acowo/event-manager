@@ -115,6 +115,7 @@ public class EventFileManager implements EventRepository {
    */
   @Override
   public boolean eventExists(String eventId) {
+    this.events = loadEvents();
     return events.containsKey(eventId);
   }
 

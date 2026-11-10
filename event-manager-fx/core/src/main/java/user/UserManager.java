@@ -94,11 +94,10 @@ public class UserManager {
    * @return {@code true} if the user was successfully deleted; {@code false} if the username is not matching
    */
   public boolean deleteUser(String username, EventManager eventManager) {
-    User user = UserSession.getUser();
-    if (!username.equals(user.getUsername())) {
-      return false;
-    }
+    User user = users.getUser(username);
+
     Map<String, Boolean> eventMap = user.getEventIds();
+
     eventMap.entrySet().forEach(s -> {
         if (s.getValue()) {
             removeEvent(s.getKey());

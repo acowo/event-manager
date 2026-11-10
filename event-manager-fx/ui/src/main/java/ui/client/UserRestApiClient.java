@@ -134,4 +134,23 @@ public class UserRestApiClient {
     return dto.events();
   }
 
+  public boolean deleteUser() {
+    HttpRequest request = HttpRequest.newBuilder()
+        .uri(URI.create(baseUrl + "/me"))
+        .header("Authorization", ClientSession.getAuthToken())
+        .DELETE()
+        .build();
+
+    try{
+      HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+      if (response.statusCode() != 200){
+        return false;
+      }
+      return true;
+    } catch (Exception e) {
+      return false;
+    }
+
+  }
+
 }
