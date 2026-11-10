@@ -58,8 +58,9 @@ public interface UserRepository {
   UserRepository copy();
 
   /**
-   * Deletes the User with a username and all associated data from its persistence 
-   * 
+   * Deletes the User with a username and all associated data from its persistence.
+   *
+   *
    * @param username the username of the User to be deleted
    */
   void removeUser(String username);

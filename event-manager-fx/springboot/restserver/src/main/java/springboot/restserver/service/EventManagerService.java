@@ -187,9 +187,9 @@ public class EventManagerService {
    * Delete the given user, and deletes all events
    * that the user has made.
    *
-   * @param authToken the user authToken
-   * @return {@code false} if user doesn't exist;
-   *        {@code true} otherwise.
+   * @param authToken the user to delete.
+   * @return {@code true} if the user is successfully deleted;
+   *        {@code false} if else.
    */
   public boolean deleteUser(String authToken) {
     try {

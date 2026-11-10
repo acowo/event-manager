@@ -18,16 +18,17 @@ import ui.auth.ClientSession;
  * Static client for the event endpoints of the REST API.
  */
 public class EventRestApiClient {
-  private String serverURI;
+  private String serverUri;
   static HttpClient client = HttpClient.newHttpClient();
   static final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
   /**
-   * Constructor that sets the URI
+   * Constructor that sets the URI.
+   *
    * @param uri URI that will be used to send requests.
    */
   public EventRestApiClient(String uri) {
-    this.serverURI = uri;
+    this.serverUri = uri;
   }
 
   /**
@@ -40,7 +41,7 @@ public class EventRestApiClient {
   public List<EventDto> getAllEvents() throws IOException, InterruptedException {
     // First build the request
     HttpRequest request = HttpRequest.newBuilder()
-        .uri(URI.create(serverURI)).GET().build();
+        .uri(URI.create(serverUri)).GET().build();
     // Send the request
     HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
@@ -77,7 +78,7 @@ public class EventRestApiClient {
 
     // Build the request
     HttpRequest request = HttpRequest.newBuilder()
-        .uri(URI.create(serverURI))
+        .uri(URI.create(serverUri))
         .header("Content-Type", "application/json")
         .header("Authorization", ClientSession.getAuthToken())
         .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
@@ -104,7 +105,7 @@ public class EventRestApiClient {
   public EventDto getEventById(String id) throws IOException, InterruptedException {
     // First build the request
     HttpRequest request = HttpRequest.newBuilder()
-        .uri(URI.create(serverURI + "/" + id)).GET().build();
+        .uri(URI.create(serverUri + "/" + id)).GET().build();
     // Send the request
     HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
     if (response.statusCode() == 200) {
@@ -126,7 +127,7 @@ public class EventRestApiClient {
   public boolean deleteEventById(String id) throws IOException, InterruptedException {
     // First build the request
     HttpRequest request = HttpRequest.newBuilder()
-        .uri(URI.create(serverURI + "/" + id)).DELETE().build();
+        .uri(URI.create(serverUri + "/" + id)).DELETE().build();
     // Send the request
     HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
     if (response.statusCode() == 204) {
@@ -154,7 +155,7 @@ public class EventRestApiClient {
     String jsonBody = objectMapper.writeValueAsString(eventDto);
 
     HttpRequest request = HttpRequest.newBuilder()
-        .uri(URI.create(serverURI + "/" + id))
+        .uri(URI.create(serverUri + "/" + id))
         .header("Content-Type", "application/json")
         .PUT(HttpRequest.BodyPublishers.ofString(jsonBody))
         .build();

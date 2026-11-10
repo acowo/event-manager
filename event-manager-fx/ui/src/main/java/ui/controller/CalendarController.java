@@ -8,15 +8,25 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
 import java.time.temporal.ChronoField;
-import java.util.*;
-
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -33,7 +43,6 @@ public class CalendarController {
   private Map<String, EventDto> events;
   private Map<String, Boolean> userAttendingEvents;
   private String selectedEventId;
-  private String userAuth;
   private UserRestApiClient userRestApiClient;
   private EventRestApiClient eventRestApiClient;
 
@@ -41,7 +50,6 @@ public class CalendarController {
 
   @FXML private Label monthLabel;
   @FXML private Label yearLabel;
-  @FXML private Label time;
   @FXML private Label eventTitle;
   @FXML private Label eventDate;
   @FXML private Label eventTime;
@@ -88,7 +96,6 @@ public class CalendarController {
     } catch (IOException | InterruptedException e) {
       throw new RuntimeException(e);
     }
-    this.userAuth = ClientSession.getAuthToken();
 
     setMonth(this.today);
 
@@ -154,7 +161,6 @@ public class CalendarController {
    */
   @FXML
   public void createEvent() {
-
     try {
       LocalDate date = setEventDate.getValue();
       LocalTime time =
@@ -173,9 +179,12 @@ public class CalendarController {
         eventError.setText("Something went wrong. \n"
             + "Check that you have filled all fields properly");
       }
-    } catch (Exception e) {
+    } catch (IOException | InterruptedException e) {
       eventError.setText("Something went wrong. "
-          + "\nCheck that you have filled all fields properly");
+          + "\nPlease try again later");
+    } catch (Exception e) {
+      eventError.setText("Something went wrong. \n"
+          + "Check that you have filled all fields properly");
     }
   }
 
@@ -186,7 +195,8 @@ public class CalendarController {
       return;
     }
     if (!createConfirmationPopup("Delete event?",
-        "Are you sure you want to delete this event? All users attending will no longer attend this event.")){
+        "Are you sure you want to delete this event?\n"
+            + "All users attending will no longer attend this event.")) {
       return;
     }
 
@@ -204,11 +214,11 @@ public class CalendarController {
   }
 
   /**
-   * Deleted the currently logged in User and all of its data
+   * Deleted the currently logged in User and all of its data.
    */
   public void handleDeleteUser(javafx.event.Event event) throws IOException {
     if (!createConfirmationPopup("Delete User?",
-        "Are you sure you want to delete your user? All event data will be gone!")){
+        "Are you sure you want to delete your user? All event data will be gone!")) {
       return;
     }
     userRestApiClient.deleteUser();
@@ -261,7 +271,6 @@ public class CalendarController {
     if (selectedEventId == null) {
       return;
     }
-    EventDto eventDto = events.get(selectedEventId);
 
     try {
       if (toggleEventButton.getText().equals("Leave event")) {
@@ -283,7 +292,6 @@ public class CalendarController {
       eventErrorLabel.setText("Something went wrong. \n"
           + "Please try again later.");
       toggleEventButton.setSelected(!toggleEventButton.isSelected());
-      e.printStackTrace();
     }
   }
 
@@ -382,9 +390,7 @@ public class CalendarController {
         eventPane.getChildren().add(new Label(eventDto.title()));
 
         Button button = new Button("...");
-        button.setOnAction(e -> {
-          showEvent(eventDto);
-        });
+        button.setOnAction(e -> showEvent(eventDto));
 
         eventPane.getChildren().add(button);
         HBox.setMargin(button, new Insets(0, 0, 0, 2));
@@ -417,7 +423,7 @@ public class CalendarController {
     return map;
   }
 
-  private boolean createConfirmationPopup(String title, String message){
+  private boolean createConfirmationPopup(String title, String message) {
     Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
     alert.setTitle(title);
     alert.setHeaderText(null);
