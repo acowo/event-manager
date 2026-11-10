@@ -5,16 +5,11 @@ import event.Event;
 import event.EventManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import user.User;
 import user.UserManager;
-
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import org.springframework.stereotype.Service;
-import user.UserManager;
-
 
 /**
  * Service for managing events and the users associated with them.
@@ -76,8 +71,13 @@ public class EventManagerService {
    * @param dto the {@link EventDto} with the event info.
    * @return {@code true} if the event is successfully created; {@code false} if else.
    */
-  public boolean create(EventDto dto) {
-    return eventManager.addEvent(dto.toEvent());
+  public boolean create(EventDto dto, String authToken) {
+    Event event = dto.toEvent();
+    if (!eventManager.addEvent(event)) {
+      return false;
+    }
+    userManager.optInAsAdmin(event.getEventId(), resolveUsername(authToken));
+    return true;
   }
 
   /**
@@ -171,7 +171,14 @@ public class EventManagerService {
     return userManager.optOut(eventId, resolveUsername(authToken));
   }
 
-  public Map<String, Boolean> getUserEvents(String authToken){
+  /**
+   * Gets a map of all events a user is attending, with a boolean value
+   * corrensponding to if they are admin or not.
+   *
+   * @param authToken the user authToken
+   * @return a {@link Map} of eventIds and corresponding admin value.
+   */
+  public Map<String, Boolean> getUserEvents(String authToken) {
     return userManager.getUser(resolveUsername(authToken)).getEventIds();
   }
 }

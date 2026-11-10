@@ -107,6 +107,9 @@ public final class User {
     if (eventId.isBlank()) {
       throw new IllegalArgumentException("eventId cannot be blank");
     }
+    if (this.eventIds == null) {
+      this.eventIds = new HashMap<>();
+    }
     this.eventIds.put(eventId, admin);
   }
 

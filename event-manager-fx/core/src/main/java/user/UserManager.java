@@ -75,10 +75,10 @@ public class UserManager {
       return false;
     }
     users.editUser(username, user);
-    //UserSession is no longer in use, but i keep it here in case something breaks
-//    if (UserSession.getUser().getUsername().equals(username)) {
-//      UserSession.setUser(user);
-//    }
+    // UserSession is no longer in use, but i keep it here in case something breaks
+    //    if (UserSession.getUser().getUsername().equals(username)) {
+    //      UserSession.setUser(user);
+    //    }
 
     return true;
   }
@@ -93,17 +93,26 @@ public class UserManager {
   }
 
   /**
+   *Gets user based on a username.
    *
    * @param username the username of the user.
    * @return User object with the matching username
    */
-  public User getUser(String username){
+  public User getUser(String username) {
     return this.users.getUser(username);
   }
 
-  public boolean optIn(String eventId, String username){
+  /**
+   * Opts a user in on an event.
+   *
+   * @param eventId the eventId of the event to opt into.
+   * @param username the username of the user to be opted in.
+   * @return {@code true} if the user is successfully opted in;
+   *        {@code false} if user is already opted in.
+   */
+  public boolean optIn(String eventId, String username) {
     User user = getUser(username);
-    if (user.isAttendingEvent(eventId)){
+    if (user.isAttendingEvent(eventId)) {
       return false;
     }
     user.addEventId(eventId, false);
@@ -111,9 +120,35 @@ public class UserManager {
     return true;
   }
 
-  public boolean optOut(String eventId, String username){
+  /**
+   * Adds an event to a user as administrator (used when the user creates the event).
+   *
+   * @param eventId  the event the user created
+   * @param username the creator
+   * @return {@code true} if the user successfully gets opted in as admin;
+   *        {@code false} if the user is already attending the event.
+   */
+  public boolean optInAsAdmin(String eventId, String username) {
     User user = getUser(username);
-    if (!user.isAttendingEvent(eventId)){
+    if (user.isAttendingEvent(eventId)) {
+      return false;
+    }
+    user.addEventId(eventId, true);
+    users.editUser(username, user);
+    return true;
+  }
+
+  /**
+   * Opts a user out of an event.
+   *
+   * @param eventId the eventId of the event to opt out of.
+   * @param username the username of the user to be opted out.
+   * @return {@code true} if the user is successfully opted out;
+   *        {@code false} if user is not attending the event.
+   */
+  public boolean optOut(String eventId, String username) {
+    User user = getUser(username);
+    if (!user.isAttendingEvent(eventId)) {
       return false;
     }
     user.removeEventId(eventId);

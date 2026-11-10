@@ -29,6 +29,7 @@ public class LoginPageController {
   @FXML private Text loginPageInfotextField;
 
   private final UserRestApiClient apiClient = new UserRestApiClient();
+
   /**
    * Handles the controller logic needed when a user presses the login button. Uses imports from the
    * Core and persistence modules. This function does not return a value.

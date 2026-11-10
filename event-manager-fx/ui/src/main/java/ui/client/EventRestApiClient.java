@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import dto.EventDto;
-
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -13,6 +12,7 @@ import java.net.http.HttpResponse;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import ui.auth.ClientSession;
 
 /**
  * Static client for the event endpoints of the REST API.
@@ -60,7 +60,9 @@ public class EventRestApiClient {
    * @throws IOException if the request fails or the payload cannot be serialized
    * @throws InterruptedException if the thread is interrupted while waiting for the response
    */
-  public static boolean createEvent(String id, String title, String place, LocalDateTime datetime) throws IOException, InterruptedException {
+  public static boolean createEvent(
+      String id, String title, String place, LocalDateTime datetime)
+      throws IOException, InterruptedException {
     // Firstly need to create a dto, then serialize it.
     EventDto dto = new EventDto(id, title, place, datetime);
     String jsonBody = objectMapper.writeValueAsString(dto);
@@ -69,6 +71,7 @@ public class EventRestApiClient {
     HttpRequest request = HttpRequest.newBuilder()
         .uri(URI.create(defaultBaseUrl))
         .header("Content-Type", "application/json")
+        .header("Authorization", ClientSession.getAuthToken())
         .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
         .build();
 
@@ -136,7 +139,8 @@ public class EventRestApiClient {
    * @throws IOException if the request fails or the payload cannot be serialized
    * @throws InterruptedException if the thread is interrupted while waiting for the response
    */
-  public static boolean updateEventById(String id, String title, String place, LocalDateTime dateTime)
+  public static boolean updateEventById(
+      String id, String title, String place, LocalDateTime dateTime)
       throws IOException, InterruptedException {
     EventDto eventDto = new EventDto(id, title, place, dateTime);
     String jsonBody = objectMapper.writeValueAsString(eventDto);
