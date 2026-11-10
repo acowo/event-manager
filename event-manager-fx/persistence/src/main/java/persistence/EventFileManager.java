@@ -2,6 +2,7 @@ package persistence;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 import event.Event;
 import event.EventRepository;
@@ -63,10 +64,11 @@ public class EventFileManager implements EventRepository {
    * @return a map containing the events loaded from the file
    * @throws RuntimeException if the event data file cannot be found
    */
+  
   private Map<String, Event> loadEvents() {
     File file = new File(filePath);
 
-    if (!file.exists()) {
+    if (!file.isFile()) {
       return new HashMap<>();
     }
 
@@ -86,10 +88,11 @@ public class EventFileManager implements EventRepository {
 
       return loadedEvents != null ? loadedEvents : new HashMap<>();
 
-    } catch (IOException e) {
-      throw new RuntimeException("An error has occurred while trying to read file.", e);
+    } catch (IOException | JsonParseException e) {
+      return new HashMap<>();
     }
   }
+
 
   /**
    * Finds and returns an event with a specific UUID.
