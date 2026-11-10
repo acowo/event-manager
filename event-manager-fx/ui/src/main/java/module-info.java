@@ -2,8 +2,6 @@ module eventmanager.ui {
   requires javafx.controls;
   requires javafx.fxml;
 
-  requires eventmanager.core;
-  requires eventmanager.persistence;
   requires api.contract;
 
   requires java.net.http;
