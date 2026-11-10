@@ -177,6 +177,7 @@ public class EventFileManager implements EventRepository {
    */
   @Override
   public Map<String, Event> getEvents() {
+    this.events = loadEvents();
     return new HashMap<>(events);
   }
 
