@@ -35,6 +35,7 @@ public class CalendarController {
   private String selectedEventId;
   private String userAuth;
   private UserRestApiClient userRestApiClient;
+  private EventRestApiClient eventRestApiClient;
 
   @FXML private GridPane calendar;
 
@@ -68,7 +69,8 @@ public class CalendarController {
    * Default constructor, creates a default eventFileManager and userFileManager.
    */
   public CalendarController() {
-    this.userRestApiClient = new UserRestApiClient();
+    this.userRestApiClient = new UserRestApiClient("http://localhost:8080/api/users");
+    this.eventRestApiClient = new EventRestApiClient("http://localhost:8080/api/events");
   }
 
   /**
@@ -81,7 +83,7 @@ public class CalendarController {
 
     this.today = LocalDate.now();
     try {
-      this.events = new HashMap<>(eventListToMap(EventRestApiClient.getAllEvents()));
+      this.events = new HashMap<>(eventListToMap(eventRestApiClient.getAllEvents()));
       this.userAttendingEvents = new HashMap<>(userRestApiClient.getUserEvents());
     } catch (IOException | InterruptedException e) {
       throw new RuntimeException(e);
@@ -160,7 +162,7 @@ public class CalendarController {
               Integer.parseInt(setEventTime.getText(0, 2)),
               Integer.parseInt(setEventTime.getText(3, 5)));
       String id = UUID.randomUUID().toString();
-      if (EventRestApiClient.createEvent(
+      if (eventRestApiClient.createEvent(
           id, setEventTitle.getText(), setEventLocation.getText(), LocalDateTime.of(date, time))) {
         this.events.put(id, new EventDto(
             id, setEventTitle.getText(), setEventLocation.getText(), LocalDateTime.of(date, time)));
@@ -191,7 +193,7 @@ public class CalendarController {
     // TODO: Update the local registry of events
     events.remove(selectedEventId);
     try {
-      EventRestApiClient.deleteEventById(selectedEventId);
+      eventRestApiClient.deleteEventById(selectedEventId);
       setMonth(LocalDate.of(this.year, this.month, 1));
       hideEvent();
     } catch (IOException | InterruptedException e) {

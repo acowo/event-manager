@@ -19,14 +19,15 @@ public class UserRestApiClient {
 
   private final HttpClient httpClient;
   private final Gson gson;
-  private static final String baseUrl = "http://localhost:8080/api/users";
+  private String serverURI; 
 
   /**
    * Creates a client that talks to the API on localhost.
    */
-  public UserRestApiClient() {
+  public UserRestApiClient(String uri) {
     this.httpClient = HttpClient.newHttpClient();
     this.gson = new Gson();
+    this.serverURI = uri; 
   }
 
   /**
@@ -41,7 +42,7 @@ public class UserRestApiClient {
     LoginRegisterRequestDto loginRequestDto = new LoginRegisterRequestDto(username, password);
     String json = gson.toJson(loginRequestDto);
     HttpRequest request = HttpRequest.newBuilder()
-        .uri(URI.create(baseUrl + "/login"))
+        .uri(URI.create(serverURI + "/login"))
         .header("Content-Type", "application/json")
         .POST(HttpRequest.BodyPublishers.ofString(json))
         .build();
@@ -64,7 +65,7 @@ public class UserRestApiClient {
     LoginRegisterRequestDto registerRequestDto = new LoginRegisterRequestDto(username, password);
     String json = gson.toJson(registerRequestDto);
     HttpRequest request = HttpRequest.newBuilder()
-        .uri(URI.create(baseUrl + "/register"))
+        .uri(URI.create(serverURI + "/register"))
         .header("Content-Type", "application/json")
         .POST(HttpRequest.BodyPublishers.ofString(json))
         .build();
@@ -85,7 +86,7 @@ public class UserRestApiClient {
    */
   public boolean optIn(String eventId) throws IOException, InterruptedException {
     HttpRequest request = HttpRequest.newBuilder()
-        .uri(URI.create(baseUrl + "/me/events/" + eventId))
+        .uri(URI.create(serverURI + "/me/events/" + eventId))
         .header("Authorization", ClientSession.getAuthToken())
         .PUT(HttpRequest.BodyPublishers.noBody())
         .build();
@@ -105,7 +106,7 @@ public class UserRestApiClient {
    */
   public boolean optOut(String eventId) throws IOException, InterruptedException {
     HttpRequest request = HttpRequest.newBuilder()
-        .uri(URI.create(baseUrl + "/me/events/" + eventId))
+        .uri(URI.create(serverURI + "/me/events/" + eventId))
         .header("Authorization", ClientSession.getAuthToken())
         .DELETE()
         .build();
@@ -122,7 +123,7 @@ public class UserRestApiClient {
    */
   public Map<String, Boolean> getUserEvents() throws IOException, InterruptedException {
     HttpRequest request = HttpRequest.newBuilder()
-        .uri(URI.create(baseUrl + "/me/events"))
+        .uri(URI.create(serverURI + "/me/events"))
         .header("Authorization", ClientSession.getAuthToken())
         .GET()
         .build();
@@ -136,7 +137,7 @@ public class UserRestApiClient {
 
   public boolean deleteUser() {
     HttpRequest request = HttpRequest.newBuilder()
-        .uri(URI.create(baseUrl + "/me"))
+        .uri(URI.create(serverURI + "/me"))
         .header("Authorization", ClientSession.getAuthToken())
         .DELETE()
         .build();

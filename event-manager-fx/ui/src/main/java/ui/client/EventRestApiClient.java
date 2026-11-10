@@ -18,9 +18,17 @@ import ui.auth.ClientSession;
  * Static client for the event endpoints of the REST API.
  */
 public class EventRestApiClient {
-  static String defaultBaseUrl = "http://localhost:8080/api/events";
+  private String serverURI;
   static HttpClient client = HttpClient.newHttpClient();
   static final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
+
+  /**
+   * Constructor that sets the URI
+   * @param uri URI that will be used to send requests.
+   */
+  public EventRestApiClient(String uri) {
+    this.serverURI = uri;
+  }
 
   /**
    * Gets a list of all the events.
@@ -29,10 +37,10 @@ public class EventRestApiClient {
    * @throws IOException if the request fails
    * @throws InterruptedException if the thread is interrupted while waiting for the response
    */
-  public static List<EventDto> getAllEvents() throws IOException, InterruptedException {
+  public List<EventDto> getAllEvents() throws IOException, InterruptedException {
     // First build the request
     HttpRequest request = HttpRequest.newBuilder()
-        .uri(URI.create(defaultBaseUrl)).GET().build();
+        .uri(URI.create(serverURI)).GET().build();
     // Send the request
     HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
@@ -60,7 +68,7 @@ public class EventRestApiClient {
    * @throws IOException if the request fails or the payload cannot be serialized
    * @throws InterruptedException if the thread is interrupted while waiting for the response
    */
-  public static boolean createEvent(
+  public boolean createEvent(
       String id, String title, String place, LocalDateTime datetime)
       throws IOException, InterruptedException {
     // Firstly need to create a dto, then serialize it.
@@ -69,7 +77,7 @@ public class EventRestApiClient {
 
     // Build the request
     HttpRequest request = HttpRequest.newBuilder()
-        .uri(URI.create(defaultBaseUrl))
+        .uri(URI.create(serverURI))
         .header("Content-Type", "application/json")
         .header("Authorization", ClientSession.getAuthToken())
         .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
@@ -93,10 +101,10 @@ public class EventRestApiClient {
    * @throws IOException if the request fails or the response cannot be parsed
    * @throws InterruptedException if the thread is interrupted while waiting for the response
    */
-  public static EventDto getEventById(String id) throws IOException, InterruptedException {
+  public EventDto getEventById(String id) throws IOException, InterruptedException {
     // First build the request
     HttpRequest request = HttpRequest.newBuilder()
-        .uri(URI.create(defaultBaseUrl + "/" + id)).GET().build();
+        .uri(URI.create(serverURI + "/" + id)).GET().build();
     // Send the request
     HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
     if (response.statusCode() == 200) {
@@ -115,10 +123,10 @@ public class EventRestApiClient {
    * @throws IOException if the request fails
    * @throws InterruptedException if the thread is interrupted while waiting for the response
    */
-  public static boolean deleteEventById(String id) throws IOException, InterruptedException {
+  public boolean deleteEventById(String id) throws IOException, InterruptedException {
     // First build the request
     HttpRequest request = HttpRequest.newBuilder()
-        .uri(URI.create(defaultBaseUrl + "/" + id)).DELETE().build();
+        .uri(URI.create(serverURI + "/" + id)).DELETE().build();
     // Send the request
     HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
     if (response.statusCode() == 204) {
@@ -139,14 +147,14 @@ public class EventRestApiClient {
    * @throws IOException if the request fails or the payload cannot be serialized
    * @throws InterruptedException if the thread is interrupted while waiting for the response
    */
-  public static boolean updateEventById(
+  public boolean updateEventById(
       String id, String title, String place, LocalDateTime dateTime)
       throws IOException, InterruptedException {
     EventDto eventDto = new EventDto(id, title, place, dateTime);
     String jsonBody = objectMapper.writeValueAsString(eventDto);
 
     HttpRequest request = HttpRequest.newBuilder()
-        .uri(URI.create(defaultBaseUrl + "/" + id))
+        .uri(URI.create(serverURI + "/" + id))
         .header("Content-Type", "application/json")
         .PUT(HttpRequest.BodyPublishers.ofString(jsonBody))
         .build();

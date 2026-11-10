@@ -29,7 +29,7 @@ public class LoginPageController {
 
   @FXML private Text loginPageInfotextField;
 
-  private final UserRestApiClient apiClient = new UserRestApiClient();
+  private final UserRestApiClient apiClient = new UserRestApiClient("http://localhost:8080/api/users");
 
   /**
    * Handles the controller logic needed when a user presses the login button. Uses imports from the
