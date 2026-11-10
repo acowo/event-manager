@@ -7,15 +7,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests the login and registration behavior of {@link UserManager}, including successful operations
- * and failure cases.
+ * Tests the login and registration behavior of {@link UserManager},
+ * including successful operations and failure cases.
  */
 public class UserManagerTest {
-
 
   void isSameUser(User user1, User user2) {
     assertEquals(user1.getUsername(), user2.getUsername());
@@ -52,6 +50,7 @@ public class UserManagerTest {
     assertTrue(manager.register("newUser", "password"));
 
     assertTrue(repository.userExists("newUser"));
+    isSameUser(new User("newUser", "password"), repository.getUser("newUser"));
   }
 
   @Test
@@ -64,17 +63,13 @@ public class UserManagerTest {
     assertFalse(manager.register("existingUser", "newPassword"));
   }
 
-  @AfterEach
-  void tearDown() {
-    UserSession.logout();
-  }
-
   private static class FakeUserRepository implements UserRepository {
     private final Map<String, User> users = new HashMap<>();
 
     @Override
     public boolean checkPassword(String username, String password) {
-      return users.containsKey(username) && users.get(username).getPassword().equals(password);
+      return users.containsKey(username)
+          && users.get(username).getPassword().equals(password);
     }
 
     @Override

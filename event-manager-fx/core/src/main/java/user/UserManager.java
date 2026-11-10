@@ -1,3 +1,4 @@
+
 package user;
 
 import event.EventManager;
@@ -28,7 +29,7 @@ public class UserManager {
   /**
    * Creates a copy of the given UserManager.
    *
-   * @param userManager a already initialized UserManager
+   * @param userManager an already initialized UserManager
    */
   public UserManager(UserManager userManager) {
     this.users = userManager.users.copy();
@@ -39,19 +40,20 @@ public class UserManager {
    *
    * @param username the user's username credential
    * @param password the user's password credential
-   * @return {@code true} if login was successful; {@code false} if credentials were incorrect
+   * @return {@code true} if login was successful;
+   *     {@code false} if credentials were incorrect
    */
   public boolean login(String username, String password) {
-    return (users.checkPassword(username, password));
+    return users.checkPassword(username, password);
   }
 
   /**
-   * Creates a new user with the username and password and logs in with the same user credentials.
+   * Creates a new user with the given username and password.
    *
-   * @param username the user's username credential
-   * @param password the user's password credential
-   * @return {@code true} if registration and login was successful; {@code false} if user with the
-   *     same username credential already exists
+   * @param username the user's username
+   * @param password the user's password
+   * @return {@code true} if registration was successful;
+   *     {@code false} if the username already exists
    * @throws NullPointerException if username is null
    * @throws IllegalArgumentException if username is blank
    */
@@ -70,25 +72,24 @@ public class UserManager {
    *
    * @param username the user to be changed
    * @param user the updated user object
-   * @return {@code true} if the user was successfully edited; {@code false} if the user does not
-   *     exist
+   * @return {@code true} if the user was successfully edited;
+   *     {@code false} if the user does not exist
    */
   public boolean editUser(String username, User user) {
     if (!users.userExists(username)) {
       return false;
     }
     users.editUser(username, user);
-
     return true;
   }
 
   /**
    * Deletes a user. Removes all events they are administrating.
    *
-   * @param username the user to be deleted.
-   * @param eventManager the eventManager to delete events from.
+   * @param username the user to be deleted
+   * @param eventManager the eventManager to delete events from
    * @return {@code true} if the user was successfully deleted;
-   *        {@code false} if the username is not matching
+   *     {@code false} if the username is not matching
    */
   public boolean deleteUser(String username, EventManager eventManager) {
     User user = users.getUser(username);
@@ -101,6 +102,7 @@ public class UserManager {
         eventManager.removeEvent(s.getKey());
       }
     });
+
     users.removeUser(username);
     return true;
   }
@@ -115,22 +117,22 @@ public class UserManager {
   }
 
   /**
-   *Gets user based on a username.
+   * Retrieves a user by username.
    *
-   * @param username the username of the user.
-   * @return User object with the matching username
+   * @param username the username of the user
+   * @return the user with the matching username
    */
   public User getUser(String username) {
     return this.users.getUser(username);
   }
 
   /**
-   * Opts a user in on an event.
+   * Adds a user to an event if they are not already attending.
    *
-   * @param eventId the eventId of the event to opt into.
-   * @param username the username of the user to be opted in.
-   * @return {@code true} if the user is successfully opted in;
-   *        {@code false} if user is already opted in.
+   * @param eventId the ID of the event
+   * @param username the username of the user
+   * @return {@code true} if the user was added;
+   *     {@code false} if already attending
    */
   public boolean optIn(String eventId, String username) {
     User user = getUser(username);
@@ -145,10 +147,10 @@ public class UserManager {
   /**
    * Adds an event to a user as administrator (used when the user creates the event).
    *
-   * @param eventId  the event the user created
+   * @param eventId the event the user created
    * @param username the creator
    * @return {@code true} if the user successfully gets opted in as admin;
-   *        {@code false} if the user is already attending the event.
+   *     {@code false} if the user is already attending the event
    */
   public boolean optInAsAdmin(String eventId, String username) {
     User user = getUser(username);
@@ -161,12 +163,12 @@ public class UserManager {
   }
 
   /**
-   * Opts a user out of an event.
+   * Removes a user from an event if they are attending.
    *
-   * @param eventId the eventId of the event to opt out of.
-   * @param username the username of the user to be opted out.
-   * @return {@code true} if the user is successfully opted out;
-   *        {@code false} if user is not attending the event.
+   * @param eventId the ID of the event
+   * @param username the username of the user
+   * @return {@code true} if the user was removed;
+   *     {@code false} if not attending
    */
   public boolean optOut(String eventId, String username) {
     User user = getUser(username);

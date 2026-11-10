@@ -1,3 +1,4 @@
+
 package event;
 
 import java.util.Map;
@@ -10,16 +11,17 @@ public class EventManager {
   /**
    * Creates a new EventManager.
    *
-   * @param events A place where events are stored, must implement EventRepository interface
+   * @param events A place where events are stored, must implement EventRepository
+   *     interface
    */
   public EventManager(EventRepository events) {
     this.events = events.copy();
   }
 
   /**
-   * Creates a copy of the given eventManager.
+   * Creates a copy of the given EventManager.
    *
-   * @param eventManager a already initialized EventManager
+   * @param eventManager an already initialized EventManager
    */
   public EventManager(EventManager eventManager) {
     this.events = eventManager.events.copy();
@@ -30,7 +32,7 @@ public class EventManager {
    *
    * @param event Event to be added
    * @return {@code true} if event was successfully added;
-   *        {@code false} if the event had already been added previously
+   *     {@code false} if the event had already been added previously
    */
   public boolean addEvent(Event event) {
     if (events.eventExists(event.getEventId())) {
@@ -45,7 +47,7 @@ public class EventManager {
    *
    * @param eventId identifier of Event to be removed
    * @return {@code true} if the event was successfully removed;
-   *        {@code false} if event was not added previously
+   *     {@code false} if event was not added previously
    */
   public boolean removeEvent(String eventId) {
     if (!events.eventExists(eventId)) {
@@ -60,9 +62,9 @@ public class EventManager {
    * Updates an existing Event using a new Event object.
    *
    * @param eventId Identifier of the event to be edited
-   * @param event   The new Event object containing updated data
+   * @param event The new Event object containing updated data
    * @return {@code true} if the event was successfully edited;
-   *        {@code false} if the event does not exist
+   *     {@code false} if the event does not exist
    */
   public boolean editEvent(String eventId, Event event) {
     if (!events.eventExists(eventId)) {
@@ -74,7 +76,7 @@ public class EventManager {
   }
 
   /**
-   * Get the Event object with a matching identifier.
+   * Gets the Event object with a matching identifier.
    *
    * @param eventId UUID of the event to get
    * @return event with the corresponding UUID
@@ -85,7 +87,7 @@ public class EventManager {
   }
 
   /**
-   * Get a map of all the events.
+   * Gets a map of all the events.
    *
    * @return map of all events with UUID keys
    */
