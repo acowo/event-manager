@@ -3,15 +3,14 @@ package springboot.restserver.service;
 import dto.EventDto;
 import event.Event;
 import event.EventManager;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import user.UserManager;
-
 import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import user.UserManager;
 
 /**
  * Service for managing events and the users associated with them.
@@ -39,7 +38,7 @@ public class EventManagerService {
    *
    * @param eventManagerService a already initialized EventManagerService.
    */
-  public EventManagerService(EventManagerService  eventManagerService) {
+  public EventManagerService(EventManagerService eventManagerService) {
     this.eventManager = new EventManager(eventManagerService.eventManager);
     this.userManager = new UserManager(eventManagerService.userManager);
   }
@@ -184,11 +183,19 @@ public class EventManagerService {
     return userManager.getUser(resolveUsername(authToken)).getEventIds();
   }
 
-  public boolean deleteUser(String authToken){
-   try {
-     return userManager.deleteUser(resolveUsername(authToken), eventManager);
-   } catch (Exception e) {
-     return false;
-   }
+  /**
+   * Delete the given user, and deletes all events
+   * that the user has made.
+   *
+   * @param authToken the user authToken
+   * @return {@code false} if user doesn't exist;
+   *        {@code true} otherwise.
+   */
+  public boolean deleteUser(String authToken) {
+    try {
+      return userManager.deleteUser(resolveUsername(authToken), eventManager);
+    } catch (Exception e) {
+      return false;
+    }
   }
 }
