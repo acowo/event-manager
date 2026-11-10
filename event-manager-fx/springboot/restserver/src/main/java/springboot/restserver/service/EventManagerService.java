@@ -11,9 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-
-
-
 /**
  * Service for managing events and the users associated with them.
  */

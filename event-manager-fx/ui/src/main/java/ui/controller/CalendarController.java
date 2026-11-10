@@ -1,7 +1,7 @@
 
 package ui.controller;
 
-import event.Event;
+import dto.EventDto;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -11,6 +11,7 @@ import java.time.temporal.ChronoField;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -27,8 +28,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import persistence.EventFileManager;
-import persistence.UserFileManager;
 import ui.auth.ClientSession;
 import ui.client.EventRestApiClient;
 import ui.client.UserRestApiClient;
@@ -38,7 +37,7 @@ public class CalendarController {
   private Month month;
   private int year;
   private LocalDate today;
-  private Map<String, Event> events;
+  private Map<String, EventDto> events;
   private Map<String, Boolean> userAttendingEvents;
   private String selectedEventId;
   private String userAuth;
@@ -88,8 +87,8 @@ public class CalendarController {
 
     this.today = LocalDate.now();
     try {
-      this.events = eventListToMap(EventRestApiClient.getAllEvents());
-      this.userAttendingEvents = userRestApiClient.getUserEvents();
+      this.events = new HashMap<>(eventListToMap(EventRestApiClient.getAllEvents()));
+      this.userAttendingEvents = new HashMap<>(userRestApiClient.getUserEvents());
     } catch (IOException | InterruptedException e) {
       throw new RuntimeException(e);
     }
@@ -166,15 +165,13 @@ public class CalendarController {
           LocalTime.of(
               Integer.parseInt(setEventTime.getText(0, 2)),
               Integer.parseInt(setEventTime.getText(3, 5)));
-      Event event = new Event(
-          setEventTitle.getText(),
-          setEventLocation.getText(),
-          LocalDateTime.of(date, time)
-      );
-      if (EventRestApiClient.createEvent(event)) {
-        this.events.put(event.getEventId(), event);
+      String id = UUID.randomUUID().toString();
+      if (EventRestApiClient.createEvent(
+          id, setEventTitle.getText(), setEventLocation.getText(), LocalDateTime.of(date, time))) {
+        this.events.put(id, new EventDto(
+            id, setEventTitle.getText(), setEventLocation.getText(), LocalDateTime.of(date, time)));
         setMonth(LocalDate.of(this.year, this.month, 1));
-        userAttendingEvents.put(event.getEventId(), true);
+        userAttendingEvents.put(id, true);
         closeEventCreator();
       } else {
         eventError.setText("Something went wrong. \n"
@@ -210,23 +207,23 @@ public class CalendarController {
    * Shows the togglebutton if user is not admin of the event.
    * Shows a delete button if user is admin of the event.
    *
-   * @param event the {@link Event} to be shown
+   * @param eventDto the {@link EventDto} of the event to be shown
    */
-  public void showEvent(Event event) {
-    selectedEventId = event.getEventId();
+  public void showEvent(EventDto eventDto) {
+    selectedEventId = eventDto.eventId();
 
     eventPane.setDisable(false);
     eventPane.setVisible(true);
 
-    eventTitle.setText(event.getTitle());
-    eventLocation.setText(event.getPlace());
-    eventDate.setText(event.getTime().toLocalDate().toString());
-    eventTime.setText(event.getTime().toLocalTime().toString());
+    eventTitle.setText(eventDto.title());
+    eventLocation.setText(eventDto.place());
+    eventDate.setText(eventDto.time().toLocalDate().toString());
+    eventTime.setText(eventDto.time().toLocalTime().toString());
 
     eventButtons.getChildren().clear();
     eventButtons.getChildren().add(closeEventButton);
-    if (userAttendingEvents.containsKey(event.getEventId())) {
-      if (userAttendingEvents.get(event.getEventId())) {
+    if (userAttendingEvents.containsKey(eventDto.eventId())) {
+      if (userAttendingEvents.get(eventDto.eventId())) {
         eventButtons.getChildren().add(0, deleteEventButton);
       } else {
         eventButtons.getChildren().add(0, toggleEventButton);
@@ -248,7 +245,7 @@ public class CalendarController {
     if (selectedEventId == null) {
       return;
     }
-    Event event = events.get(selectedEventId);
+    EventDto eventDto = events.get(selectedEventId);
 
     try {
       if (toggleEventButton.getText().equals("Leave event")) {
@@ -358,25 +355,25 @@ public class CalendarController {
       throw new IllegalStateException();
     }
     if (this.events != null) {
-      List<Event> eventsInMonth = this.events.values().stream()
-          .filter(e -> e.getTime().getMonth() == this.month
-              && e.getTime().getYear() == this.year).toList();
-      for (Event event : eventsInMonth) {
+      List<EventDto> eventsInMonth = this.events.values().stream()
+          .filter(e -> e.time().getMonth() == this.month
+              && e.time().getYear() == this.year).toList();
+      for (EventDto eventDto : eventsInMonth) {
         HBox eventPane = new HBox();
 
         // TODO: Fix the styling of new events
         eventPane.setStyle("-fx-background-color: #cc76fb; -fx-background-radius:5px;");
-        eventPane.getChildren().add(new Label(event.getTitle()));
+        eventPane.getChildren().add(new Label(eventDto.title()));
 
         Button button = new Button("...");
         button.setOnAction(e -> {
-          showEvent(event);
+          showEvent(eventDto);
         });
 
         eventPane.getChildren().add(button);
         HBox.setMargin(button, new Insets(0, 0, 0, 2));
 
-        int dayOfMonth = event.getTime().getDayOfMonth();
+        int dayOfMonth = eventDto.time().getDayOfMonth();
         VBox pane = (VBox) calendar.getChildren().get(dayOfMonth);
         pane.getChildren().add(eventPane);
       }
@@ -384,7 +381,7 @@ public class CalendarController {
   }
 
   /**
-   * Changes the FXML to a different view.
+   * Changes the sFXML to a different view.
    *
    * @param event    the FXML event that caused the function to run
    * @param filepath the filepath of the new view
@@ -398,9 +395,9 @@ public class CalendarController {
     stage.show();
   }
 
-  private Map<String, Event> eventListToMap(List<Event> events) {
-    Map<String, Event> map = new HashMap<>();
-    events.forEach(e -> map.put(e.getEventId(), e));
+  private Map<String, EventDto> eventListToMap(List<EventDto> events) {
+    Map<String, EventDto> map = new HashMap<>();
+    events.forEach(e -> map.put(e.eventId(), e));
     return map;
   }
 }

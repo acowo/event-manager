@@ -13,10 +13,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.Window;
-import persistence.UserFileManager;
 import ui.auth.ClientSession;
 import ui.client.UserRestApiClient;
-import user.UserManager;
 
 /** Controller for the login and registration page. */
 public class LoginPageController {
@@ -29,8 +27,6 @@ public class LoginPageController {
   @FXML private Button loginPageLoginButton;
 
   @FXML private Text loginPageInfotextField;
-
-  private UserManager manager = new UserManager(new UserFileManager());
 
   private final UserRestApiClient apiClient = new UserRestApiClient();
 
