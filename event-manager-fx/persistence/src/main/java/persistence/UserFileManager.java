@@ -28,7 +28,6 @@ public class UserFileManager implements user.UserRepository {
    */
   public UserFileManager() {
     this("../data/userdata.json");
-    checkPath();
   }
 
   /**
@@ -37,15 +36,12 @@ public class UserFileManager implements user.UserRepository {
    * @param filePath the path to the user data file
    */
   public UserFileManager(String filePath) {
-    this.filePath = filePath;
-    checkPath();
-  }
-
-  private void checkPath(){
-    if (!new File(filePath).exists()){
+    if (!(new File(filePath).exists())) {
       this.filePath = "gr2607/event-manager-fx/data/userdata.json";
     }
+    this.filePath = filePath;
   }
+
   /**
    * Checks if a user by the given username exists.
    *
@@ -243,11 +239,12 @@ public class UserFileManager implements user.UserRepository {
   }
 
   /**
-   * Removes a user from the user map.
+   * Removes a user from the user map and the JSON
    *
    * @param username the user to be removed from the user map
    * @throws IllegalArgumentException if the user does not exist within the map
    */
+  @Override
   public void removeUser(String username) {
     Map<String, User> users = getUsers();
 

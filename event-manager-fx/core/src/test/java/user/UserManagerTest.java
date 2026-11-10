@@ -1,3 +1,4 @@
+
 package user;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -9,11 +10,10 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests the login and registration behavior of {@link UserManager}, including successful operations
- * and failure cases.
+ * Tests the login and registration behavior of {@link UserManager},
+ * including successful operations and failure cases.
  */
 public class UserManagerTest {
-
 
   void isSameUser(User user1, User user2) {
     assertEquals(user1.getUsername(), user2.getUsername());
@@ -68,7 +68,8 @@ public class UserManagerTest {
 
     @Override
     public boolean checkPassword(String username, String password) {
-      return users.containsKey(username) && users.get(username).getPassword().equals(password);
+      return users.containsKey(username)
+          && users.get(username).getPassword().equals(password);
     }
 
     @Override
@@ -105,6 +106,11 @@ public class UserManagerTest {
     @Override
     public FakeUserRepository copy() {
       return this;
+    }
+
+    @Override
+    public void removeUser(String username) {
+      return;
     }
   }
 }

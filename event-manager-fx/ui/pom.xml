@@ -22,18 +22,6 @@
 
         <dependency>
             <groupId>it1901</groupId>
-            <artifactId>core</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>it1901</groupId>
-            <artifactId>persistence</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>it1901</groupId>
             <artifactId>api-contract</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -56,6 +44,18 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.11.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>5.24.0</version>
+            <scope>test</scope>
+        </dependency>
 
         <dependency>
             <groupId>org.testfx</groupId>

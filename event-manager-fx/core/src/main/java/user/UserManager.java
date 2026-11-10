@@ -1,6 +1,9 @@
 
 package user;
 
+import event.EventManager;
+import java.util.Map;
+
 /**
  * UserManager implements domain logic for managing user aspects.
  *
@@ -24,6 +27,15 @@ public class UserManager {
   }
 
   /**
+   * Creates a copy of the given UserManager.
+   *
+   * @param userManager an already initialized UserManager
+   */
+  public UserManager(UserManager userManager) {
+    this.users = userManager.users.copy();
+  }
+
+  /**
    * Logs in using user credentials.
    *
    * @param username the user's username credential
@@ -32,7 +44,7 @@ public class UserManager {
    *     {@code false} if credentials were incorrect
    */
   public boolean login(String username, String password) {
-    return (users.checkPassword(username, password));
+    return users.checkPassword(username, password);
   }
 
   /**
@@ -72,6 +84,30 @@ public class UserManager {
   }
 
   /**
+   * Deletes a user. Removes all events they are administrating.
+   *
+   * @param username the user to be deleted
+   * @param eventManager the eventManager to delete events from
+   * @return {@code true} if the user was successfully deleted;
+   *     {@code false} if the username is not matching
+   */
+  public boolean deleteUser(String username, EventManager eventManager) {
+    User user = users.getUser(username);
+
+    Map<String, Boolean> eventMap = user.getEventIds();
+
+    eventMap.entrySet().forEach(s -> {
+      if (s.getValue()) {
+        removeEvent(s.getKey());
+        eventManager.removeEvent(s.getKey());
+      }
+    });
+
+    users.removeUser(username);
+    return true;
+  }
+
+  /**
    * Removes an event from all users.
    *
    * @param eventId the Event UUID to be removed
@@ -104,6 +140,24 @@ public class UserManager {
       return false;
     }
     user.addEventId(eventId, false);
+    users.editUser(username, user);
+    return true;
+  }
+
+  /**
+   * Adds an event to a user as administrator (used when the user creates the event).
+   *
+   * @param eventId the event the user created
+   * @param username the creator
+   * @return {@code true} if the user successfully gets opted in as admin;
+   *     {@code false} if the user is already attending the event
+   */
+  public boolean optInAsAdmin(String eventId, String username) {
+    User user = getUser(username);
+    if (user.isAttendingEvent(eventId)) {
+      return false;
+    }
+    user.addEventId(eventId, true);
     users.editUser(username, user);
     return true;
   }
