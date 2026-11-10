@@ -3,15 +3,13 @@ package springboot.restserver.service;
 import dto.EventDto;
 import event.Event;
 import event.EventManager;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import user.UserManager;
-
-import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import user.UserManager;
 
 /**
  * Service for managing events and the users associated with them.
