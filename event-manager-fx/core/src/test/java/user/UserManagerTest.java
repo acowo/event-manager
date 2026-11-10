@@ -114,5 +114,10 @@ public class UserManagerTest {
     public FakeUserRepository copy() {
       return this;
     }
+
+    @Override
+    public void removeUser(String username) {
+      return;
+    }
   }
 }

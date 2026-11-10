@@ -174,5 +174,6 @@
                 <Button fx:id="closeEventButton" alignment="TOP_RIGHT" contentDisplay="RIGHT" layoutX="59.0" layoutY="97.0" mnemonicParsing="false" onAction="#hideEvent" text="Close" />
             </children>
         </Pane>
+      <Button fx:id="deleteUser" layoutX="493.0" layoutY="11.0" mnemonicParsing="false" onAction="#handleDeleteUser" style="-fx-background-color: F56145FF; -fx-text-fill: FFFFFF; -fx-font-weight: bold;" text="Delete User" AnchorPane.rightAnchor="175.0" AnchorPane.topAnchor="10.0" />
     </children>
 </AnchorPane>

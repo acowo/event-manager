@@ -127,4 +127,15 @@ public class EventManagerUserController {
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
     }
   }
+
+
+@DeleteMapping("/me")
+@ResponseStatus(HttpStatus.OK)
+public void deleteUser(@RequestHeader("Authorization") String token) {
+  try {
+    eventManagerService.deleteUser(token);
+  } catch (IllegalArgumentException e) {
+    throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+  }
+}
 }

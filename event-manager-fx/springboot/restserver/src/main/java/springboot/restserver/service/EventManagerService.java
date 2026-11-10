@@ -6,6 +6,8 @@ import event.EventManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import user.UserManager;
+
+import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -180,5 +182,13 @@ public class EventManagerService {
    */
   public Map<String, Boolean> getUserEvents(String authToken) {
     return userManager.getUser(resolveUsername(authToken)).getEventIds();
+  }
+
+  public boolean deleteUser(String authToken){
+   try {
+     return userManager.deleteUser(resolveUsername(authToken), eventManager);
+   } catch (Exception e) {
+     return false;
+   }
   }
 }

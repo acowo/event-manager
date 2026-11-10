@@ -115,6 +115,7 @@ public class EventFileManager implements EventRepository {
    */
   @Override
   public boolean eventExists(String eventId) {
+    this.events = loadEvents();
     return events.containsKey(eventId);
   }
 
@@ -176,6 +177,7 @@ public class EventFileManager implements EventRepository {
    */
   @Override
   public Map<String, Event> getEvents() {
+    this.events = loadEvents();
     return new HashMap<>(events);
   }
 
