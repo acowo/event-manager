@@ -1,8 +1,7 @@
 package user;
 
-import java.util.Map;
-
 import event.EventManager;
+import java.util.Map;
 
 /**
  * UserManager implements domain logic for managing user aspects.
@@ -79,19 +78,17 @@ public class UserManager {
       return false;
     }
     users.editUser(username, user);
-    // UserSession is no longer in use, but i keep it here in case something breaks
-    //    if (UserSession.getUser().getUsername().equals(username)) {
-    //      UserSession.setUser(user);
-    //    }
 
     return true;
   }
 
   /**
-   * 
-   * @param username
-   * @param eventManager
-   * @return {@code true} if the user was successfully deleted; {@code false} if the username is not matching
+   * Deletes a user. Removes all events they are administrating.
+   *
+   * @param username the user to be deleted.
+   * @param eventManager the eventManager to delete events from.
+   * @return {@code true} if the user was successfully deleted;
+   *        {@code false} if the username is not matching
    */
   public boolean deleteUser(String username, EventManager eventManager) {
     User user = users.getUser(username);
@@ -99,14 +96,14 @@ public class UserManager {
     Map<String, Boolean> eventMap = user.getEventIds();
 
     eventMap.entrySet().forEach(s -> {
-        if (s.getValue()) {
-            removeEvent(s.getKey());
-            eventManager.removeEvent(s.getKey());
-        }
+      if (s.getValue()) {
+        removeEvent(s.getKey());
+        eventManager.removeEvent(s.getKey());
+      }
     });
     users.removeUser(username);
     return true;
-}
+  }
 
   /**
    * Removes an event from all users.

@@ -37,7 +37,7 @@ public class EventManagerService {
    *
    * @param eventManagerService a already initialized EventManagerService.
    */
-  public EventManagerService(EventManagerService  eventManagerService) {
+  public EventManagerService(EventManagerService eventManagerService) {
     this.eventManager = new EventManager(eventManagerService.eventManager);
     this.userManager = new UserManager(eventManagerService.userManager);
   }
@@ -182,11 +182,18 @@ public class EventManagerService {
     return userManager.getUser(resolveUsername(authToken)).getEventIds();
   }
 
-  public boolean deleteUser(String authToken){
-   try {
-     return userManager.deleteUser(resolveUsername(authToken), eventManager);
-   } catch (Exception e) {
-     return false;
-   }
+  /**
+   * Deletes a user.
+   *
+   * @param authToken the user to delete.
+   * @return {@code true} if the user is successfully deleted;
+   *        {@code false} if else.
+   */
+  public boolean deleteUser(String authToken) {
+    try {
+      return userManager.deleteUser(resolveUsername(authToken), eventManager);
+    } catch (Exception e) {
+      return false;
+    }
   }
 }
