@@ -12,6 +12,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Collections;
 import java.util.List;
+import ui.auth.ClientSession;
 
 /**
  * Static client for the event endpoints of the REST API.
@@ -67,6 +68,7 @@ public class EventRestApiClient {
     HttpRequest request = HttpRequest.newBuilder()
         .uri(URI.create(defaultBaseUrl))
         .header("Content-Type", "application/json")
+        .header("Authorization", ClientSession.getAuthToken())
         .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
         .build();
 
