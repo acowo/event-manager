@@ -17,7 +17,7 @@ public class UserRestApiClient {
 
   private final HttpClient httpClient;
   private final Gson gson;
-  private final String baseUrl = "http://localhost:8080/api/users";
+  private static final String baseUrl = "http://localhost:8080/api/users";
 
   public UserRestApiClient() {
     this.httpClient = HttpClient.newHttpClient();

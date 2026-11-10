@@ -28,7 +28,6 @@ public class UserFileManager implements user.UserRepository {
    */
   public UserFileManager() {
     this("../data/userdata.json");
-    checkPath();
   }
 
   /**
@@ -37,15 +36,12 @@ public class UserFileManager implements user.UserRepository {
    * @param filePath the path to the user data file
    */
   public UserFileManager(String filePath) {
-    this.filePath = filePath;
-    checkPath();
-  }
-
-  private void checkPath(){
-    if (!new File(filePath).exists()){
+    if (!(new File(filePath).exists())) {
       this.filePath = "gr2607/event-manager-fx/data/userdata.json";
     }
+    this.filePath = filePath;
   }
+
   /**
    * Checks if a user by the given username exists.
    *

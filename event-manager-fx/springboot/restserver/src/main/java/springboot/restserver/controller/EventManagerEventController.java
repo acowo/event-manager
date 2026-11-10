@@ -32,7 +32,7 @@ public class EventManagerEventController {
    * @param eventManagerService the service that handles event operations
    */
   public EventManagerEventController(EventManagerService eventManagerService) {
-    this.eventManagerService = eventManagerService;
+    this.eventManagerService = new EventManagerService(eventManagerService);
   }
 
   // ==================== GET MAPPINGS ====================

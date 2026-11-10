@@ -23,7 +23,7 @@ public class EventManagerUserController {
    * @param eventManagerService the service that handles user operations
    */
   public EventManagerUserController(EventManagerService eventManagerService) {
-    this.eventManagerService = eventManagerService;
+    this.eventManagerService = new EventManagerService(eventManagerService);
   }
 
   /**
