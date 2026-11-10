@@ -96,9 +96,7 @@ public class CalendarController {
   public void initialize() {
 
     this.today = LocalDate.now();
-    //user = UserSession.getUser();
     this.events = this.eventManager.getEvents();
-    //this.user = UserSession.getUser();
     this.user = new User("placeholder", "placeholder");
 
     setMonth(this.today);
