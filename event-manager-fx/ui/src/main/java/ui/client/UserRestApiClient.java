@@ -23,6 +23,8 @@ public class UserRestApiClient {
 
   /**
    * Creates a client that talks to the API on localhost.
+   *
+   * @param uri URI for the server
    */
   public UserRestApiClient(String uri) {
     this.httpClient = HttpClient.newHttpClient();
@@ -130,7 +132,7 @@ public class UserRestApiClient {
     HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
     UserGetEventsResponseDto dto = gson.fromJson(response.body(), UserGetEventsResponseDto.class);
     if (response.statusCode() != 200) {
-      return Map.of(); //Maybe add a check later on for unauthorized error code?
+      return Map.of(); // Maybe add a check later on for unauthorized error code?
     }
     return dto.events();
   }
