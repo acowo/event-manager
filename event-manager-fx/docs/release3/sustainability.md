@@ -42,3 +42,6 @@ Server and device energy use is a smaller effect, but still worth keeping in min
 ## Summary
 The app has clear social and individual benefits, but its weaknesses are scalability and the added travel it can cause. 
 
+
+## Sources
+Krogstie, B.R., Jaradat, B. (2024) *Kort innføring i bærekraftsrammeverket SusAF*, [Lysarkpresentasjon], NTNU, [Link](https://canvas.ntnu.no/courses/25755/files/1450354/download?download_frd=1)

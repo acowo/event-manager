@@ -10,7 +10,7 @@ Don Vo contributed primarily to the user management system and the login interfa
 
 ## Angelica Yen Skarsaune <angeliys@stud.ntnu.no>
 
-Angelica Yen Skarsaune contributed to the user system and its integration with the application. Her work included implementing and integrating functionality related to user accounts, password checking and the login page. She also contributed to testing the user persistence layer and improving test coverage, as well as establishing the TestFX setup for UI testing. In addition, she participated in the development and integration of the calendar functionality and contributed to the project's build and test infrastructure, including the JaCoCo aggregation setup.
+Angelica Yen Skarsaune contributed to the user system and its integration with the application. Her work included implementing and designing the calendar page, with Calendar.fxml and CalendarController, with the calendar view, event creation and deletion, opting in and out and event information. She also contributed to testing both the ui controllers and improving test coverage, as well as establishing the TestFX adn mockito setup for UI testing. In addition, she ahs contributed with changes to core, persistence, restserver and api-contract. She has also worked a lot with making sure the code style is of good quality, making sure that the code follows checkstyle properly and adding documentation.
 
 ## Oliver Naper <olivena@stud.ntnu.no>
 
