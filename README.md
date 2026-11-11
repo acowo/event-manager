@@ -71,38 +71,6 @@ The JavaFX client will start and communicate with the REST server.
 
 Both components must be running simultaneously.
 
-## Running the packaged desktop client
-
-The desktop client can also be distributed as a standalone application package. The package includes a custom Java runtime, so users do not need to install Java separately.
-
-Packages are platform-specific:
-
-| Platform | Package format |
-|---|---|
-| Linux | Application image |
-| Windows | `.exe` installer |
-| macOS | `.dmg` disk image |
-
-Download the package corresponding to your operating system.
-
-**Linux**
-
-Extract the application image if necessary, then launch the application:
-
-```bash
-./EventManager/bin/EventManager
-```
-
-**Windows**
-
-Run the downloaded `.exe` installer and follow the installation instructions. Once installed, launch **EventManager** from the Start menu.
-
-**macOS**
-
-Open the downloaded `.dmg` file and drag **EventManager** into the Applications folder. Launch it from Applications.
-
-**Note:** The REST server must still be running separately for the desktop client to communicate with the backend.
-
 ## Packaging the desktop client
 
 The desktop client is packaged using `jlink` and `jpackage`.
