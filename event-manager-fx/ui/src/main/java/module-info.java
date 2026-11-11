@@ -5,6 +5,7 @@ module eventmanager.ui {
   requires api.contract;
 
   requires java.net.http;
+  requires jdk.httpserver;
   requires com.google.gson;
   requires com.fasterxml.jackson.databind;
   requires com.fasterxml.jackson.datatype.jsr310;
