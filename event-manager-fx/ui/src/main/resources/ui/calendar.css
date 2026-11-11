@@ -1,0 +1,86 @@
+
+.root {
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 13px;
+    -fx-background-color: #F0E6EF;
+}
+
+.label {
+    -fx-text-fill: #40364D;
+}
+
+.button, .toggle-button {
+    -fx-background-color: #9C89B8;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 10;
+    -fx-padding: 8 14;
+    -fx-cursor: hand;
+}
+
+.button:hover, .toggle-button:hover {
+    -fx-background-color: #8772A5;
+}
+
+.button:pressed, .toggle-button:selected {
+    -fx-background-color: #735D91;
+}
+
+#monthLabel, #yearLabel {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #544367;
+}
+
+#logout, #closeEventCreator, #closeEventButton {
+    -fx-background-color: #B8BEDD;
+    -fx-text-fill: #302B3B;
+}
+
+#logout:hover, #closeEventCreator:hover,
+#closeEventButton:hover {
+    -fx-background-color: #A3ACD1;
+}
+
+#deleteUser, #deleteEventButton {
+    -fx-background-color: #B75B77;
+    -fx-text-fill: white;
+}
+
+#deleteUser:hover, #deleteEventButton:hover {
+    -fx-background-color: #9D4863;
+}
+
+.text-field, .date-picker {
+    -fx-background-color: white;
+    -fx-background-radius: 8;
+    -fx-border-color: #EFC3E6;
+    -fx-border-radius: 8;
+}
+
+.text-field:focused {
+    -fx-border-color: #9C89B8;
+}
+
+#calendar {
+    -fx-background-color: white;
+    -fx-border-color: #EFC3E6;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+}
+
+#eventCreator, #eventPane {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-border-color: #EFC3E6;
+    -fx-border-radius: 12;
+}
+
+#eventCreator > .viewport,
+#eventPane > .viewport {
+    -fx-background-color: white;
+}
+
+#eventError, #eventErrorLabel {
+    -fx-text-fill: #B33D60;
+}

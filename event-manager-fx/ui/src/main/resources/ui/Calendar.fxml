@@ -15,10 +15,10 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="550.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.controller.CalendarController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="950.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" stylesheets="@calendar.css" fx:controller="ui.controller.CalendarController">
     <children>
 
-        <HBox layoutX="10.0" layoutY="10.0" prefHeight="1.0" prefWidth="200.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
+        <HBox layoutX="10.0" layoutY="10.0" prefHeight="1.0" prefWidth="200.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="20.0">
             <children>
                 <Button fx:id="prevMonth" mnemonicParsing="false" onAction="#prevMonth" text="&lt;" />
                 <Label fx:id="monthLabel" contentDisplay="CENTER" minWidth="70.0" text="Label">
@@ -34,8 +34,8 @@
                 <Button fx:id="nextMonth" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#nextMonth" text="&gt;" />
             </children>
         </HBox>
-        <GridPane fx:id="calendar" gridLinesVisible="true" layoutX="10.0" layoutY="10.0" prefHeight="500.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="75.0">
-            <columnConstraints> <!-- Claude used for the columnconstrains and rowconstraints here-->
+        <GridPane fx:id="calendar" gridLinesVisible="false" layoutX="10.0" layoutY="10.0" prefHeight="500.0" AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="104.0">
+            <columnConstraints> 
                 <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" percentWidth="14.2857" />
                 <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" percentWidth="14.2857" />
                 <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" percentWidth="14.2857" />
@@ -53,7 +53,7 @@
                 <RowConstraints minHeight="10.0" percentHeight="16.67" vgrow="ALWAYS" />
             </rowConstraints>
         </GridPane>
-        <GridPane gridLinesVisible="true" layoutX="20.0" layoutY="60.0" prefHeight="25.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="50.0">
+        <GridPane gridLinesVisible="false" layoutX="20.0" layoutY="60.0" prefHeight="25.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="76.0">
 
             <columnConstraints>
                 <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" percentWidth="14.2857" />
@@ -77,10 +77,10 @@
                 <Label text="Sunday" GridPane.columnIndex="6" GridPane.halignment="CENTER" />
             </children>
         </GridPane>
-        <Button fx:id="logout" layoutX="674.0" layoutY="11.0" mnemonicParsing="false" onAction="#handleLogout" text="Log out" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
-        <ScrollPane fx:id="eventCreator" fitToHeight="true" fitToWidth="true" layoutX="434.0" layoutY="36.0" prefHeight="320.0" prefWidth="200.0" AnchorPane.rightAnchor="80.0" AnchorPane.topAnchor="40.0">
+        <Button fx:id="logout" layoutX="674.0" layoutY="11.0" mnemonicParsing="false" onAction="#handleLogout" text="Log out" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0" />
+        <ScrollPane fx:id="eventCreator" fitToHeight="true" fitToWidth="true" layoutX="434.0" layoutY="36.0" prefHeight="365.0" prefWidth="250.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="70.0">
             <content>
-                <VBox alignment="CENTER" prefWidth="100.0" spacing="15.0" style="-fx-border-radius: 10;">
+                <VBox alignment="CENTER" prefWidth="225.0" spacing="15.0" >
                     <children>
                         <VBox>
                             <children>
@@ -120,10 +120,10 @@
                 </VBox>
             </content>
         </ScrollPane>
-        <Button fx:id="openEventCreator" layoutX="616.0" layoutY="11.0" mnemonicParsing="false" onAction="#openEventCreator" text="Create event" AnchorPane.rightAnchor="80.0" AnchorPane.topAnchor="10.0" />
-        <ScrollPane fx:id="eventPane" fitToWidth="true" layoutX="199.0" layoutY="27.0" prefWidth="182.0" style="-fx-background-color: #ababab; -fx-background-radius: 10;" AnchorPane.rightAnchor="368.0" AnchorPane.topAnchor="40.0">
+        <Button fx:id="openEventCreator" layoutX="616.0" layoutY="11.0" mnemonicParsing="false" onAction="#openEventCreator" text="Create event" AnchorPane.rightAnchor="105.0" AnchorPane.topAnchor="20.0" />
+        <ScrollPane fx:id="eventPane" fitToWidth="true" layoutX="199.0" layoutY="27.0" prefWidth="245.0"  AnchorPane.rightAnchor="240.0" AnchorPane.topAnchor="70.0">
             <content>
-                <VBox alignment="CENTER" prefWidth="143.0" spacing="10.0" style="-fx-background-radius: 10;">
+                <VBox alignment="CENTER" prefWidth="225.0" spacing="10.0" >
                     <children>
                         <HBox prefHeight="15.0" prefWidth="200.0" spacing="5.0">
                             <children>
@@ -169,11 +169,11 @@
         </ScrollPane>
         <Pane fx:id="resourcePane" layoutX="191.0" layoutY="250.0" prefHeight="200.0" prefWidth="200.0" visible="false">
             <children>
-                <Button fx:id="deleteEventButton" layoutX="88.0" layoutY="49.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#deleteEvent" style="-fx-background-color: #F56145;" text="Delete event" />
+                <Button fx:id="deleteEventButton" layoutX="88.0" layoutY="49.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#deleteEvent"  text="Delete event" />
                 <ToggleButton fx:id="toggleEventButton" layoutX="15.0" layoutY="46.0" mnemonicParsing="false" onAction="#toggleEvent" text="Join event" />
                 <Button fx:id="closeEventButton" alignment="TOP_RIGHT" contentDisplay="RIGHT" layoutX="59.0" layoutY="97.0" mnemonicParsing="false" onAction="#hideEvent" text="Close" />
             </children>
         </Pane>
-      <Button fx:id="deleteUser" layoutX="493.0" layoutY="11.0" mnemonicParsing="false" onAction="#handleDeleteUser" style="-fx-background-color: F56145FF; -fx-text-fill: FFFFFF; -fx-font-weight: bold;" text="Delete User" AnchorPane.rightAnchor="175.0" AnchorPane.topAnchor="10.0" />
+      <Button fx:id="deleteUser" layoutX="493.0" layoutY="11.0" mnemonicParsing="false" onAction="#handleDeleteUser"  text="Delete User" AnchorPane.rightAnchor="230.0" AnchorPane.topAnchor="20.0" />
     </children>
 </AnchorPane>
