@@ -1,13 +1,13 @@
 package event;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -21,6 +21,9 @@ public class EventManagerTest {
   private EventManager eventManager;
   private Event event;
 
+  /**
+   * Sets up a test environment before each test.
+   */
   @BeforeEach
   void setUp() {
     EventRepository repository = new FakeEventRepository();
@@ -29,12 +32,18 @@ public class EventManagerTest {
     event = new Event("Test Event", "Trondheim", LocalDateTime.of(2026, 10, 1, 18, 0));
   }
 
+  /**
+   * Test the addition of events to EventManager.
+   */
   @Test
   void testAddEvent() {
     assertTrue(eventManager.addEvent(event));
     assertFalse(eventManager.addEvent(event));
   }
 
+  /**
+   * Test that allows events with the same title and replaces an existing event at the same key.
+   */
   @Test
   void allowsSameTitleAndReplacesEventAtExistingKey() {
     Event other = new Event(event.getTitle(), "Bergen", event.getTime());
@@ -51,6 +60,9 @@ public class EventManagerTest {
     assertEquals(other.getEventId(), eventManager.getEvent(other.getEventId()).getEventId());
   }
 
+  /**
+   * Test the removal of events from EventManager.
+   */
   @Test
   void testRemoveEvent() {
     eventManager.addEvent(event);
@@ -59,6 +71,9 @@ public class EventManagerTest {
     assertFalse(eventManager.removeEvent(event.getEventId()));
   }
 
+  /**
+   * Test the editing of events in EventManager.
+   */
   @Test
   void testEditEvent() {
     eventManager.addEvent(event);
@@ -74,6 +89,9 @@ public class EventManagerTest {
     assertEquals(LocalDateTime.of(2026, 11, 1, 20, 0), result.getTime());
   }
 
+  /**
+   * Test editing a nonexistent event.
+   */
   @Test
   void testEditNonexistentEvent() {
     Event editedEvent =
@@ -83,6 +101,9 @@ public class EventManagerTest {
     assertFalse(eventManager.editEvent(UUID.randomUUID().toString(), editedEvent));
   }
 
+  /**
+   * Test retrieving an event from EventManager.
+   */
   @Test
   void testGetEvent() {
     eventManager.addEvent(event);
@@ -92,6 +113,9 @@ public class EventManagerTest {
     assertEquals("Test Event", result.getTitle());
   }
 
+  /**
+   * Test retrieving all events from EventManager.
+   */
   @Test
   void testGetEvents() {
     eventManager.addEvent(event);
@@ -101,6 +125,9 @@ public class EventManagerTest {
     assertTrue(result.containsKey(event.getEventId()));
   }
 
+  /**
+   * FakeEventRepository is a simple implementation of the EventRepository.
+   */
   private static class FakeEventRepository implements EventRepository {
 
     private final Map<String, Event> events = new HashMap<>();

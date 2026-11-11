@@ -31,6 +31,9 @@ public class UserFileManagerTest {
   private String password3 = "test password3";
   private UserFileManager userFileManager;
 
+  /**
+   * Set up the test environment before each test.
+   */
   @BeforeEach
   void setUp() {
 
@@ -41,6 +44,9 @@ public class UserFileManagerTest {
     user3 = new User(username3, password3);
   }
 
+  /**
+   * Test that the UserFileManager correctly retrieves a user by username.
+   */
   @Test
   void testGetUser() {
     userFileManager.addUser(user1);
@@ -51,6 +57,9 @@ public class UserFileManagerTest {
     assertEquals(userResult.getPassword(), password1);
   }
 
+  /**
+   * Test that the UserFileManager correctly checks if a user exists by username.
+   */
   @Test
   void testUserExists() {
     assertFalse(userFileManager.userExists(username2));
@@ -60,6 +69,9 @@ public class UserFileManagerTest {
     assertTrue(userFileManager.userExists(username2));
   }
 
+  /**
+   * Test that the UserFileManager throws an exception when trying to add a duplicate user.
+   */
   @Test
   void testDuplicateUserThrowsException() {
     userFileManager.addUser(user3);
@@ -67,6 +79,9 @@ public class UserFileManagerTest {
     assertThrows(IllegalArgumentException.class, () -> userFileManager.addUser(user3));
   }
 
+  /**
+   * Test that the UserFileManager correctly removes a user by username.
+   */
   @Test
   void testRemoveUser() {
     userFileManager.addUser(user1);
@@ -76,11 +91,17 @@ public class UserFileManagerTest {
     assertFalse(userFileManager.userExists(username1));
   }
 
+  /**
+   * Test that the UserFileManager throws an exception when trying to remove a nonexistent user.
+   */
   @Test
   void testRemoveNonexistentUserThrowsException() {
     assertThrows(IllegalArgumentException.class, () -> userFileManager.removeUser(username3));
   }
 
+  /**
+   * Test that the UserFileManager correctly edits a user's information.
+   */
   @Test
   void testEditUser() {
     userFileManager.addUser(user1);
@@ -94,11 +115,17 @@ public class UserFileManagerTest {
     assertEquals(userResult.getPassword(), "new password");
   }
 
+  /**
+   * Test that the UserFileManager throws an exception when trying to edit a nonexistent user.
+   */
   @Test
   void testGetNonexistentUserThrowsException() {
     assertThrows(IllegalArgumentException.class, () -> userFileManager.getUser("Does Not Exist"));
   }
 
+  /**
+   * Test that the UserFileManager throws an exception when trying to edit a nonexistent user.
+   */
   @Test
   void testEditNonexistentUserThrowsException() {
     User updatedUser = new User("Does Not Exist", "password");
@@ -108,6 +135,9 @@ public class UserFileManagerTest {
         () -> userFileManager.editUser("Does Not Exist", updatedUser));
   }
 
+  /**
+   * Test that the UserFileManager correctly checks a user's password.
+   */
   @Test
   void testCheckPasswordReturnsTrueForCorrectPassword() {
     userFileManager.addUser(user1);
@@ -115,6 +145,9 @@ public class UserFileManagerTest {
     assertTrue(userFileManager.checkPassword(username1, password1));
   }
 
+  /**
+   * Test that the UserFileManager returns false when checking a user's password with the wrong password.
+   */
   @Test
   void testCheckPasswordReturnsFalseForWrongPassword() {
     userFileManager.addUser(user1);
@@ -122,17 +155,26 @@ public class UserFileManagerTest {
     assertFalse(userFileManager.checkPassword(username1, "wrong password"));
   }
 
+  /**
+   * Test that the UserFileManager returns false when checking a password for a nonexistent user.
+   */
   @Test
   void testCheckPasswordReturnsFalseForNonexistentUser() {
     assertFalse(userFileManager.checkPassword("Does Not Exist", "password"));
   }
 
+  /**
+   * Test that the UserFileManager throws an exception when checking a password for a user with a null password.
+   */
   @Test
   void testNullPasswordThrowsException() {
     assertThrows(
         IllegalArgumentException.class, () -> userFileManager.checkPassword(username1, null));
   }
 
+  /**
+   * Test that the UserFileManager correctly persists a user to a file.
+   */
   @Test
   void testUserPersistsToFile() {
     userFileManager.addUser(user1);
@@ -148,6 +190,9 @@ public class UserFileManagerTest {
     assertEquals(password1, reloadedUser.getPassword());
   }
 
+  /**
+   * Test that the UserFileManager correctly creates a new user file.
+   */
   @Test
   void testFileCreation() {
     Path file = tempDir.resolve("users.json");
@@ -157,6 +202,9 @@ public class UserFileManagerTest {
     assertTrue(Files.exists(file));
   }
 
+  /**
+   * Test that the UserFileManager throws an exception when trying to create a user file in a missing parent directory.
+   */
   @Test
   void testFileCreationFailsWhenParentDirectoryIsMissing() {
     Path file = tempDir.resolve("missing-folder/users.json");
@@ -168,11 +216,17 @@ public class UserFileManagerTest {
     assertInstanceOf(IOException.class, exception.getCause());
   }
 
+  /**
+   * Test that the UserFileManager throws an exception when trying to save users with a null map.
+   */
   @Test
   void testSaveUsersIfNull() {
     assertThrows(NullPointerException.class, () -> userFileManager.saveUsers(null));
   }
 
+  /**
+   * Test that the UserFileManager throws an exception when trying to save users with a null user.
+   */
   @Test
   void testSuccesfullCopy() {
     userFileManager.addUser(user1);
@@ -183,11 +237,17 @@ public class UserFileManagerTest {
     assertEquals(userFileManager.getUsers().keySet(), copy.getUsers().keySet());
   }
 
+  /**
+   * Test that the UserFileManager correctly copies itself.
+   */
   @Test
   void testConstructorWithDefaultFilePath() {
     assertDoesNotThrow(() -> new UserFileManager());
   }
 
+  /**
+   * Test that the UserFileManager correctly constructs with a temporary file path.
+   */
   @Test
   void testConstructorWithTemporaryFilePath() {
     Path file = tempDir.resolve("constructor-user.json");
@@ -195,6 +255,9 @@ public class UserFileManagerTest {
     assertDoesNotThrow(() -> new UserFileManager(file.toString()));
   }
 
+  /**
+   * Test that the UserFileManager correctly removes an event from all users.
+   */
   @Test
   void testRemoveEvent() {
 
@@ -210,6 +273,9 @@ public class UserFileManagerTest {
     assertEquals(2, userFileManager.getUsers().size());
   }
 
+  /**
+   * Test that the UserFileManager correctly saves users to a file.
+   */
   @Test
   void testSaveUsersCreatesFile() {
     Path file = tempDir.resolve("new-users.json");
@@ -221,6 +287,9 @@ public class UserFileManagerTest {
     assertEquals(password1, manager.getUser(username1).getPassword());
   }
 
+  /**
+   * Test that the UserFileManager throws an exception when trying to save users to a directory.
+   */
   @Test
   void testSaveUsersThrowsWhenPathIsDirectory() {
     UserFileManager manager = new UserFileManager(tempDir.toString());
@@ -232,6 +301,9 @@ public class UserFileManagerTest {
     assertInstanceOf(IOException.class, exception.getCause());
   }
 
+  /**
+   * Test that the UserFileManager throws an exception when trying to get users from a directory.
+   */
   @Test
   void testGetUsersThrowsWhenPathIsDirectory() {
     UserFileManager manager = new UserFileManager(tempDir.toString());
@@ -241,12 +313,18 @@ public class UserFileManagerTest {
     assertEquals("An error has occurred", exception.getMessage());
   }
 
+  /**
+   * Test that the UserFileManager correctly loads events from a directory.
+   */
   @Test
   void testLoadFromDirectoryReturnsEmptyMap() {
     EventFileManager manager = new EventFileManager(tempDir.toString());
     assertTrue(manager.getEvents().isEmpty());
   }
 
+  /**
+   * Test that the UserFileManager uses an empty map when loading fails.
+   */
   @Test
   void testConstructorUsesEmptyMapWhenLoadingFails() throws IOException {
     Path file = tempDir.resolve("invalid.json");

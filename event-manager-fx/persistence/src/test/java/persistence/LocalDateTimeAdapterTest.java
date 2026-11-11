@@ -10,10 +10,18 @@ import java.io.StringWriter;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Test class for LocalDateTimeAdapter.
+ */
 class LocalDateTimeAdapterTest {
 
   private final LocalDateTimeAdapter adapter = new LocalDateTimeAdapter();
 
+  /**
+   * Test that the LocalDateTimeAdapter correctly serializes a LocalDateTime object to JSON.
+   *
+   * @throws Exception if an error occurs during writing.
+   */
   @Test
   void testWriteLocalDateTime() throws Exception {
     LocalDateTime time = LocalDateTime.of(2026, 9, 22, 12, 30);
@@ -27,6 +35,11 @@ class LocalDateTimeAdapterTest {
     assertEquals("\"2026-09-22T12:30\"", stringWriter.toString());
   }
 
+  /**
+   * Test that the LocalDateTimeAdapter correctly serializes a null LocalDateTime object to JSON.
+   *
+   * @throws Exception if an error occurs during writing.
+   */
   @Test
   void testWriteNull() throws Exception {
     StringWriter stringWriter = new StringWriter();
@@ -38,6 +51,12 @@ class LocalDateTimeAdapterTest {
     assertEquals("null", stringWriter.toString());
   }
 
+  /**
+   * Test that the LocalDateTimeAdapter correctly deserializes a JSON string to a LocalDateTime
+   * object.
+   *
+   * @throws Exception if an error occurs during reading.
+   */
   @Test
   void testReadLocalDateTime() throws Exception {
     JsonReader jsonReader = new JsonReader(new StringReader("\"2026-09-22T12:30\""));
@@ -47,6 +66,12 @@ class LocalDateTimeAdapterTest {
     assertEquals(LocalDateTime.of(2026, 9, 22, 12, 30), result);
   }
 
+  /**
+   * Test that the LocalDateTimeAdapter correctly deserializes a null JSON string to a null
+   * LocalDateTime object.
+   *
+   * @throws Exception if an error occurs during reading.
+   */
   @Test
   void testReadNull() throws Exception {
     JsonReader jsonReader = new JsonReader(new StringReader("null"));

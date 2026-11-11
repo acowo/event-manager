@@ -23,12 +23,14 @@ import org.junit.jupiter.api.io.TempDir;
  * with file-based storage.
  */
 public class EventFileManagerTest {
-
   @TempDir Path tempDir;
 
   private EventFileManager eventFileManager;
   private Event event;
 
+  /**
+   * Set up the test environment before each test.
+   */
   @BeforeEach
   void setUp() {
     eventFileManager = new EventFileManager(tempDir.resolve("eventdata.json").toString());
@@ -36,6 +38,9 @@ public class EventFileManagerTest {
     event = new Event("Test Event", "Trondheim", LocalDateTime.of(2026, 10, 1, 18, 0));
   }
 
+  /**
+   * Test that adding and getting an event works correctly.
+   */
   @Test
   void testAddAndGetEvent() {
     eventFileManager.addEvent(event);
@@ -47,6 +52,9 @@ public class EventFileManagerTest {
     assertEquals(LocalDateTime.of(2026, 10, 1, 18, 0), result.getTime());
   }
 
+  /**
+   * Test that the eventExists method works correctly.
+   */
   @Test
   void testEventExists() {
     assertFalse(eventFileManager.eventExists(event.getEventId()));
@@ -56,6 +64,9 @@ public class EventFileManagerTest {
     assertTrue(eventFileManager.eventExists(event.getEventId()));
   }
 
+  /**
+   * Test that the getEvents method returns all added events.
+   */
   @Test
   void testGetEvents() {
     eventFileManager.addEvent(event);
@@ -66,6 +77,9 @@ public class EventFileManagerTest {
     assertEquals(event.getTitle(), events.get(event.getEventId()).getTitle());
   }
 
+  /**
+   * Test that adding a duplicate event throws an exception.
+   */
   @Test
   void testDuplicateEventThrowsException() {
     eventFileManager.addEvent(event);
@@ -73,6 +87,9 @@ public class EventFileManagerTest {
     assertThrows(IllegalArgumentException.class, () -> eventFileManager.addEvent(event));
   }
 
+  /**
+   * Test that getting a nonexistent event throws an exception.
+   */
   @Test
   void testGetNonexistentEventThrowsException() {
     assertThrows(
@@ -80,6 +97,9 @@ public class EventFileManagerTest {
         () -> eventFileManager.getEvent(UUID.randomUUID().toString()));
   }
 
+  /**
+   * Test that removing an event works correctly.
+   */
   @Test
   void testRemoveEvent() {
     eventFileManager.addEvent(event);
@@ -91,6 +111,9 @@ public class EventFileManagerTest {
     assertFalse(eventFileManager.eventExists(event.getEventId()));
   }
 
+  /**
+   * Test that removing a nonexistent event throws an exception.
+   */
   @Test
   void testRemoveNonexistentEventThrowsException() {
     assertThrows(
@@ -98,6 +121,9 @@ public class EventFileManagerTest {
         () -> eventFileManager.removeEvent(UUID.randomUUID().toString()));
   }
 
+  /**
+   * Test that editing an event works correctly.
+   */
   @Test
   void testEditEvent() {
     eventFileManager.addEvent(event);
@@ -114,6 +140,9 @@ public class EventFileManagerTest {
     assertEquals(LocalDateTime.of(2026, 11, 1, 20, 0), result.getTime());
   }
 
+  /**
+   * Test that editing a nonexistent event throws an exception.
+   */
   @Test
   void testEditNonexistentEventThrowsException() {
     Event editedEvent =
@@ -125,6 +154,9 @@ public class EventFileManagerTest {
         () -> eventFileManager.editEvent(UUID.randomUUID().toString(), editedEvent));
   }
 
+  /**
+   * Test that the copy method creates a deep copy of the EventFileManager.
+   */
   @Test
   void testEventPersistToFile() {
     eventFileManager.addEvent(event);
@@ -141,6 +173,9 @@ public class EventFileManagerTest {
     assertEquals(LocalDateTime.of(2026, 10, 1, 18, 0), reloadedEvent.getTime());
   }
 
+  /**
+   * Test that events with the same name remain independent after reload and edit.
+   */
   @Test
   void sameNamesRemainIndependentAfterReloadAndEdit() {
     Event other = new Event(event.getTitle(), "Bergen", event.getTime());
@@ -167,6 +202,9 @@ public class EventFileManagerTest {
     assertFalse(reloaded.copy().eventExists(event.getEventId()));
   }
 
+  /**
+   * Test that attendance information is preserved across reloads.
+   */
   @Test
   void attendanceUsesUuidAndSurvivesReload() {
     Event other = new Event(event.getTitle(), "Bergen", event.getTime());
@@ -184,6 +222,9 @@ public class EventFileManagerTest {
     assertTrue(users.copy().getUser("test").getEventIds().isEmpty());
   }
 
+  /**
+   * Test that loading an empty file returns an empty map.
+   */
   @Test
   void testLoadEmptyFile() throws IOException {
     Path file = tempDir.resolve("empty.json");
@@ -204,6 +245,9 @@ public class EventFileManagerTest {
     assertTrue(manager.getEvents().isEmpty());
   }
 
+  /**
+   * Test that saving to an invalid path throws an exception.
+   */
   @Test
   void testSaveToInvalidPathThrowsException() {
     Path invalidPath = tempDir.resolve("does-not-exist").resolve("eventdata.json");
@@ -227,6 +271,9 @@ public class EventFileManagerTest {
     assertNotNull(manager.getEvents());
   }
 
+  /**
+   * Test that the copy method creates a deep copy of the EventFileManager.
+   */
   @Test
   void testSuccesfullCopy() {
     eventFileManager.addEvent(event);
@@ -239,6 +286,9 @@ public class EventFileManagerTest {
     assertEquals(eventFileManager.getEvents().keySet(), copy.getEvents().keySet());
   }
 
+  /**
+   * Test that loading from a directory returns an empty map.
+   */
   @Test
   void testLoadFromDirectoryReturnsEmptyMap() {
     EventFileManager manager = new EventFileManager(tempDir.toString());
@@ -246,6 +296,9 @@ public class EventFileManagerTest {
     assertTrue(manager.getEvents().isEmpty());
   }
 
+  /**
+   * Test that the constructor uses an empty map when loading fails.
+   */
   @Test
   void testConstructorUsesEmptyMapWhenLoadingFails() throws IOException {
     Path file = tempDir.resolve("invalid.json");

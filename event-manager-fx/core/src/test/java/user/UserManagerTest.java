@@ -1,12 +1,12 @@
 
 package user;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.HashMap;
-import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -15,12 +15,21 @@ import org.junit.jupiter.api.Test;
  */
 public class UserManagerTest {
 
+  /**
+   * Helper method to assert that two User objects are the same based on their properties.
+   *
+   * @param user1 the first User object.
+   * @param user2 the second User object.
+   */
   void isSameUser(User user1, User user2) {
     assertEquals(user1.getUsername(), user2.getUsername());
     assertEquals(user1.getPassword(), user2.getPassword());
     assertEquals(user1.getEventIds(), user2.getEventIds());
   }
 
+  /**
+   * Test that the login method works correctly when the user provides valid credentials.
+   */
   @Test
   void testLoginSuccessful() {
     UserRepository repository = new FakeUserRepository();
@@ -32,6 +41,9 @@ public class UserManagerTest {
     assertTrue(manager.login("testUser", "password"));
   }
 
+  /**
+   * Test that the login method fails when the user provides an incorrect password.
+   */
   @Test
   void testLoginFailsWithIncorrectPassword() {
     UserRepository repository = new FakeUserRepository();
@@ -42,6 +54,9 @@ public class UserManagerTest {
     assertFalse(manager.login("testUser", "wrongPassword"));
   }
 
+  /**
+   * Test that the login method fails when the user does not exist in the repository.
+   */
   @Test
   void testRegisterSuccessful() {
     UserRepository repository = new FakeUserRepository();
@@ -53,6 +68,9 @@ public class UserManagerTest {
     isSameUser(new User("newUser", "password"), repository.getUser("newUser"));
   }
 
+  /**
+   * Test that the register method fails when trying to register a user that already exists.
+   */
   @Test
   void testRegisterFailsWhenUserAlreadyExists() {
     UserRepository repository = new FakeUserRepository();
@@ -63,6 +81,9 @@ public class UserManagerTest {
     assertFalse(manager.register("existingUser", "newPassword"));
   }
 
+  /**
+   * FakeUserRepository is a simple implementation of the UserRepository.
+   */
   private static class FakeUserRepository implements UserRepository {
     private final Map<String, User> users = new HashMap<>();
 
