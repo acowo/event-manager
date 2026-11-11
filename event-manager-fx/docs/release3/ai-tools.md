@@ -6,7 +6,7 @@ AI tools such as Claude Sonnet 5 and OpenAI GPT-5.6 Luna and their respective we
 
 ## Changes in AI usage
 
-Compared to Release 2, our use of AI tools has expanded beyond documentation and comments. AI has increasingly been used as an aid during development, particularly when troubleshooting configuration issues, understanding unfamiliar tooling/architecture and improving the development workflow.
+Compared to Release 2, our use of AI tools has expanded beyond documentation and comments. AI has increasingly been used as an aid during development, particularly when troubleshooting configuration issues, understanding unfamiliar tooling/architecture and improving the development workflow. AI has also been implemented more in creating tests.
 
 ## Example usage
 
