@@ -22,6 +22,8 @@
         <module>persistence</module>
         <module>ui</module>
         <module>jacoco-aggregator</module>
+        <module>springboot/restserver</module>
+        <module>api-contract</module>
     </modules>
 
     <dependencyManagement>

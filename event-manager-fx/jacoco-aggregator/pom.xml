@@ -33,6 +33,16 @@
             <artifactId>ui</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>it1901</groupId>
+            <artifactId>api-contract</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>it1901</groupId>
+            <artifactId>restserver</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

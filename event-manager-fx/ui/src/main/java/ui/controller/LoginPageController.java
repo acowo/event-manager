@@ -1,6 +1,6 @@
-
 package ui.controller;
 
+import dto.response.LoginRegisterResponseDto;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Objects;
@@ -13,9 +13,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.Window;
-import persistence.UserFileManager;
-import user.UserManager;
-import user.UserRepository;
+import ui.auth.ClientSession;
+import ui.client.UserRestApiClient;
 
 /** Controller for the login and registration page. */
 public class LoginPageController {
@@ -30,48 +29,24 @@ public class LoginPageController {
 
   @FXML private Text loginPageInfotextField;
 
-  private final UserManager manager;
-
-  private final String calendarView;
-
+  private final UserRestApiClient apiClient = new UserRestApiClient("http://localhost:8080/api/users");
 
   /**
-   * Default constructor for LoginPageController,
-   * initializing with a new UserManager and default calendar view.
-   * The default calendar view is set to "/ui/Calendar.fxml".
-   */
-  public LoginPageController() {
-    this(new UserFileManager(), "/ui/Calendar.fxml");
-    
-  }
-
-  /**
-   * Constructor for LoginPageController with specified UserManager and calendar view.
-   *
-   * @param userRepository the user repository for managing user data
-   * @param calendarView path to the calendar FXML resource
-   */
-  public LoginPageController(UserRepository userRepository, String calendarView) {
-    this.manager = new UserManager(Objects.requireNonNull(userRepository));
-    this.calendarView = Objects.requireNonNull(calendarView);
-  }
-
-  /**
-   * Handles the controller logic needed when a user presses the login button.
-   * Uses imports from the Core and persistence modules.
-   *
-   * @throws IOException if the calendar view cannot be loaded
+   * Handles the controller logic needed when a user presses the login button. Uses imports from the
+   * Core and persistence modules. This function does not return a value.
    */
   @FXML
-  public void handleLogin() throws IOException {
+  public void handleLogin() throws IOException, InterruptedException {
     String username = loginPageUsernameField.getText();
     String password = loginPagePasswordField.getText();
 
     if (isNotEmpty(username, password)) {
-      if (manager.login(username, password)) {
+      LoginRegisterResponseDto loginResponse = apiClient.login(username, password);
+      if (loginResponse.success()) {
+        ClientSession.setAuthToken(loginResponse.id());
         changeScene();
       } else {
-        loginPageInfotextField.setText("An error has occured");
+        loginPageInfotextField.setText("An error has occurred");
         loginPageInfotextField.setFill(Color.RED);
       }
     }
@@ -83,12 +58,14 @@ public class LoginPageController {
    * @throws IOException if the calendar view cannot be loaded
    */
   @FXML
-  public void handleRegistration() throws IOException {
+  public void handleRegistration() throws IOException, InterruptedException {
     String username = loginPageUsernameField.getText();
     String password = loginPagePasswordField.getText();
 
     if (isNotEmpty(username, password)) {
-      if (manager.register(username, password)) {
+      LoginRegisterResponseDto registerResponse = apiClient.register(username, password);
+      if (registerResponse.success()) {
+        ClientSession.setAuthToken(registerResponse.id());
         changeScene();
       } else {
         loginPageInfotextField.setText("A user by that name already exists");
@@ -104,18 +81,10 @@ public class LoginPageController {
    */
   @FXML
   private void changeScene() throws IOException {
-    URL resource = LoginPageController.class.getResource(calendarView);
-
-    if (resource == null) {
-      throw new IOException("Calendar view not found: " + calendarView);
-    }
-
-    Parent root = FXMLLoader.load(resource);
-
+    URL resource = LoginPageController.class.getResource("/ui/Calendar.fxml");
+    Parent root = FXMLLoader.load(Objects.requireNonNull(resource));
     Window window = loginPageRegisterButton.getScene().getWindow();
-
-    if (window instanceof Stage) {
-      Stage stage = (Stage) window;
+    if (window instanceof Stage stage) {
       stage.getScene().setRoot(root);
       return;
     }
@@ -124,26 +93,27 @@ public class LoginPageController {
   }
 
   /**
-   * Checks whether the username and password fields are populated.
+   * Handles the controller logic needed to check whether a user has populated the required fields.
+   * Mainly used to save resources by preventing unnecessary calls to heavier functions when not
+   * needed.
    *
-   * @param username the username entered
-   * @param password the password entered
-   * @return true if both fields are populated, false otherwise
+   * @param username The string in the id field.
+   * @param password The string in the password field.
+   * @return True if fields are populated, false otherwise.
    */
   @FXML
   private boolean isNotEmpty(String username, String password) {
-    if (username.length() < 1) {
-      loginPageInfotextField.setText("Please enter a username");
+    if (username.isEmpty()) {
+      loginPageInfotextField.setText("Please enter a id");
       loginPageInfotextField.setFill(Color.RED);
       return false;
     }
 
-    if (password.length() < 1) {
+    if (password.isEmpty()) {
       loginPageInfotextField.setText("Please enter a password");
       loginPageInfotextField.setFill(Color.RED);
       return false;
     }
-
     return true;
   }
 }

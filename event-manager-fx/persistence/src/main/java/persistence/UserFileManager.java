@@ -21,7 +21,7 @@ public class UserFileManager implements user.UserRepository {
 
   private final Gson gson = new Gson();
 
-  private final String filePath;
+  private String filePath;
 
   /**
    * Constructs a new UserFileManager with the default file path.
@@ -36,6 +36,9 @@ public class UserFileManager implements user.UserRepository {
    * @param filePath the path to the user data file
    */
   public UserFileManager(String filePath) {
+    if (!(new File(filePath).exists())) {
+      this.filePath = "gr2607/event-manager-fx/data/userdata.json";
+    }
     this.filePath = filePath;
   }
 
@@ -153,8 +156,8 @@ public class UserFileManager implements user.UserRepository {
    * @return the map of all user objects with their usernames
    */
   public Map<String, User> getUsers() {
-    File file = new File(filePath);
 
+    File file = new File(filePath);
     StringBuilder jsonString = new StringBuilder();
 
     if (!file.exists()) {
@@ -236,11 +239,12 @@ public class UserFileManager implements user.UserRepository {
   }
 
   /**
-   * Removes a user from the user map.
+   * Removes a user from the user map and the JSON.
    *
    * @param username the user to be removed from the user map
    * @throws IllegalArgumentException if the user does not exist within the map
    */
+  @Override
   public void removeUser(String username) {
     Map<String, User> users = getUsers();
 

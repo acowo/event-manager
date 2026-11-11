@@ -1,4 +1,8 @@
+
 package user;
+
+import event.EventManager;
+import java.util.Map;
 
 /**
  * UserManager implements domain logic for managing user aspects.
@@ -23,29 +27,33 @@ public class UserManager {
   }
 
   /**
+   * Creates a copy of the given UserManager.
+   *
+   * @param userManager an already initialized UserManager
+   */
+  public UserManager(UserManager userManager) {
+    this.users = userManager.users.copy();
+  }
+
+  /**
    * Logs in using user credentials.
    *
    * @param username the user's username credential
    * @param password the user's password credential
-   * @return {@code true} if login was successful; {@code false} if credentials were incorrect
+   * @return {@code true} if login was successful;
+   *     {@code false} if credentials were incorrect
    */
   public boolean login(String username, String password) {
-
-    if (!users.checkPassword(username, password)) {
-      return false;
-    }
-
-    UserSession.setUser(users.getUser(username));
-    return true;
+    return users.checkPassword(username, password);
   }
 
   /**
-   * Creates a new user with the username and password and logs in with the same user credentials.
+   * Creates a new user with the given username and password.
    *
-   * @param username the user's username credential
-   * @param password the user's password credential
-   * @return {@code true} if registration and login was successful; {@code false} if user with the
-   *     same username credential already exists
+   * @param username the user's username
+   * @param password the user's password
+   * @return {@code true} if registration was successful;
+   *     {@code false} if the username already exists
    * @throws NullPointerException if username is null
    * @throws IllegalArgumentException if username is blank
    */
@@ -56,7 +64,6 @@ public class UserManager {
 
     User user = new User(username, password);
     users.addUser(user);
-    UserSession.setUser(user);
     return true;
   }
 
@@ -65,17 +72,38 @@ public class UserManager {
    *
    * @param username the user to be changed
    * @param user the updated user object
-   * @return {@code true} if the user was successfully edited; {@code false} if the user does not
-   *     exist
+   * @return {@code true} if the user was successfully edited;
+   *     {@code false} if the user does not exist
    */
   public boolean editUser(String username, User user) {
     if (!users.userExists(username)) {
       return false;
     }
     users.editUser(username, user);
-    if (UserSession.getUser().getUsername().equals(username)) {
-      UserSession.setUser(user);
-    }
+    return true;
+  }
+
+  /**
+   * Deletes a user. Removes all events they are administrating.
+   *
+   * @param username the user to be deleted
+   * @param eventManager the eventManager to delete events from
+   * @return {@code true} if the user was successfully deleted;
+   *     {@code false} if the username is not matching
+   */
+  public boolean deleteUser(String username, EventManager eventManager) {
+    User user = users.getUser(username);
+
+    Map<String, Boolean> eventMap = user.getEventIds();
+
+    eventMap.entrySet().forEach(s -> {
+      if (s.getValue()) {
+        removeEvent(s.getKey());
+        eventManager.removeEvent(s.getKey());
+      }
+    });
+
+    users.removeUser(username);
     return true;
   }
 
@@ -86,5 +114,69 @@ public class UserManager {
    */
   public void removeEvent(String eventId) {
     users.removeEvent(eventId);
+  }
+
+  /**
+   * Retrieves a user by username.
+   *
+   * @param username the username of the user
+   * @return the user with the matching username
+   */
+  public User getUser(String username) {
+    return this.users.getUser(username);
+  }
+
+  /**
+   * Adds a user to an event if they are not already attending.
+   *
+   * @param eventId the ID of the event
+   * @param username the username of the user
+   * @return {@code true} if the user was added;
+   *     {@code false} if already attending
+   */
+  public boolean optIn(String eventId, String username) {
+    User user = getUser(username);
+    if (user.isAttendingEvent(eventId)) {
+      return false;
+    }
+    user.addEventId(eventId, false);
+    users.editUser(username, user);
+    return true;
+  }
+
+  /**
+   * Adds an event to a user as administrator (used when the user creates the event).
+   *
+   * @param eventId the event the user created
+   * @param username the creator
+   * @return {@code true} if the user successfully gets opted in as admin;
+   *     {@code false} if the user is already attending the event
+   */
+  public boolean optInAsAdmin(String eventId, String username) {
+    User user = getUser(username);
+    if (user.isAttendingEvent(eventId)) {
+      return false;
+    }
+    user.addEventId(eventId, true);
+    users.editUser(username, user);
+    return true;
+  }
+
+  /**
+   * Removes a user from an event if they are attending.
+   *
+   * @param eventId the ID of the event
+   * @param username the username of the user
+   * @return {@code true} if the user was removed;
+   *     {@code false} if not attending
+   */
+  public boolean optOut(String eventId, String username) {
+    User user = getUser(username);
+    if (!user.isAttendingEvent(eventId)) {
+      return false;
+    }
+    user.removeEventId(eventId);
+    users.editUser(username, user);
+    return true;
   }
 }
