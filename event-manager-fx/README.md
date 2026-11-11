@@ -34,6 +34,16 @@ The user should be able to register for available events, and this should be per
 
 The user should be able to create an account or log into one they have already created.
 
+### Create multiple events with the same title
+
+> As a user, i want to be able to create multiple events with the same title, for example for reoccuring events.
+[Issue #114](https://git.ntnu.no/IT1901-2026-groups/gr2607/issues/114)
+
+### Administer events
+
+> As someone who hosts events, i don't want random users to be able to delete the events i have created.
+[Issue #107](https://git.ntnu.no/IT1901-2026-groups/gr2607/issues/107)
+
 ### Requirements
 
 - Java 17 or newer
